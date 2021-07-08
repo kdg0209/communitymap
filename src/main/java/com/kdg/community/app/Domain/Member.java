@@ -1,0 +1,29 @@
+package com.kdg.community.app.Domain;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+
+@Entity
+@Table(name = "member")
+@Data
+public class Member {
+
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long code;
+	
+	private char is_certification;
+	private String id;
+	private String password;
+	private String salt;
+	private String name;
+	private String nickname;
+	private String phone;
+	private String email;
+	private String write_date;
+	private String write_ip;
+}
