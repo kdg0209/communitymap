@@ -136,7 +136,7 @@
 		 	<version>2.2.5.RELEASE</version>
 		</dependency>
 		
-		<!-- 메일 보내기 -->	
+		<!-- 메일 보내기 시작 -->	
 		<dependency>
 			<groupId>javax.mail</groupId>
 				<artifactId>mail</artifactId>
@@ -148,6 +148,14 @@
             <artifactId>spring-context-support</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
+        <!-- 메일 보내기 끝 -->	
+        
+        <!-- Spring-security 모듈 -->
+	    <dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-web</artifactId>
+	        <version>${org.springframework-version}</version>
+	    </dependency>
 		
 		<!-- Logging -->
 		<dependency>

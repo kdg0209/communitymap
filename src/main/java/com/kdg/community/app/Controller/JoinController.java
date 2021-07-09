@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,6 @@ import com.kdg.community.app.Domain.EmailVerification;
 import com.kdg.community.app.Domain.Member;
 import com.kdg.community.app.Service.EmailVerificationService;
 import com.kdg.community.app.Service.JoinService;
-import com.kdg.community.common.SHA256Util;
 
 @Controller
 @RequestMapping("/app/join/*")
@@ -43,9 +43,9 @@ public class JoinController {
 		this.emailVerificationService = emailVerificationService;
 	}
 
-	@GetMapping(value = "/app/join/join")
+	@GetMapping(value = "/app/join/index")
 	public String join() {
-		return "app/join/join";
+		return "app/join/index";
 	}
 	
 	@PostMapping(value = "/app/join/idverification")
@@ -152,20 +152,21 @@ public class JoinController {
 		}
 	}
 	
-	@PostMapping(value = "/app/join/join")
-	public void join(Member member) throws Exception {
+	@PostMapping(value = "/app/join/index")
+	public String index(Member member) throws Exception {
 		SimpleDateFormat format = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date time = new Date();
-		String salt = SHA256Util.generateSalt();
-		String newPassword = SHA256Util.getEncrypt(member.getPassword(), salt);
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String securePassword = encoder.encode(member.getPassword());
 
-		member.setSalt(salt);
-		member.setPassword(newPassword);
+		member.setPassword(securePassword);
 		member.setIs_certification('Y');
 		member.setWrite_date(format.format(time));
 		member.setWrite_ip(getUserIp());
 		
 		joinRepository.insert(member);
+		
+		return "app/login/index";
 	}
 	
 	private String getUserIp() throws Exception {
@@ -203,31 +204,4 @@ public class JoinController {
 		
 		return ip;
 	}
-	
-	
-	// 로그인 시 참고
-//	public boolean login(HttpSession session, LoginVO loginVO) {
-//        String memberSalt = memberDAO.getSaltById( loginVO.getId());
-//        String inputPassword = loginVO.getPassword();
-//        String newPassword = SHA256Util.getEncrypt(inputPassword, memberSalt);
-//        
-//        MemberVO memberVO = memberDAO.login(loginVO);
-//        
-//        if(memberVO != null) {
-//            
-//            // 로그인 성공시..
-//            LoginStore loginStore = LoginStore.getInstance();
-//            if ( loginStore.get(loginVO.getId())!= null ){
-//                loginStore.logout(loginVO.getId());
-//            }
-//            session.setAttribute(Session.MEMBER, memberVO);
-//            loginStore.add(loginVO.getId(), session);
-//            
-//            session.setAttribute(Session.MEMBER, memberVO);
-//        }
-//        
-//        return memberVO != null;
-//    }
-
-
 }

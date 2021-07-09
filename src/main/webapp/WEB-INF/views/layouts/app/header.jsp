@@ -27,14 +27,14 @@
                         <a class="nav-link btn-outline-primary rounded-pill px-3" href="pricing.html">Pricing</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="/app/join/join">회원가입</a>
+                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="/app/join/index">회원가입</a>
                     </li>
                 </ul>
             </div>
             <div class="navbar align-self-center d-flex">
                 <a class="nav-link" href="#"><i class='bx bx-bell bx-sm bx-tada-hover text-primary'></i></a>
                 <a class="nav-link" href="#"><i class='bx bx-cog bx-sm text-primary'></i></a>
-                <a class="nav-link" href="#"><i class='bx bx-user-circle bx-sm text-primary'></i></a>
+                <a class="nav-link" href="/app/login/index"><i class='bx bx-user-circle bx-sm text-primary'></i></a>
             </div>
         </div>
     </div>

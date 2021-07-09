@@ -19,7 +19,6 @@ public class Member {
 	private char is_certification;
 	private String id;
 	private String password;
-	private String salt;
 	private String name;
 	private String nickname;
 	private String phone;

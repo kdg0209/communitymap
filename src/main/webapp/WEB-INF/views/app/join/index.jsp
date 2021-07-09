@@ -24,7 +24,7 @@
         <div class="row pb-4">
         	<div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <form action="/app/join/join" method="post" class="contact-form row" role="form">
+                <form action="/app/join/index" method="post" onSubmit="return doSubmit(this);" class="contact-form row" role="form">
                 	<input type="hidden" id="id_checker" value="N"/>
                 	<input type="hidden" id="nickname_checker" value="N"/>
                 	<input type="hidden" id="phone_checker" value="N"/>
@@ -51,6 +51,8 @@
                             		name="password" 
                             		placeholder="비밀번호">
                             <label for="floatingname light-300">비밀번호</label>
+                            <div class="is_password_val text-danger" style="display:none; font-size: 13px;">비밀번호를 입력해주세요.</div>
+                        	<div class="is_password_chk text-danger" style="display:none; font-size: 13px;">비밀번호는 6자 이상 입력해주세요.</div>
                         </div>
                     </div>
                     
@@ -76,6 +78,7 @@
                             		name="name" 
                             		placeholder="이름">
                             <label for="floatingname light-300">이름</label>
+                            <div class="is_name_null_chk text-danger" style="display:none; font-size: 13px;">이름을 입력해주세요.</div>
                         </div>
                     </div>
                     
@@ -157,6 +160,68 @@
 
 <%@include file="../../layouts/app/script.jsp"%>
 <script>
+function doSubmit(frm){
+	  if ($("#id").val().trim() == '' || $("#id_checker").val() == 'N') {
+          $("#id").focus();
+          $('.is_id_null_chk').show();
+          $('.is_id_validation_chk').hide();
+          $('.is_id_chk').hide();
+          return false;
+      }
+      if ($("#password").val().trim() == '') {
+          $("#password").focus();
+          $(".is_password_val").show();
+          $(".is_password_chk").hide();
+          return false;
+      }
+      if ($("#password_confirm").val().trim() == '') {
+          $("#password_confirm").focus();
+          $(".is_password_confirm_val").show();
+          $(".is_password_confirm_chk").hide();
+          $(".is_password_confirm").hide();
+          return false;
+      }
+      if ($("#password").val() != $("#password_confirm").val()) {
+          $("#password").focus();
+          $(".is_password_confirm_val").hide();
+          $(".is_password_confirm_chk").hide();
+          $(".is_password_confirm").show();
+          return false;
+      }
+      if ($("#name").val().trim() == '') {
+          $("#name").focus();
+          $('.is_name_null_chk').show();
+          return false;
+      }
+      if ($("#nickname").val().trim() == '' || $("#nickname_checker").val() == 'N') {
+          $("#nickname").focus();
+          $('#nickname_checker').val('N');
+          $('.is_nickname_null_chk').show();
+          $('.is_nickname_validation_chk').hide();
+          $('.is_nickname_chk').hide();
+          return false;
+      }
+      if ($("#phone").val().trim() == '' || $("#phone_checker").val() == 'N') {
+          $("#phone").focus();
+          $('#phone_checker').val('N');
+          $('.is_phone_null_chk').show();
+          $('.is_phone_chk').hide();
+          return false;
+      }
+      
+      if ($("#email").val().trim() == '' || $("#email_checker").val() == 'N') {
+          $("#email").focus();
+          $('#email_checker').val('N');
+          $('.is_email_null_chk').show();
+          $('.is_email_chk').hide();
+          return false;
+      }
+      
+      $(frm).find('button:submit').attr('disabled', 'disabled');
+      return true;
+}
+</script>
+<script>
 	$(document).ready(function(){
 		$('#id').bind("keyup keypress keydown click", function () {
             if ($(this).val() == '') {
@@ -230,6 +295,14 @@
                 $(".is_password_confirm_val").hide();
                 $(".is_password_confirm_chk").hide();
                 $(".is_password_confirm").hide();
+            }
+        });
+        
+        $('#name').bind("keyup keypress keydown click", function () {
+            if ($(this).val() == '') {
+                $(".is_name_null_chk").show();
+            } else {
+                $(".is_name_null_chk").hide();
             }
         });
         
@@ -389,7 +462,7 @@
                     	$("#email-check-btn").attr("disabled", true);
                     	$("#email-send-btn").attr("disabled", true);
                     	$("#emailvalue").attr("disabled", true);
-                    	countdown("countdown", null);
+                    	$("#countdown").remove();
                     } else if(data == 'pass'){
                     	alert("시간이 초과되었습니다. \n다시 인증해주세요.");
                     	$("#email-div").hide();
@@ -397,7 +470,7 @@
                     	$("#email-check-btn").attr("disabled", false);
                     	$("#email-send-btn").attr("disabled", false);
                     	$("#emailvalue").attr("disabled", false);
-                    	countdown("countdown", null);
+                    	countdown("countdown", 0, 0);
                     	emailStatus = false;
                     }
                 });
