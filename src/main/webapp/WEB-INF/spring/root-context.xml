@@ -5,6 +5,13 @@
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 		
+	<!-- MultipartResolver 설정 -->
+    <!--   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000" />
+        <property name="maxInMemorySize" value="100000000" />
+    </bean>	
+    -->
+		
 	<!-- naver email 설정 -->
     <bean id="naverMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="smtp.naver.com" />

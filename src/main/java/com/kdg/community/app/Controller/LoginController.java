@@ -28,7 +28,7 @@ public class LoginController {
 	}
 	
 	@PostMapping(value = "/app/login/index")
-	public void login(HttpServletResponse response, HttpSession session,String id, String password) throws Exception{
+	public void login(HttpServletResponse response, HttpSession session, String id, String password) throws Exception{
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		

@@ -1,9 +1,14 @@
 package com.kdg.community.app.Domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -25,4 +30,7 @@ public class Member {
 	private String email;
 	private String write_date;
 	private String write_ip;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+	private List<Mapper> mapperList = new ArrayList<Mapper>();
 }

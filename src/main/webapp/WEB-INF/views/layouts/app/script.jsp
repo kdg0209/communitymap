@@ -31,3 +31,5 @@
  <script src="../../resources/assets/js/templatemo.js"></script>
  <!-- Custom -->
  <script src="../../resources/assets/js/custom.js"></script>
+ 
+ <script src="../../resources/common/app/plugun/markerSelect/marker.js"></script>
