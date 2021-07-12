@@ -26,7 +26,13 @@
         <div class="row pb-4" style="margin-top: -70px;">
         	<div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <form id="submitForm"  enctype="multipart/form-data" class="contact-form row" role="form">
+                <form id="submitForm" class="contact-form row" role="form">
+                	<input type="text" name="mapperNameCount" id="mapperNameCount" value="1" />
+                	
+                	<input type="text" name="filename" id="filename" />
+                	<input type="text" name="filelength" id="filelength" />
+                	<input type="text" name="data" id="data" />
+                	
                 	<div class="col-12">
                         <div class="form-floating mb-4">
                             <div class="profile-pic-wrapper">
@@ -164,6 +170,7 @@
 </body>
 
 <%@include file="../../layouts/app/script.jsp"%>
+
 <script>
 	$(document).ready(function(){
 		 $('.mapperCategoryImg').msDropDown();
@@ -193,12 +200,21 @@
 		    var reader = new FileReader(); // instance of the FileReader
 		    reader.readAsDataURL(files[0]); // read the local file
 	
+		    var file = $("#newProfilePhoto")[0].files[0];
+			var filename = file.name;
+		    
 		    reader.onloadend = function () {
-		      $(holder).addClass("uploadInProgress");
-		      $(holder).find(".pic").attr("src", this.result);
-		      $(holder).append(
-		        '<div class="upload-loader"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>'
-		      );
+		    	var base64data = reader.result;
+		    	console.log(base64data);
+				var data = base64data.split(',')[1];
+				var sendsize = 1024;
+				var filelength = data.length;
+				
+			    $(holder).addClass("uploadInProgress");
+			    $(holder).find(".pic").attr("src", this.result);
+			    $(holder).append(
+			      '<div class="upload-loader"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>'
+			    );
 	
 		      setTimeout(() => {
 		        $(holder).removeClass("uploadInProgress");
@@ -208,6 +224,10 @@
 		          $(wrapper).append(
 		            '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> 성공적으로 업로드를 하였습니다.</div>'
 		          );
+		          
+	          	  $("#filename").val(filename);
+				  $("#filelength").val(filelength);
+				  $("#data").val(data.substring(0, sendsize));
 	
 		          // Clear input after upload
 		          $(triggerInput).val("");
@@ -228,6 +248,7 @@
 		        }
 		      }, 1500);
 		    };
+		    
 		  } else {
 		    $(wrapper).append(
 		      '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose the valid image.</div>'
@@ -253,8 +274,8 @@
 	      }
 	      return obj; 
 	    }
-
-		console.log("1111");
+	
+		console.log("344");
 		$("#submit").click(function() {
 			if ($("#name").val().trim() == '') {
 		          $("#name").focus();
@@ -275,34 +296,16 @@
 	                 return false;
 	              }
 	        }
-		    
-	        for(loop=0; loop<document.getElementsByName("mapperName[]").length; loop++){
-	   		   if(!document.getElementsByName("mapperName[]")[loop].value){
-	   			   document.getElementsByName("mapperName[]")[loop].focus();
-	   			   alert("항목을 입력해주세요.");
-	   		       return false;
-	   		   }
-	        }
-	      
-	        for(loop=0; loop<document.getElementsByName("mapperCategory[]").length; loop++){
-	   		   if(!document.getElementsByName("mapperCategory[]")[loop].value){
-	   			   document.getElementsByName("mapperCategory[]")[loop].focus();
-	   			   alert("카테고리를 입력해주세요.");
-	   			   return false;
-	   		   }
-	        }
-	        var form = jQuery("#submitForm")[0];
-	        var formData = new FormData(form);
-	        const data = $('#submitForm').serializeObject();
+		  
+	        var data = $("#submitForm").serializeObject();
 	        
 	        var request = $.ajax({
-	        	contentType: false,
-	        	processData: false,
-           	 	//contentType:'application/json',
-                dataType:'json',
-                data:{data, formData},
                 url: "/app/mapper/write",
-                type : "POST"
+                type : "POST",
+                data:JSON.stringify(data),
+                enctype: "multipart/form-data",
+           	 	contentType:'application/json',
+                dataType:'json',
             });
 
             request.done(function (data) {
@@ -328,11 +331,13 @@
 	function mapperNameIncrease() {
 		var count = $("#mapperNameConfigDiv").find('.row').length;
 		var number = count + 1;
-		
+		var mapperNameCount = number + 1;
+			
 		if(count == 4){
 			alert("최대 5개까지 설정가능합니다.");
 			return;
 		}
+		
 		var html = "";
 		html += "<div class='row'>";
 		html += 	"<div class='col-8'>";
@@ -347,10 +352,14 @@
 		html += "</div>";
 		
 		$("#mapperNameConfigDiv").append(html);
+		$("#mapperNameCount").val(mapperNameCount);
 	}
 	
 	function mapperNameDecrease(obj) {
+		var count = $("#mapperNameConfigDiv").find('.row').length;
+		
 		$(obj).parent().parent().remove();
+		$("#mapperNameCount").val(count);
 	}
 </script>
            

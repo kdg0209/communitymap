@@ -26,7 +26,7 @@ public class Mapper {
 	private char status;
 	private String name;
 	private String contents;
-	private int memberCode;
+	private Long memberCode;
 	private int categoryCode;
 	private int editAuth;
 	private String editPassword;

@@ -20,10 +20,15 @@ public class MapperNameConfig {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
 	
+	private String name;
+	
 	@ManyToOne
 	@JoinColumn(name = "code", insertable = false, updatable = false)
 	private Mapper mapper;
 	
-	private String name;
 	
+	public void setMapper(Mapper mapper) {
+		this.mapper = mapper;
+		mapper.getMapperNameConfigList().add(this);
+	}
 }

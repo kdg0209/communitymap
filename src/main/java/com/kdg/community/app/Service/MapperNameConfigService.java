@@ -3,6 +3,8 @@ package com.kdg.community.app.Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kdg.community.app.Domain.Mapper;
+import com.kdg.community.app.Domain.MapperNameConfig;
 import com.kdg.community.app.Repository.MapperNameConfigRepository;
 
 @Service
@@ -13,5 +15,9 @@ public class MapperNameConfigService {
 
 	public MapperNameConfigService(MapperNameConfigRepository mapperNameConfigRepository) {
 		this.mapperNameConfigRepository = mapperNameConfigRepository;
+	}
+	
+	public MapperNameConfig insert(MapperNameConfig mapperNameConfig) {
+		return mapperNameConfigRepository.save(mapperNameConfig);
 	}
 }
