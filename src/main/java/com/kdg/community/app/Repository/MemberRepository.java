@@ -6,6 +6,8 @@ import com.kdg.community.app.Domain.Member;
 
 public interface MemberRepository extends CrudRepository<Member, Long>{
 
+	Member findByCode(Long code);
+	
 	Member findById(String id);
 	
 	Member findByIdAndPassword(String id, String password);

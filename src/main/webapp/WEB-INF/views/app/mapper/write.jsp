@@ -27,11 +27,10 @@
         	<div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <form id="submitForm" class="contact-form row" role="form">
-                	<input type="text" name="mapperNameCount" id="mapperNameCount" value="1" />
-                	
-                	<input type="text" name="filename" id="filename" />
-                	<input type="text" name="filelength" id="filelength" />
-                	<input type="text" name="data" id="data" />
+                	<input type="hidden" name="mapperNameCount" id="mapperNameCount" value="1" />
+                	<input type="hidden" name="mapperCategoryCount" id="mapperCategoryCount" value="1" />
+                	<input type="hidden" name="filename" id="filename" />
+                	<input type="hidden" name="cover" id="cover" />
                 	
                 	<div class="col-12">
                         <div class="form-floating mb-4">
@@ -49,7 +48,7 @@
 							        </div>
 							      </div>
 							    </label>
-							    <Input class="uploadProfileInput" type="file" name="cover" id="newProfilePhoto" accept="image/*" style="display: none;" />
+							    <Input class="uploadProfileInput" type="file" id="newProfilePhoto" accept="image/*" style="display: none;" />
 							  </div>
 							  <p class="text-info text-center small">커버 이미지를 설정해보세요!</p>
 							</div>
@@ -146,7 +145,7 @@
                         <div class="form-floating mb-4">
                             <input type="text" 
                             		class="form-control form-control-lg light-300"  
-                            		name="mapperCategory[0]name" 
+                            		name="mapperCategory[0][name]" 
                             		placeholder="카테고리">
                             <label for="floatingname light-300">카테고리</label>
                         </div>
@@ -199,23 +198,20 @@
 		  if (/^image/.test(files[0].type)) {
 		    var reader = new FileReader(); // instance of the FileReader
 		    reader.readAsDataURL(files[0]); // read the local file
-	
+		
 		    var file = $("#newProfilePhoto")[0].files[0];
 			var filename = file.name;
 		    
 		    reader.onloadend = function () {
 		    	var base64data = reader.result;
-		    	console.log(base64data);
 				var data = base64data.split(',')[1];
-				var sendsize = 1024;
-				var filelength = data.length;
 				
 			    $(holder).addClass("uploadInProgress");
 			    $(holder).find(".pic").attr("src", this.result);
 			    $(holder).append(
 			      '<div class="upload-loader"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>'
 			    );
-	
+		
 		      setTimeout(() => {
 		        $(holder).removeClass("uploadInProgress");
 		        $(holder).find(".upload-loader").remove();
@@ -225,13 +221,12 @@
 		            '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> 성공적으로 업로드를 하였습니다.</div>'
 		          );
 		          
-	          	  $("#filename").val(filename);
-				  $("#filelength").val(filelength);
-				  $("#data").val(data.substring(0, sendsize));
-	
+		          $("#filename").val(filename);
+				  $("#cover").val(data);
+		
 		          // Clear input after upload
 		          $(triggerInput).val("");
-	
+		
 		          setTimeout(() => {
 		            $(wrapper).find('[role="alert"]').remove();
 		          }, 3000);
@@ -240,7 +235,7 @@
 		          $(wrapper).append(
 		            '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> 다시 시도해주세요.</div>'
 		          );
-	
+		
 		          $(triggerInput).val("");
 		          setTimeout(() => {
 		            $(wrapper).find('[role="alert"]').remove();
@@ -260,22 +255,21 @@
 		});
 		
 		jQuery.fn.serializeObject = function() { 
-	      var obj = null; 
-	      try { 
-	          if(this[0].tagName && this[0].tagName.toUpperCase() == "FORM" ) { 
-	              var arr = this.serializeArray(); 
-	              if(arr){ obj = {}; 
-	              jQuery.each(arr, function() { 
-	                  obj[this.name] = this.value; }); 
-	              } 
-	          } 
-	      }catch(e) { 
-	          alert(e.message); 
-	      }
-	      return obj; 
-	    }
+		    var obj = null; 
+		    try { 
+		        if(this[0].tagName && this[0].tagName.toUpperCase() == "FORM" ) { 
+		            var arr = this.serializeArray(); 
+		            if(arr){ obj = {}; 
+		            jQuery.each(arr, function() { 
+		                obj[this.name] = this.value; }); 
+		            } 
+		        } 
+		    }catch(e) { 
+		        alert(e.message); 
+		    }
+		    return obj; 
+		}
 	
-		console.log("344");
 		$("#submit").click(function() {
 			if ($("#name").val().trim() == '') {
 		          $("#name").focus();
@@ -299,6 +293,8 @@
 		  
 	        var data = $("#submitForm").serializeObject();
 	        
+	        console.log(data);
+	        
 	        var request = $.ajax({
                 url: "/app/mapper/write",
                 type : "POST",
@@ -310,13 +306,9 @@
 
             request.done(function (data) {
                 if (data == true) {
-                    $('#nickname_checker').val('Y');
-                    $('.is_nickname_null_chk').hide();
-                    $('.is_nickname_chk').hide();
+                    console.log("aaaa");
                 } else if (data == false) {
-                    $('#nickname_checker').val('N');
-                    $('.is_nickname_null_chk').hide();
-                    $('.is_nickname_chk').show();
+                	console.log("bbbbbbb");
                 }
             });
 
@@ -367,6 +359,7 @@
 	function mapperCategoryIncrease() {
 		var count = $("#mapperCategoryConfigDiv").find('.row').length;
 		var number = count + 1;
+		var mapperCategoryCount = number + 1;
 		
 		if(count == 4){
 			alert("최대 5개까지 설정가능합니다.");
@@ -396,11 +389,15 @@
 		html += "</div>";
 		
 		$("#mapperCategoryConfigDiv").append(html);
+		$("#mapperCategoryCount").val(mapperCategoryCount);
 		
 		$('.mapperCategoryImg').msDropDown();
 	}
 	
 	function mapperCategoryDecrease(obj) {
+		var count = $("#mapperCategoryConfigDiv").find('.row').length;
+		
 		$(obj).parent().parent().remove();
+		$("#mapperCategoryCount").val(count);
 	}
 </script>

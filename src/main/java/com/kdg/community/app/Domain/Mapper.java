@@ -13,9 +13,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString(exclude = "member")
 @Entity
 @Table(name = "mapper")
 public class Mapper {
@@ -24,9 +27,9 @@ public class Mapper {
 	private Long code;
 	
 	private char status;
+	private String coverPath;
 	private String name;
 	private String contents;
-	private Long memberCode;
 	private int categoryCode;
 	private int editAuth;
 	private String editPassword;
@@ -34,22 +37,22 @@ public class Mapper {
 	private String writeIp;
 	
 	@ManyToOne
-	@JoinColumn(name = "code", insertable = false, updatable = false)
+	@JoinColumn(name = "memberCode")
 	private Member member;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
+	public void setDept(Member member) {
+		this.member = member;
+		
+		if(member != null) {
+			member.getMapperList().add(this);
+		}
+	}
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
 	private List<MapperNameConfig> mapperNameConfigList = new ArrayList<MapperNameConfig>();
 	
-	public void addMapperNameConfigList(MapperNameConfig mapperNameConfig) {
-		mapperNameConfigList.add(mapperNameConfig);
-		mapperNameConfig.setMapper(this);
-	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
 	private List<MapperCategoryConfig> mapperCategoryConfigList = new ArrayList<MapperCategoryConfig>();
-	
-	public void addMapperCategoryConfigList(MapperCategoryConfig mapperCategoryConfig) {
-		mapperCategoryConfigList.add(mapperCategoryConfig);
-		mapperCategoryConfig.setMapper(this);
-	}
+
 }

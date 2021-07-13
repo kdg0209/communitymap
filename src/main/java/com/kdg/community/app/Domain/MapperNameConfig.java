@@ -23,12 +23,14 @@ public class MapperNameConfig {
 	private String name;
 	
 	@ManyToOne
-	@JoinColumn(name = "code", insertable = false, updatable = false)
+	@JoinColumn(name = "mapperCode")
 	private Mapper mapper;
-	
 	
 	public void setMapper(Mapper mapper) {
 		this.mapper = mapper;
-		mapper.getMapperNameConfigList().add(this);
+		
+		if(mapper != null) {
+			mapper.getMapperNameConfigList().add(this);
+		}
 	}
 }

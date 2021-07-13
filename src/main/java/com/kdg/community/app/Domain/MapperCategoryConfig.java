@@ -18,10 +18,18 @@ public class MapperCategoryConfig {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
 	
-	@ManyToOne
-	@JoinColumn(name = "code", insertable = false, updatable = false)
-	private Mapper mapper;
-	
 	private String name;
 	private String imgPath;
+	
+	@ManyToOne
+	@JoinColumn(name = "mapperCode")
+	private Mapper mapper;
+	
+	public void setMapper(Mapper mapper) {
+		this.mapper = mapper;
+		
+		if(mapper != null) {
+			mapper.getMapperCategoryConfigList().add(this);
+		}
+	}
 }

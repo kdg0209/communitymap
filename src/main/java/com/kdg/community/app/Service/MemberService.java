@@ -16,6 +16,10 @@ public class MemberService {
 		this.memberRepository = memberRepository;
 	}
 	
+	public Member findByCode (Long code) {
+		return memberRepository.findByCode(code);
+	}
+	
 	public Member findById (String id) {
 		return memberRepository.findById(id);
 	}
