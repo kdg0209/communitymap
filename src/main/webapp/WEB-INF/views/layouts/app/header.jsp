@@ -1,6 +1,39 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<!-- Header -->
+<style>
+.dropbtn {
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+background-color: #fff!important;
+  display: none;
+  position: absolute;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+</style>
+
 <nav id="main_nav" class="navbar navbar-expand-lg navbar-light bg-white shadow">
     <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand h1" href="index.html">
@@ -31,12 +64,24 @@
                     </li>
                 </ul>
             </div>
+            
+            
             <div class="navbar align-self-center d-flex">
                 <a class="nav-link" href="#"><i class='bx bx-bell bx-sm bx-tada-hover text-primary'></i></a>
                 <a class="nav-link" href="#"><i class='bx bx-cog bx-sm text-primary'></i></a>
-                <a class="nav-link" href="/app/login/index"><i class='bx bx-user-circle bx-sm text-primary'></i></a>
+                <%if(session.getAttribute("id") != null) {%>
+                	<div class="dropdown">
+                		<a class="nav-link dropbtn" href="javascript:;"><i class='bx bx-user-circle bx-sm text-primary'></i></a>
+	                	 <div class="dropdown-content">
+						    <a href="/app/mypage/index">마이페이지</a>
+						    <a href="/app/mapper/index">나의 지도 관리</a>
+						    <a href="#">로그아웃</a>
+						  </div>
+				    </div>
+                <%}else{ %>
+               	 	<a class="nav-link" href="/app/login/index"><i class="fas fa-sign-in-alt fa-2x  text-primary"></i></a>
+                <%} %>
             </div>
         </div>
     </div>
 </nav>
-<!-- Close Header -->

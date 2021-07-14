@@ -1,5 +1,7 @@
 package com.kdg.community.app.Service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,14 +18,12 @@ public class MapperService {
 		this.mapperRepository = mapperRepository;
 	}
 	
+	public List<Mapper> mapperList (Long memberCode){
+		return mapperRepository.findByMemberCode(memberCode);
+	}
+	
 	public Mapper insert(Mapper mapper) {
 		return mapperRepository.save(mapper);
 	}
 
-//	public Long insert(Mapper mapper) {
-//		em.persist(mapper);
-//		em.flush();
-//		
-//		return mapper.getCode();
-//	}
 }

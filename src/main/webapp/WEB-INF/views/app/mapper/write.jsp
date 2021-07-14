@@ -293,8 +293,6 @@
 		  
 	        var data = $("#submitForm").serializeObject();
 	        
-	        console.log(data);
-	        
 	        var request = $.ajax({
                 url: "/app/mapper/write",
                 type : "POST",
@@ -306,9 +304,10 @@
 
             request.done(function (data) {
                 if (data == true) {
-                    console.log("aaaa");
+                   	window.location.href = "/app/mapper/index";
                 } else if (data == false) {
-                	console.log("bbbbbbb");
+                	alert("잘못된 접근입니다. 다시 시도해주세요.");
+                	return false;
                 }
             });
 

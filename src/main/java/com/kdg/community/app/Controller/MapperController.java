@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,13 +42,33 @@ public class MapperController {
 	private final MemberService memberService;
 	 
     private static final String UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mapperCover\\"; //파일 경로
-	
+    
 	public MapperController(MapperService mapperService, MapperNameConfigService mapperNameConfigService,
 			MapperCategoryConfigService mapperCategoryConfigService, MemberService memberService) {
 		this.mapperService = mapperService;
 		this.mapperNameConfigService = mapperNameConfigService;
 		this.mapperCategoryConfigService = mapperCategoryConfigService;
 		this.memberService = memberService;
+	}
+
+	@GetMapping(value = "/app/mapper/index")
+	public String index(HttpServletResponse response, HttpSession session, Model model) throws Exception {
+		Long memberCode = (Long)session.getAttribute("code");
+		
+		if(memberCode == null) {
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			
+			out.println("<script>alert('로그인 후 이용할 수 있습니다.'); location.href='/app/login/index';</script>");
+			out.flush();
+			
+			return "app/login/index";
+		}else {
+			List<Mapper> mapperList = mapperService.mapperList(memberCode);
+			
+			model.addAttribute("mapperList", mapperList);
+			return "app/mapper/index";
+		}
 	}
 
 	@GetMapping(value = "/app/mapper/write")
@@ -86,16 +107,16 @@ public class MapperController {
 	
 	@PostMapping(value = "/app/mapper/write")
 	@ResponseBody
-	public String write(Mapper mapper, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
+	public boolean write(Mapper mapper, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
 		
 		try {
-			String filePath  = null;
-			String file	 	 = (String) param.get("cover");
-			String filename  = (String) param.get("filename");
-			int categoryCode = Integer.parseInt((String) param.get("categoryCode"));
-			int editAuth 	 = Integer.parseInt((String) param.get("editAuth"));
-			Long memberCode  = (Long) session.getAttribute("code");
-			Member member 	 = memberService.findByCode(memberCode);
+			String file	 	   = (String) param.get("cover");
+			String filename    = (String) param.get("filename");
+			String newFileName = null;
+			int categoryCode   = Integer.parseInt((String) param.get("categoryCode"));
+			int editAuth 	   = Integer.parseInt((String) param.get("editAuth"));
+			Long memberCode    = (Long) session.getAttribute("code");
+			Member member 	   = memberService.findByCode(memberCode);
 			
 			GetUserIp getUserIp 		  = new GetUserIp();
 			SimpleDateFormat format 	  = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -105,9 +126,9 @@ public class MapperController {
 			
 			if(file != "") {
 				UUID uuid = UUID.randomUUID();
-				filePath = UPLOAD_PATH + "" + uuid + "_" +filename;
 				
-				makeFileWithString(file, filename, uuid);
+				newFileName = uuid + "_" +filename;
+				makeFileWithString(file, newFileName);
 			}
 			
 			if(param.get("editPassword") != "") {
@@ -116,7 +137,7 @@ public class MapperController {
 			
 			mapper.setMember(member);
 			mapper.setStatus('C');
-			mapper.setCoverPath(filePath);
+			mapper.setFileName(newFileName);
 			mapper.setName((String)param.get("name"));
 			mapper.setContents((String)param.get("contents"));
 			mapper.setCategoryCode(categoryCode);
@@ -145,17 +166,35 @@ public class MapperController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			return "app/mapper/write";
+			return false;
 		}
-		return "";
+		return true;
 	}
 	
-	private static void makeFileWithString(String base64, String filename, UUID uuid){
+	@GetMapping(value = "/app/mapper/edit")
+	public String edit(HttpServletResponse response, HttpSession session, Model model) throws Exception {
+		String memberID = (String)session.getAttribute("id");
+		
+		if(memberID == null) {
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			
+			out.println("<script>alert('로그인 후 이용할 수 있습니다.'); location.href='/app/login/index';</script>");
+			out.flush();
+			
+			return "app/login/index";
+		}else {
+			
+			return "app/mapper/edit";
+		}
+	}
+	
+	private static void makeFileWithString(String base64, String newFileName){
 		byte decode[] = Base64.decodeBase64(base64);
 		FileOutputStream fos;
+		
 		try{
-			File target = new File(UPLOAD_PATH + "" + uuid + "_" +filename);
-			target.createNewFile();
+			File target = new File(UPLOAD_PATH + "" + newFileName);
 			fos = new FileOutputStream(target);
 			fos.write(decode);
 			fos.close();

@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = "member")
+@ToString(exclude = {"member", "mapperNameConfigList", "mapperCategoryConfigList"})
 @Entity
 @Table(name = "mapper")
 public class Mapper {
@@ -27,7 +27,7 @@ public class Mapper {
 	private Long code;
 	
 	private char status;
-	private String coverPath;
+	private String fileName;
 	private String name;
 	private String contents;
 	private int categoryCode;
