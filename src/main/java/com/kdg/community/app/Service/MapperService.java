@@ -19,11 +19,15 @@ public class MapperService {
 	}
 	
 	public List<Mapper> mapperList (Long memberCode){
-		return mapperRepository.findByMemberCode(memberCode);
+		return mapperRepository.findByMemberCodeOrderByWriteDateDesc(memberCode);
 	}
 	
 	public Mapper insert(Mapper mapper) {
 		return mapperRepository.save(mapper);
+	}
+	
+	public Mapper view (Long code, Long memberCode) {
+		return mapperRepository.view(code, memberCode);
 	}
 
 }

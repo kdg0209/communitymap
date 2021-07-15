@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kdg.community.app.Common.GetUserIp;
@@ -172,8 +173,9 @@ public class MapperController {
 	}
 	
 	@GetMapping(value = "/app/mapper/edit")
-	public String edit(HttpServletResponse response, HttpSession session, Model model) throws Exception {
+	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code) throws Exception {
 		String memberID = (String)session.getAttribute("id");
+		Long memberCode = (Long)session.getAttribute("code");
 		
 		if(memberID == null) {
 			response.setContentType("text/html; charset=UTF-8");
@@ -184,6 +186,30 @@ public class MapperController {
 			
 			return "app/login/index";
 		}else {
+			Mapper mapper = mapperService.view(code, memberCode);
+			List<MapperNameConfig> nameConfigList = mapperNameConfigService.getNameConfigList(code);
+			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(code);
+			
+			model.addAttribute("mapper", mapper);
+			model.addAttribute("nameConfigList", nameConfigList);
+			model.addAttribute("categoryConfigList", categoryConfigList);
+			
+			Map<Integer, String> categoryMap = new HashMap<Integer, String>();
+			
+			categoryMap.put(1, "문화");	
+			categoryMap.put(2, "음식");	
+			categoryMap.put(3, "여행");	
+			categoryMap.put(4, "조사");	
+			categoryMap.put(5, "안전");	
+			categoryMap.put(6, "기타");	
+			model.addAttribute("categoryList", categoryMap);
+			
+			Map<Integer, String> editAuth = new HashMap<Integer, String>();
+			
+			editAuth.put(1, "누구나 작성/수정 가능");	
+			editAuth.put(2, "아는 사람끼리");	
+			editAuth.put(3, "나만 가능");
+			model.addAttribute("editAuth", editAuth);
 			
 			return "app/mapper/edit";
 		}

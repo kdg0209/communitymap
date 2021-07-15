@@ -1,9 +1,10 @@
 package com.kdg.community.app.Service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kdg.community.app.Domain.Mapper;
 import com.kdg.community.app.Domain.MapperNameConfig;
 import com.kdg.community.app.Repository.MapperNameConfigRepository;
 
@@ -17,7 +18,15 @@ public class MapperNameConfigService {
 		this.mapperNameConfigRepository = mapperNameConfigRepository;
 	}
 	
+	public List<MapperNameConfig> getNameConfigList (Long mapperCode){
+		return mapperNameConfigRepository.getNameConfigList(mapperCode);
+	}
+	
 	public MapperNameConfig insert(MapperNameConfig mapperNameConfig) {
 		return mapperNameConfigRepository.save(mapperNameConfig);
+	}
+	
+	public MapperNameConfig findByCode (Long code) {
+		return mapperNameConfigRepository.findByCode(code);
 	}
 }
