@@ -419,16 +419,12 @@
          });
 
          request.done(function (data) {
-             console.log(data);
              $('body').append(data);
-             $('.modal').modal();
+             $('.modal').show();
          });
 
          request.fail(function (jqXHR, textStatus) {
              alert("Request failed: " + textStatus);
          });
-	     
-         
-		console.log(code);
 	}
 </script>

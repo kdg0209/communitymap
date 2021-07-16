@@ -1,20 +1,14 @@
 package com.kdg.community.app.Controller;
 
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kdg.community.app.Domain.Mapper;
-import com.kdg.community.app.Domain.MapperCategoryConfig;
 import com.kdg.community.app.Domain.MapperNameConfig;
 import com.kdg.community.app.Service.MapperNameConfigService;
 
@@ -28,12 +22,21 @@ public class MapperNameConfigController {
 	}
 	
 	@GetMapping(value = "/app/mapperNameConfig/edit")
-	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code) throws Exception {
+	public String edit(HttpSession session, Model model, @RequestParam Long code) {
 		
-		MapperNameConfig config = mapperNameConfigService.findByCode(code);
+		MapperNameConfig config = mapperNameConfigService.getView(code);
 		
-		System.out.println(config);
+		model.addAttribute("config", config);
 		
 		return "app/mapperNameConfig/edit";
+	}
+	
+	@PostMapping(value = "/app/mapperNameConfig/edit")
+	@ResponseBody
+	public Boolean edit(MapperNameConfig mapperNameConfig) {
+		
+		mapperNameConfigService.update(mapperNameConfig);
+		
+		return true;
 	}
 }

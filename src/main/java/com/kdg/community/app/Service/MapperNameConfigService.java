@@ -1,6 +1,7 @@
 package com.kdg.community.app.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,15 @@ public class MapperNameConfigService {
 		return mapperNameConfigRepository.save(mapperNameConfig);
 	}
 	
-	public MapperNameConfig findByCode (Long code) {
-		return mapperNameConfigRepository.findByCode(code);
+	public MapperNameConfig getView (Long code) {
+		return mapperNameConfigRepository.getView(code);
+	}
+	
+	public boolean update (MapperNameConfig mapperNameConfig) {
+		MapperNameConfig config = mapperNameConfigRepository.getView(mapperNameConfig.getCode());
+		
+		config.setName(mapperNameConfig.getName());
+		
+		return true;
 	}
 }

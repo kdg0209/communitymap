@@ -9,9 +9,10 @@ import org.springframework.data.repository.query.Param;
 import com.kdg.community.app.Domain.MapperNameConfig;
 
 public interface MapperNameConfigRepository extends CrudRepository<MapperNameConfig, Long>{
-
-	@Query(value = "SELECT * FROM MapperNameConfig WHERE mapperCode = :mapperCode", nativeQuery = true)
-	public List<MapperNameConfig> getNameConfigList(@Param("mapperCode") Long mapperCode);
 	
-	public MapperNameConfig findByCode(Long code);
+	@Query(value = "SELECT m FROM MapperNameConfig m JOIN FETCH m.mapper  WHERE m.mapper.code = :code")
+	public List<MapperNameConfig> getNameConfigList(@Param("code") Long mapperCode);
+	
+	@Query(value = "SELECT m FROM MapperNameConfig m JOIN FETCH m.mapper WHERE m.code = :code")
+	public MapperNameConfig getView(@Param("code") Long code);
 }
