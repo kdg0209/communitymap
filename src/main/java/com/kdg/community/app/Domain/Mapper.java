@@ -53,5 +53,8 @@ public class Mapper {
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
 	private List<MapperCategoryConfig> mapperCategoryConfigList = new ArrayList<MapperCategoryConfig>();
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
+	private List<Mapping> mappingList = new ArrayList<Mapping>();
 
 }

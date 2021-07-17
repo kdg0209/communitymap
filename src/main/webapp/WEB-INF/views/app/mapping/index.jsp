@@ -15,14 +15,14 @@
     
  	<section class="container py-5">
         <div class="row projects gx-lg-5">
-	        <c:forEach var="item" items="${mapperList}">
+	        <c:forEach var="item" items="${mappingList}">
 		        <a href="javascript:;" class="col-sm-6 col-lg-4 text-decoration-none project marketing social business" style="margin-top: 50px;">
 	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0">
-	                    <img class="card-img-top" src="<c:url value='/img/mapperCover/${item.fileName}'/>" style="width: 100%; height: 180px;" />
+	                    <img class="card-img-top" src="<c:url value='/img/mapperCover/77cd376a-b7d5-403f-b1e8-fc51d70d6e9f_PS21060200161.jpg'/>" style="width: 100%; height: 180px;" />
 	                    <div class="card-body">
-	                        <h5 class="card-title light-300 text-dark"><c:out value="${item.name}"/></h5>
+	                        <h5 class="card-title light-300 text-dark">1111</h5>
 	                        <p class="card-text light-300 text-dark">
-	                      	  <c:out value="${item.contents}"/>
+	                      	 	222222
 	                        </p>
 	                        <div style="float: right;">
 	                        	<span class="text-decoration-none text-dark light-300" onclick="EditFn('${item.code}');">
@@ -40,7 +40,7 @@
         
         <div class="row">
         	 <div class="col-md-12 col-12 m-auto text-right">
-        	 <a href="/app/mapper/write" class="btn btn-info rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">추가하기</a>
+        	 <a href="/app/mapping/write?mapperCode=${mapperCode}" class="btn btn-info rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">작성하기</a>
               </div>
         </div>
         
@@ -67,12 +67,3 @@
 </body>
 <%@include file="../../layouts/app/script.jsp"%>
 
-<script>
-	function EditFn(code) {
-		window.location.href = "/app/mapper/edit?code="+code;
-	}
-	
-	function DetailFn(code) {
-		window.location.href = "/app/mapping/index?mapperCode="+code;
-	}
-</script>

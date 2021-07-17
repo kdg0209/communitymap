@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="modal fade modal-center" id="myLargeModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="margin-top: 30%; opacity: 1; overflow: inherit;">
+<div class="modal fade modal-center" id="myLargeModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" style="margin-top: 20%; opacity: 1; overflow: inherit;">
   <div class="modal-dialog modal-lg modal-center" role="document">
     <div class="modal-content">
       <div class="modal-header">

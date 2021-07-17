@@ -1,5 +1,7 @@
 package com.kdg.community.app.Domain;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,14 +15,23 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "mappercategoryconfig")
-public class MapperCategoryConfig {
+@Table(name = "mapping")
+public class Mapping {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
 	
-	private String name;
-	private String imgPath;
+	private String md_type;
+	private String md_id;
+	private char status;
+	private Timestamp timestamp;
+	private String address;
+	private Long categoryCode;
+	private String markerImg;
+	private double latitude;
+	private double longitude;
+	private String writeDate;
+	private String writeIp; 
 	
 	@ManyToOne
 	@JoinColumn(name = "mapperCode")
@@ -30,7 +41,7 @@ public class MapperCategoryConfig {
 		this.mapper = mapper;
 		
 		if(mapper != null) {
-			mapper.getMapperCategoryConfigList().add(this);
+			mapper.getMappingList().add(this);
 		}
 	}
 }

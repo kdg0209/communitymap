@@ -1,0 +1,8 @@
+.dashed-line { width: 100%; height: 1px; display: inline-block; margin: 15px 0; border-bottom: dashed 1px #6a7784; }
+.text-right {
+	text-align:right!important
+}
+
+.text-lefr {
+	text-align:left!important
+}

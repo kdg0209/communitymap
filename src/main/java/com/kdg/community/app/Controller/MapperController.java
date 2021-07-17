@@ -2,6 +2,7 @@ package com.kdg.community.app.Controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -123,7 +124,7 @@ public class MapperController {
 			SimpleDateFormat format 	  = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Date time 				      = new Date();
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			String securePassword = null;
+			String securePassword		  = null;
 			
 			if(file != "") {
 				UUID uuid = UUID.randomUUID();
@@ -174,10 +175,10 @@ public class MapperController {
 	
 	@GetMapping(value = "/app/mapper/edit")
 	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code) throws Exception {
-		String memberID = (String)session.getAttribute("id");
 		Long memberCode = (Long)session.getAttribute("code");
+		Mapper mapper 	= mapperService.view(code, memberCode);
 		
-		if(memberID == null) {
+		if(mapper.getCode() == null) {
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			
@@ -186,7 +187,6 @@ public class MapperController {
 			
 			return "app/login/index";
 		}else {
-			Mapper mapper = mapperService.view(code, memberCode);
 			List<MapperNameConfig> nameConfigList = mapperNameConfigService.getNameConfigList(code);
 			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(code);
 			
@@ -215,6 +215,92 @@ public class MapperController {
 		}
 	}
 	
+	@PostMapping(value = "/app/mapper/edit")
+	@ResponseBody
+	public boolean edit(Mapper mapper, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
+		Long memberCode    		      = (Long)session.getAttribute("code");
+		Long code		   			  = Long.parseLong((String) param.get("code"));
+		int categoryCode   			  = Integer.parseInt((String) param.get("categoryCode"));
+		int editAuth 	   			  = Integer.parseInt((String) param.get("editAuth"));
+		String file	 	   			  = (String) param.get("cover");
+		String filename    			  = (String) param.get("filename");
+		String newFileName			  = null;
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String securePassword		  = null;
+		
+		Mapper isMapper = mapperService.view(code, memberCode);
+		
+		if(isMapper.getCode() != null) {
+			if(param.get("editPassword") != "") {
+				securePassword = encoder.encode((String)param.get("editPassword"));
+				mapper.setEditPassword(securePassword);
+			}
+			
+			if(file != "") {
+				UUID uuid = UUID.randomUUID();
+				newFileName = uuid + "_" +filename;
+				
+				mapper.setFileName(newFileName);
+				makeFileWithString(file, newFileName);
+				deleteFile(isMapper.getFileName());
+			}
+			
+			mapper.setCode(code);
+			mapper.setName((String) param.get("name"));
+			mapper.setContents((String) param.get("contents"));
+			mapper.setCategoryCode(categoryCode);
+			mapper.setEditAuth(editAuth);
+
+			mapperService.update(memberCode, mapper);
+			
+			int mapperNameCount = Integer.parseInt((String) param.get("mapperNameCount"));
+			for (int i = 0; i < mapperNameCount; i++) {
+				MapperNameConfig config = new MapperNameConfig();
+				config.setName((String)param.get("mapperName["+ i +"][name]"));
+				config.setMapper(mapper);
+				mapperNameConfigService.insert(config);
+			}
+			
+			int mapperCategoryCount = Integer.parseInt((String) param.get("mapperCategoryCount"));
+			for (int i = 0; i < mapperCategoryCount; i++) {
+				MapperCategoryConfig config = new MapperCategoryConfig();
+				config.setName((String)param.get("mapperCategory["+ i +"][name]"));
+				config.setImgPath((String)param.get("mapperCategoryImgPath["+ i +"][name]"));
+				config.setMapper(mapper);
+				mapperCategoryConfigService.insert(config);
+			}
+			
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	@GetMapping(value = "/app/mapper/delete")
+	public void delete(HttpServletResponse response, HttpSession session, @RequestParam Long code) throws IOException {
+		Long memberCode = (Long)session.getAttribute("code");
+		Mapper mapper 	= mapperService.view(code, memberCode);
+		
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		
+		if(mapper == null) {
+			out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
+			out.flush();
+		}else {
+			if(mapper.getFileName() != null) {
+				deleteFile(mapper.getFileName());
+			}
+
+			mapperCategoryConfigService.deleteByParent(mapper.getCode());
+			mapperNameConfigService.deleteByParent(mapper.getCode());
+			mapperService.delete(mapper.getCode());
+			
+			out.println("<script>location.href='/app/mapper/index';</script>");
+			out.flush();
+		}
+	}
+	
 	private static void makeFileWithString(String base64, String newFileName){
 		byte decode[] = Base64.decodeBase64(base64);
 		FileOutputStream fos;
@@ -228,5 +314,18 @@ public class MapperController {
 			e.printStackTrace();
 		}
 	}
-
+	
+	private static boolean deleteFile(String fileName) {
+		File file = new File(UPLOAD_PATH + "" + fileName);
+		
+		if( file.exists() ){
+			if(file.delete()){
+				return true;
+			}else{ 
+				return false;
+			} 
+		}else{
+			return false;
+		}
+	}
 }

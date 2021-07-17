@@ -5,7 +5,6 @@
 <%@include file="../../layouts/app/header.jsp"%>
 
 <body>
-
     <section class="service-wrapper py-3">
         <div class="container-fluid pb-3">
             <div class="row">
@@ -79,6 +78,7 @@
                         </div>
                     </div>
                     
+                    <div class="dashed-line"></div>
                     
                     <div class="col-12">
                         <label for="floatingname light-300">카테고리</label>
@@ -91,6 +91,8 @@
                             </c:forEach>
                         </div>
                     </div>
+                    
+                    <div class="dashed-line"></div>
                     
                     <div class="col-12">
                         <label for="floatingname light-300">접근 권한</label>
@@ -116,6 +118,8 @@
                         </div>
                     </div>
                     
+                    <div class="dashed-line"></div>
+                    
                     <div class="col-8">
                         <div class="form-floating mb-4">
                             <input type="text" 
@@ -130,6 +134,7 @@
                     </div>
                     
                     <div id="mapperNameConfigDiv"></div>
+                    <div class="dashed-line"></div>
                     
                      <div class="col-1">
                      	<select class="mapperCategoryImg" name="mapperCategoryImgPath[0][name]" style="width:76px; height:70px;">
@@ -155,6 +160,7 @@
                     </div>
                     
                     <div id="mapperCategoryConfigDiv"></div>
+                    <div class="dashed-line"></div>
                 	
                 	
                     <div class="col-md-12 col-12 m-auto text-center">
@@ -172,7 +178,7 @@
 
 <script>
 	$(document).ready(function(){
-		 $('.mapperCategoryImg').msDropDown();
+		$('.mapperCategoryImg').msDropDown();
 		
 
 		$(".editAuth").change(function() {

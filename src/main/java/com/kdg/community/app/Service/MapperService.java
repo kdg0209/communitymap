@@ -29,5 +29,23 @@ public class MapperService {
 	public Mapper view (Long code, Long memberCode) {
 		return mapperRepository.view(code, memberCode);
 	}
+	
+	public boolean update(Long memberCode, Mapper mapper) {
+		Mapper updateMapper = mapperRepository.view(mapper.getCode(), memberCode);
+		
+		updateMapper.setName(mapper.getName());
+		updateMapper.setContents(mapper.getContents());
+		updateMapper.setCategoryCode(mapper.getCategoryCode());
+		updateMapper.setEditAuth(mapper.getEditAuth());
+		updateMapper.setEditPassword(mapper.getEditPassword());
+		if(mapper.getFileName() != null) {
+			updateMapper.setFileName(mapper.getFileName());
+		}
+		return true;
+	}
+	
+	public void delete(Long code) {
+		mapperRepository.delete(code);
+	}
 
 }

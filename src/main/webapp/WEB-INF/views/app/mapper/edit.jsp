@@ -27,9 +27,10 @@
         	<div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <form id="submitForm" class="contact-form row" role="form">
-                	<input type="hidden" name="mapperNameCount" id="mapperNameCount" value="1" />
-                	<input type="hidden" name="mapperCategoryCount" id="mapperCategoryCount" value="1" />
-                	<input type="hidden" name="filename" id="filename" />
+                	<input type="hidden" name="code" value="${mapper.code}" />
+                	<input type="hidden" name="mapperNameCount" id="mapperNameCount" value="0" />
+                	<input type="hidden" name="mapperCategoryCount" id="mapperCategoryCount" value="0" />
+                	<input type="hidden" name="filename" id="filename"/>
                 	<input type="hidden" name="cover" id="cover" />
                 	
                 	<div class="col-12">
@@ -80,6 +81,7 @@
                         </div>
                     </div>
                     
+                    <div class="dashed-line"></div>
                     
                     <div class="col-12">
                         <label for="floatingname light-300">카테고리</label>
@@ -92,6 +94,8 @@
                             </c:forEach>
                         </div>
                     </div>
+                    
+                    <div class="dashed-line"></div>
                     
                     <div class="col-12">
                         <label for="floatingname light-300">접근 권한</label>
@@ -117,10 +121,12 @@
                         </div>
                     </div>
                     
+                    <div class="dashed-line"></div>
+                    
                     <c:forEach var="item" items="${nameConfigList}">
 	                    <div class="col-8">
 	                        <div class="form-floating mb-4">
-	                        	<span class="form-control form-control-lg light-300">${item.name}</span>
+	                        	<span class="form-control form-control-lg light-300 nameConfig">${item.name}</span>
 	                        	<label for="floatingname light-300">항목</label>
 	                        </div>
 	                    </div>
@@ -131,8 +137,9 @@
 	                    </div>
                     </c:forEach>
                     
-                    
                     <div id="mapperNameConfigDiv"></div>
+                    
+                    <div class="dashed-line"></div>
                     
                     <div class="col-12">
                     	<button type="button" class="btn btn-dark text-white light-300" onclick="mapperNameIncrease();" style="width:100%; margin-bottom: 5%;">추가</button>
@@ -148,15 +155,15 @@
 	                     <div class="col-7">
 	                        <div class="form-floating mb-4">
 	                            <div class="form-floating mb-4">
-		                        	<span class="form-control form-control-lg light-300">${item.name}</span>
+		                        	<span class="form-control form-control-lg light-300 categoryConfig">${item.name}</span>
 		                        	<label for="floatingname light-300">카테고리</label>
 		                        </div>
 	                        </div>
 	                    </div>
 	                    
 	                    <div class="col-4">
-	                    	<button type="button" class="btn btn-primary text-white light-300" onclick="mapperNameIncrease();" style="width: 47.5%; margin-top: 4%;">수정</button>
-	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="mapperNameIncrease();" style="width: 47.5%; margin-top: 4%;">삭제</button>
+	                    	<button type="button" class="btn btn-primary text-white light-300" onclick="categoryConfigEdit('${item.code}');" style="width: 47.5%; margin-top: 4%;">수정</button>
+	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="categoryConfigDelete('${item.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
 	                    </div>
                     </c:forEach>
                      
@@ -165,9 +172,20 @@
                     <div class="col-12">
                     	<button type="button" class="btn btn-dark text-white light-300" onclick="mapperCategoryIncrease();" style="width:100%; margin-bottom: 5%;">추가</button>
                     </div>
+                    
+                    <div class="dashed-line"></div>
                 	
-                    <div class="col-md-12 col-12 m-auto text-center">
+                	
+                	<div class="col-md-4 col-4 m-auto">
+                		<a href="/app/mapper/index" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+                    </div>
+                	
+                    <div class="col-md-4 col-4 m-auto text-center">
                         <button type="button" id="submit" class="btn btn-secondary rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">확인</button>
+                    </div>
+                    
+                    <div class="col-md-4 col-4 m-auto text-right">
+                		<a href="/app/mapper/delete?code=${mapper.code}" class="btn btn-danger rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">삭제</a>
                     </div>
                 </form>
             </div>
@@ -181,9 +199,8 @@
 
 <script>
 	$(document).ready(function(){
-		 $('.mapperCategoryImg').msDropDown();
+		$('.mapperCategoryImg').msDropDown();
 		
-
 		$(".editAuth").change(function() {
 			if($(this).val() == '2'){
 				$(".editPassword_div").show();
@@ -303,7 +320,7 @@
 	        var data = $("#submitForm").serializeObject();
 	        
 	        var request = $.ajax({
-                url: "/app/mapper/write",
+                url: "/app/mapper/edit",
                 type : "POST",
                 data:JSON.stringify(data),
                 enctype: "multipart/form-data",
@@ -323,17 +340,15 @@
             request.fail(function (jqXHR, textStatus) {
                 alert("Request failed: " + textStatus);
             });
-	     
 		});
 	});
 </script>
 <script>
 	function mapperNameIncrease() {
-		var count = $("#mapperNameConfigDiv").find('.row').length;
-		var number = count + 1;
-		var mapperNameCount = number + 1;
-			
-		if(count == 4){
+		var number = $("#mapperNameConfigDiv").find('.row').length;
+		var count  = $(".nameConfig").length;
+		
+		if(count == 5){
 			alert("최대 5개까지 설정가능합니다.");
 			return;
 		}
@@ -342,7 +357,7 @@
 		html += "<div class='row'>";
 		html += 	"<div class='col-8'>";
 		html += 		"<div class='form-floating mb-4'>";
-		html += 			"<input type='text' class='form-control form-control-lg light-300' name='mapperName["+ number +"][name]' placeholder='항목' />";
+		html += 			"<input type='text' class='form-control form-control-lg light-300 nameConfig' name='mapperName["+ number +"][name]' placeholder='항목' />";
 		html += 			"<label for='floatingname light-300'>항목</label>";
 		html += 		"</div>";
 		html += 	"</div>";
@@ -352,24 +367,25 @@
 		html += "</div>";
 		
 		$("#mapperNameConfigDiv").append(html);
+		
+		var mapperNameCount = $("#mapperNameConfigDiv").find('.row').length;
 		$("#mapperNameCount").val(mapperNameCount);
 	}
 	
 	function mapperNameDecrease(obj) {
-		var count = $("#mapperNameConfigDiv").find('.row').length;
-		
 		$(obj).parent().parent().remove();
+		
+		var count = $("#mapperNameConfigDiv").find('.row').length;
 		$("#mapperNameCount").val(count);
 	}
 </script>
            
 <script>
 	function mapperCategoryIncrease() {
-		var count = $("#mapperCategoryConfigDiv").find('.row').length;
-		var number = count + 1;
-		var mapperCategoryCount = number + 1;
+		var number = $("#mapperCategoryConfigDiv").find('.row').length;
+		var count  = $(".categoryConfig").length;
 		
-		if(count == 4){
+		if(count == 5){
 			alert("최대 5개까지 설정가능합니다.");
 			return;
 		}
@@ -387,7 +403,7 @@
 		html += 	"</div>";
 		html += 	"<div class='col-7'>";
 		html += 		"<div class='form-floating mb-4'>";
-		html += 			"<input type='text' class='form-control form-control-lg light-300' name='mapperCategory["+ number +"][name]' placeholder='카테고리' />";
+		html += 			"<input type='text' class='form-control form-control-lg light-300 categoryConfig' name='mapperCategory["+ number +"][name]' placeholder='카테고리' />";
 		html += 			"<label for='floatingname light-300'>카테고리</label>";
 		html += 		"</div>";
 		html += 	"</div>";
@@ -397,15 +413,17 @@
 		html += "</div>";
 		
 		$("#mapperCategoryConfigDiv").append(html);
+		
+		var mapperCategoryCount = $("#mapperCategoryConfigDiv").find('.row').length;
 		$("#mapperCategoryCount").val(mapperCategoryCount);
 		
 		$('.mapperCategoryImg').msDropDown();
 	}
 	
 	function mapperCategoryDecrease(obj) {
-		var count = $("#mapperCategoryConfigDiv").find('.row').length;
-		
 		$(obj).parent().parent().remove();
+		
+		var count = $("#mapperCategoryConfigDiv").find('.row').length;
 		$("#mapperCategoryCount").val(count);
 	}
 </script>
@@ -426,5 +444,24 @@
          request.fail(function (jqXHR, textStatus) {
              alert("Request failed: " + textStatus);
          });
+	}
+</script>
+<script>
+	function categoryConfigEdit(code) {
+		var request = $.ajax({
+            url: "/app/mapperCategoryConfig/edit",
+            type : "Get",
+            data:{code: code},
+            dataType:'html',
+        });
+
+        request.done(function (data) {
+            $('body').append(data);
+            $('.modal').show();
+        });
+
+        request.fail(function (jqXHR, textStatus) {
+            alert("Request failed: " + textStatus);
+        });
 	}
 </script>

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kdg.community.app.Domain.MapperCategoryConfig;
+import com.kdg.community.app.Domain.MapperNameConfig;
 import com.kdg.community.app.Repository.MapperCategoryConfigRepository;
 
 @Service
@@ -25,5 +26,22 @@ public class MapperCategoryConfigService {
 	
 	public MapperCategoryConfig insert(MapperCategoryConfig mapperCategoryConfig) {
 		return mapperCategoryConfigRepository.save(mapperCategoryConfig);
+	}
+	
+	public MapperCategoryConfig getView (Long code) {
+		return mapperCategoryConfigRepository.getView(code);
+	}
+	
+	public boolean update (MapperCategoryConfig mapperCategoryConfig) {
+		MapperCategoryConfig config = mapperCategoryConfigRepository.getView(mapperCategoryConfig.getCode());
+		
+		config.setName(mapperCategoryConfig.getName());
+		config.setImgPath(mapperCategoryConfig.getImgPath());
+		
+		return true;
+	}
+	
+	public void deleteByParent (Long mapperCode) {
+		mapperCategoryConfigRepository.deleteByParent(mapperCode);
 	}
 }
