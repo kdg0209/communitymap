@@ -6,3 +6,10 @@
 .text-lefr {
 	text-align:left!important
 }
+
+.btn.btn-white {
+    font-weight: normal;
+    color: #333;
+    background: #fff;
+    border-color: #e2e7eb;
+}
