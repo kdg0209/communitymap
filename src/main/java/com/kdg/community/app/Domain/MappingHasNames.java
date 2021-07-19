@@ -7,35 +7,35 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "mappernameconfig")
-public class MapperNameConfig {
+@Table(name = "mappinghasnames")
+public class MappingHasNames {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
 	
-	private String name;
+	@OneToOne
+	@MapsId
+	@JoinColumn(name = "mapperNameCode")
+	private MapperNameConfig mapperNameConfig;
 	
 	@ManyToOne
-	@JoinColumn(name = "mapperCode")
-	private Mapper mapper;
+	@JoinColumn(name = "mappingCode")
+	private Mapping mapping;
 	
-	public void setMapper(Mapper mapper) {
-		this.mapper = mapper;
+	public void setMapping(Mapping mapping) {
+		this.mapping = mapping;
 		
-		if(mapper != null) {
-			mapper.getMapperNameConfigList().add(this);
+		if(mapping != null) {
+			mapping.getMappingHasNamesList().add(this);
 		}
 	}
 	
-	@OneToOne(mappedBy = "mapperNameConfig")
-	@PrimaryKeyJoinColumn
-	private MappingHasNames mappingHasNames;
 }

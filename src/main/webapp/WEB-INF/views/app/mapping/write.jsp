@@ -27,6 +27,7 @@
         	<div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <form id="submitForm" class="contact-form row" role="form">
+                	<input type="hidden" name="timestamp" id="timestamp" value="${timestamp}"/>
                 	<input type="hidden" name="filename" id="filename" />
                 	<input type="hidden" name="cover" id="cover" />
                 	
@@ -275,32 +276,26 @@
 		    }
 		    return obj; 
 		}
+		
+		
 	
 		$("#submit").click(function() {
-			if ($("#name").val().trim() == '') {
-		          $("#name").focus();
-		          alert("지도의 이름을 입력해주세요.");
+			if ($("#latitude").val().trim() == '' || $("#longitude").val().trim() == '') {
+		          $("#address").focus();
+		          alert("주소를 입력해주세요.");
+		          return false;
+		    }
+			
+			if ($("input[name='categoryCode']:checked").val() == undefined) {
+		          $(".categoryCode").focus();
+		          alert("카테고리를 선택해주세요.");
 		          return false;
 		    }
 		      
-	        if ($("#contents").val().trim() == '') {
-	              $("#contents").focus();
-	              alert("지도의 설명을 입력해주세요.");
-	              return false;
-	        }
-		      
-	        if($("input[name='editAuth']:checked").val() == '2'){
-	    	      if ($("#editPassword").val().trim() == '') {
-	                 $("#editPassword").focus();
-	                 alert("비밀번호를 입력해주세요.");
-	                 return false;
-	              }
-	        }
-		  
 	        var data = $("#submitForm").serializeObject();
 	        
 	        var request = $.ajax({
-                url: "/app/mapper/write",
+                url: "/app/mapping/write",
                 type : "POST",
                 data:JSON.stringify(data),
                 enctype: "multipart/form-data",
@@ -309,12 +304,8 @@
             });
 
             request.done(function (data) {
-                if (data == true) {
-                   	window.location.href = "/app/mapper/index";
-                } else if (data == false) {
-                	alert("잘못된 접근입니다. 다시 시도해주세요.");
-                	return false;
-                }
+            	console.log(data);
+               
             });
 
             request.fail(function (jqXHR, textStatus) {
@@ -328,21 +319,21 @@
   $(document).ready(function(){
       Dropzone.autoDiscover = false;
       var myDropzone = new Dropzone(".dropzone", {
-        url: '/commonfile/do_upload', // 파일 업로드할 url
+        url: '/app/mappingfiles/do_upload', // 파일 업로드할 url
         method: "POST",
         paramName: 'files',
         params: {
-            fk_code:1
+            timestamp:${timestamp}
         },
         addRemoveLinks: true,
         dictRemoveFile: "삭제",
-        removedfile: function(file) {
-          // 파일 삭제 시
+        removedfile: function(file) { // 파일 삭제 시
           var code = file.code == undefined ? file.temp : file.code; // 파일 업로드시 return 받은 code값
+          
           console.log('code: ' + code);
             $.ajax({
                 type: 'POST',
-                url: '/commonfile/do_delete', // 파일 삭제할 url
+                url: '/app/mappingfiles/do_delete', // 파일 삭제할 url
                 data: {code: code},
                 success: function(data) {
                     console.log('success: ' + data);
@@ -352,8 +343,7 @@
             var _ref;
             return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
         }
-        , success: function (file, response) {
-          // 파일 업로드 성공 시
+        , success: function (file, response) {	// 파일 업로드 성공 시
            file.temp = JSON.parse(response); // 파일을 삭제할 수도 있으므로 변수로 저장
         }
       });
