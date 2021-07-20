@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = "mappingHasNamesList")
+@ToString(exclude = {"mappingFilesList", "mappingHasNamesList"})
 @Entity
 @Table(name = "mapping")
 public class Mapping {
@@ -29,9 +29,10 @@ public class Mapping {
 	private String md_id;
 	private char status;
 	private Long timestamp;
-	private String address;
 	private Long categoryCode;
 	private String markerImg;
+	private String fileName;
+	private String address;
 	private double latitude;
 	private double longitude;
 	private String writeDate;
@@ -52,7 +53,7 @@ public class Mapping {
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "timestamp")
 	private List<MappingFiles> mappingFilesList = new ArrayList<MappingFiles>();
-	
+
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapping")
 	private List<MappingHasNames> mappingHasNamesList = new ArrayList<MappingHasNames>();
 }

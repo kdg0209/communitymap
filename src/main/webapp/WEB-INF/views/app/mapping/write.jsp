@@ -28,8 +28,8 @@
             <div class="col-lg-8">
                 <form id="submitForm" class="contact-form row" role="form">
                 	<input type="hidden" name="timestamp" id="timestamp" value="${timestamp}"/>
-                	<input type="hidden" name="filename" id="filename" />
-                	<input type="hidden" name="cover" id="cover" />
+                	<input type="text" name="filename" id="filename" />
+                	<input type="text" name="cover" id="cover" />
                 	
                 	<div class="col-12">
                         <div class="form-floating mb-4">
@@ -138,6 +138,22 @@
 			        </div>
 			        
 			        <div class="dashed-line"></div>
+			        
+			        <div class="form-group row">
+                    	<label class="col-sm-2">공개 유무</label>   
+	                    <div class="col-sm-10">
+	                    	<c:forEach var="item" items="${statusConfig}">
+	                    		<label class="btn btn-white m-t-5">
+	   								<input type="radio" 
+	   									   class="status" 
+	   									   name="status" 
+	   									   value="${item.key}"> ${item.value}                            
+	   					   		</label>
+	                    	</c:forEach>
+	                    </div>
+                    </div>
+			        
+			        <div class="dashed-line"></div>
                     
                     <div class="form-group row">
                     	<label class="col-sm-2">카테고리</label>   
@@ -160,9 +176,9 @@
 	                    <div class="form-group row">
 						    <label class="col-sm-2">${item.name}</label>    
 						    <div class="col-sm-10">
-						    		<input type="text" 
-		                            		class="form-control form-control-lg light-300"  
-		                            		name="mapperName[0][name]"
+						    		<input type="text"
+						    				data-code="${item.code}" 
+		                            		class="form-control form-control-lg light-300 NameValues"
 		                            		style="font-size: 15px;"
 		                            		placeholder="${item.name} 입력">
 						    </div>
@@ -277,12 +293,17 @@
 		    return obj; 
 		}
 		
-		
-	
+		 console.log("222");
 		$("#submit").click(function() {
 			if ($("#latitude").val().trim() == '' || $("#longitude").val().trim() == '') {
 		          $("#address").focus();
 		          alert("주소를 입력해주세요.");
+		          return false;
+		    }
+			
+			if ($("input[name='status']:checked").val() == undefined) {
+		          $(".status").focus();
+		          alert("공개유무를 선택해주세요.");
 		          return false;
 		    }
 			
@@ -291,8 +312,23 @@
 		          alert("카테고리를 선택해주세요.");
 		          return false;
 		    }
-		      
+			
+			let nameValuesArray = [];
+	        $(".NameValues").each(function (index) {
+	        	let nameValuesObj 	 = {};
+	        	
+	        	var code             = $(this).data('code');
+	        	nameValuesObj.key 	 = String(index + 1);
+	        	nameValuesObj.code 	 = String(code);
+	        	nameValuesObj.values = $(this).val();
+	        	nameValuesArray.push(nameValuesObj);
+			});
+	        
 	        var data = $("#submitForm").serializeObject();
+	        data.NameValues   = nameValuesArray;
+	        data.mapperCode	  = String(${mapperCode});
+	       
+	        console.log(data);
 	        
 	        var request = $.ajax({
                 url: "/app/mapping/write",

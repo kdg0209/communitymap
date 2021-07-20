@@ -12,7 +12,7 @@ import com.kdg.community.app.Domain.MapperCategoryConfig;
 
 public interface MapperCategoryConfigRepository extends CrudRepository<MapperCategoryConfig, Long>{
 
-	@Query(value = "SELECT m FROM MapperCategoryConfig m JOIN FETCH m.mapper WHERE m.mapper.code = :mapperCode")
+	@Query(value = "SELECT m FROM MapperCategoryConfig m WHERE m.mapper.code = :mapperCode")
 	public List<MapperCategoryConfig> getCategoryConfigList(@Param("mapperCode") Long mapperCode);
 	
 	@Query(value = "SELECT m FROM MapperCategoryConfig m JOIN FETCH m.mapper WHERE m.code = :code")

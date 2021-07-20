@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = {"member", "mapperNameConfigList", "mapperCategoryConfigList"})
+@ToString(exclude = {"member", "mapperNameConfigList", "mapperCategoryConfigList", "mappingList"})
 @Entity
 @Table(name = "mapper")
 public class Mapper {

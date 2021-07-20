@@ -21,4 +21,8 @@ public class MappingService {
 	public List<Mapping> mappingList(Long mapperCode){
 		return mappingRepository.findByMapperCodeOrderByWriteDateDesc(mapperCode);
 	}
+	
+	public Mapping insert(Mapping mapping) {
+		return mappingRepository.save(mapping);
+	}
 }
