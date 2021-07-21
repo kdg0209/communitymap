@@ -18,18 +18,15 @@
 	        <c:forEach var="item" items="${mappingList}">
 		        <a href="javascript:;" class="col-sm-6 col-lg-4 text-decoration-none project marketing social business" style="margin-top: 50px;">
 	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0">
-	                    <img class="card-img-top" src="<c:url value='/img/mapperCover/77cd376a-b7d5-403f-b1e8-fc51d70d6e9f_PS21060200161.jpg'/>" style="width: 100%; height: 180px;" />
+	                    <img class="card-img-top" src="<c:url value='/img/mappingCover/${item.fileName}'/>" style="width: 100%; height: 180px;" />
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark">1111</h5>
 	                        <p class="card-text light-300 text-dark">
 	                      	 	222222
 	                        </p>
 	                        <div style="float: right;">
-	                        	<span class="text-decoration-none text-dark light-300" onclick="EditFn('${item.code}');">
+	                        	<span class="text-decoration-none text-dark light-300" onclick="EditFn('${item.code}', '${item.mapper.code}');">
 	                              수정 <i class="fas fa-edit"></i>
-		                        </span>
-		                        <span class="text-decoration-none text-dark light-300" onclick="DetailFn('${item.code}');">
-	                              상세 조회 <i class="fas fa-angle-right"></i> 
 		                        </span>
 	                        </div>
 	                    </div>
@@ -38,10 +35,14 @@
 	        </c:forEach>
         </div>
         
-        <div class="row">
-        	 <div class="col-md-12 col-12 m-auto text-right">
-        	 <a href="/app/mapping/write?mapperCode=${mapperCode}" class="btn btn-info rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">작성하기</a>
-              </div>
+        <div class="row" style="margin-top: 50px;">
+        	<div class="col-md-4 col-4 m-auto">
+       			<a href="/app/mapper/index" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+            </div>
+            <div class="col-md-4 col-4 m-auto text-center"></div>
+            <div class="col-md-4 col-4 m-auto text-right">
+            	<a href="/app/mapping/write?mapperCode=${mapperCode}" class="btn btn-info rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">작성하기</a>
+            </div>
         </div>
         
         <div class="row" style="margin-top: 50px;">
@@ -67,3 +68,9 @@
 </body>
 <%@include file="../../layouts/app/script.jsp"%>
 
+
+<script>
+	function EditFn(code, mapperCode) {
+		window.location.href = "/app/mapping/edit?code="+code+"&mapperCode="+mapperCode;
+	}
+</script>

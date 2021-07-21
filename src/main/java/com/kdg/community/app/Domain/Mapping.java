@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = {"mappingFilesList", "mappingHasNamesList"})
+@ToString(exclude = {"mappingHasNamesList"})
 @Entity
 @Table(name = "mapping")
 public class Mapping {
@@ -38,7 +38,7 @@ public class Mapping {
 	private String writeDate;
 	private String writeIp; 
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mapperCode")
 	private Mapper mapper;
 	
@@ -50,10 +50,6 @@ public class Mapping {
 		}
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "timestamp")
-	private List<MappingFiles> mappingFilesList = new ArrayList<MappingFiles>();
-
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapping")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapping")
 	private List<MappingHasNames> mappingHasNamesList = new ArrayList<MappingHasNames>();
 }

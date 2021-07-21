@@ -12,4 +12,7 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 
 	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.mapper.code = :mapperCode")
 	List<Mapping> findByMapperCodeOrderByWriteDateDesc(@Param("mapperCode") Long mapperCode);
+	
+	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.code = :code")
+	public Mapping view(@Param("code") Long code);
 }

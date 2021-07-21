@@ -35,7 +35,7 @@ public class LoginController {
 		Member member = memberService.findById(id);
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		
-		if(encoder.matches(password, member.getPassword())) {
+		if(member != null && encoder.matches(password, member.getPassword())) {
 			session.setAttribute("code", member.getCode());
 			session.setAttribute("id", member.getId());
 			session.setAttribute("name", member.getName());

@@ -32,7 +32,7 @@ public class Member {
 	private String write_date;
 	private String write_ip;
 	
-	@OneToMany( mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@OneToMany( mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private List<Mapper> mapperList = new ArrayList<Mapper>();
 	
 }

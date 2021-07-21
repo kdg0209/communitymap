@@ -1,9 +1,12 @@
 package com.kdg.community.app.Service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kdg.community.app.Domain.MappingFiles;
+import com.kdg.community.app.Domain.MappingHasNames;
 import com.kdg.community.app.Repository.MappingFilesRepository;
 
 @Service
@@ -14,6 +17,10 @@ public class MappingFilesService {
 
 	public MappingFilesService(MappingFilesRepository mappingFilesRepository) {
 		this.mappingFilesRepository = mappingFilesRepository;
+	}
+	
+	public List<MappingFiles> getMappingFilesList (Long timestamp){
+		return mappingFilesRepository.getMappingFilesList(timestamp);
 	}
 	
 	public MappingFiles insert(MappingFiles mappingFiles) {

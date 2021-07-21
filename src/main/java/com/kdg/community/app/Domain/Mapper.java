@@ -3,6 +3,7 @@ package com.kdg.community.app.Domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Data;
 import lombok.ToString;
@@ -48,11 +50,12 @@ public class Mapper {
 		}
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
 	private List<MapperNameConfig> mapperNameConfigList = new ArrayList<MapperNameConfig>();
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
 	private List<MapperCategoryConfig> mapperCategoryConfigList = new ArrayList<MapperCategoryConfig>();
+	
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
 	private List<Mapping> mappingList = new ArrayList<Mapping>();

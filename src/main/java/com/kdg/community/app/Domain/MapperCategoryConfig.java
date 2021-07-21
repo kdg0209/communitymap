@@ -22,7 +22,7 @@ public class MapperCategoryConfig {
 	private String name;
 	private String imgPath;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mapperCode")
 	private Mapper mapper;
 	

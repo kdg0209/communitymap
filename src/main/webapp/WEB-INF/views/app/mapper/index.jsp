@@ -38,7 +38,7 @@
 	        </c:forEach>
         </div>
         
-        <div class="row">
+        <div class="row" style="margin-top: 50px;">
         	 <div class="col-md-12 col-12 m-auto text-right">
         	 <a href="/app/mapper/write" class="btn btn-info rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">추가하기</a>
               </div>

@@ -9,7 +9,7 @@
     <section class="service-wrapper py-3">
         <div class="container-fluid pb-3">
             <div class="row">
-                <h2 class="h2 text-center col-12 py-5 semi-bold-600">정보 등록하기</h2>
+                <h2 class="h2 text-center col-12 py-5 semi-bold-600">정보 수정하기</h2>
                 <div class="service-header col-2 col-lg-3 text-end light-300">
                 	<i class="fas fa-map-marked-alt fa-2x"></i>
                 </div>
@@ -27,7 +27,7 @@
         	<div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <form id="submitForm" class="contact-form row" role="form">
-                	<input type="hidden" name="timestamp" id="timestamp" value="${timestamp}"/>
+                	<input type="hidden" name="code" value="${mapping.code}"/>
                 	<input type="hidden" name="filename" id="filename" />
                 	<input type="hidden" name="cover" id="cover" />
                 	
@@ -35,7 +35,7 @@
                         <div class="form-floating mb-4">
                             <div class="profile-pic-wrapper">
 							  <div class="pic-holder">
-							    <img id="profilePic" class="pic" src="https://source.unsplash.com/random/150x150">
+							    <img id="profilePic" class="pic" src="/img/mappingCover/${mapping.fileName}">
 							    <label for="newProfilePhoto" class="upload-file-block">
 							      <div class="text-center">
 							        <div class="mb-2">
@@ -112,6 +112,7 @@
 			                <input type="text"
 			                       id="latitude"
 			                       name="latitude"
+			                       value="${mapping.latitude}"
 			                       class="form-control"
 			                       readonly>
 			            </div>
@@ -120,6 +121,7 @@
 			                <input type="text"
 			                       id="longitude"
 			                       name="longitude"
+			                       value="${mapping.longitude}"
 			                       class="form-control"
 			                       readonly>
 			            </div>
@@ -132,6 +134,7 @@
 		                        type="text"
 		                        id="address"
 		                        name="address"
+		                        value="${mapping.address}"
 		                        class="form-control"
 		                        readonly>
 			            </div>
@@ -147,7 +150,8 @@
 	   								<input type="radio" 
 	   									   class="status" 
 	   									   name="status" 
-	   									   value="${item.key}"> ${item.value}                            
+	   									   value="${item.key}"
+	   									   ${item.key eq mapping.status ? "checked" : ""}> ${item.value}                            
 	   					   		</label>
 	                    	</c:forEach>
 	                    </div>
@@ -163,12 +167,12 @@
 	   								<input type="radio" 
 	   									   class="categoryCode" 
 	   									   name="categoryCode" 
-	   									   value="${item.code}"> ${item.name}                            
+	   									   value="${item.code}"
+	   									   ${item.code eq mapping.categoryCode ? "checked" : ""}> ${item.name}                            
 	   					   		</label>
 	                    	</c:forEach>
 	                    </div>
                     </div>
-                    
                     
                     <div class="dashed-line"></div>
                     
@@ -188,12 +192,14 @@
 					 </c:forEach>
                 	
                		<div class="col-md-4 col-4 m-auto">
-               			<a href="/app/mapping/index?mapperCode=${mapperCode}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+               			<a href="/app/mapping/index?mapperCode=${mapping.mapper.code}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
                     </div>
                     <div class="col-md-4 col-4 m-auto text-center">
                         <button type="button" id="submit" class="btn btn-secondary rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">확인</button>
                     </div>
-                    <div class="col-md-4 col-4 m-auto"></div>
+                    <div class="col-md-4 col-4 m-auto text-right">
+                    	<a href="/app/mapping/delete?code=${mapping.code}" class="btn btn-danger rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">삭제</a>
+                    </div>
                     
                 </form>
             </div>
@@ -315,9 +321,7 @@
 			let nameValuesArray = [];
 	        $(".NameValues").each(function (index) {
 	        	let nameValuesObj 	 = {};
-	        	
 	        	var code             = $(this).data('code');
-	        	nameValuesObj.key 	 = String(index + 1);
 	        	nameValuesObj.code 	 = String(code);
 	        	nameValuesObj.values = $(this).val();
 	        	nameValuesArray.push(nameValuesObj);
@@ -325,10 +329,9 @@
 	        
 	        var data = $("#submitForm").serializeObject();
 	        data.NameValues   = nameValuesArray;
-	        data.mapperCode	  = String(${mapperCode});
 	        
 	        var request = $.ajax({
-                url: "/app/mapping/write",
+                url: "/app/mapping/edit",
                 type : "POST",
                 data:JSON.stringify(data),
                 enctype: "multipart/form-data",
@@ -337,13 +340,12 @@
             });
 
             request.done(function (data) {
-            	if (data != true) {
-                   	window.location.href = "/app/mapping/index?mapperCode="+data;
-                } else if (data == null) {
-                	alert("잘못된 접근입니다. 다시 시도해주세요.");
-                	return false;
-                }
-               
+            	 if (data == true) {
+                    window.location.href = "/app/mapping/index?mapperCode=" + ${mapping.mapper.code};
+                 } else if (data == false) {
+                 	alert("잘못된 접근입니다. 다시 시도해주세요.");
+                 	return false;
+                 }
             });
 
             request.fail(function (jqXHR, textStatus) {
@@ -355,16 +357,47 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
+	  var valueArray = new Array(); 
+	  var codeArray = new Array(); 
+
+	  <c:forEach var="item" items="${mappingHasNamesList}">
+	  	valueArray.push("${item.fieldValues}");
+	  	codeArray.push("${item.code}");
+      </c:forEach>
+     
+      $(".NameValues").each(function (index) {
+		 $(this).val(valueArray[index]);
+		 $(this).data('code',codeArray[index]);
+	  });
+	  
+      var fileCount = ${fn:length(mappingFilesList)};
       Dropzone.autoDiscover = false;
       var myDropzone = new Dropzone(".dropzone", {
         url: '/app/mappingfiles/do_upload', // 파일 업로드할 url
         method: "POST",
         paramName: 'files',
         params: {
-            timestamp:${timestamp}
+            timestamp:${mapping.timestamp} 
         },
         addRemoveLinks: true,
         dictRemoveFile: "삭제",
+        init: function() {
+            if(fileCount > 0){
+                 var thisDropzone = this;
+                 
+                 <c:forEach items="${mappingFilesList}" var="files">
+                    var mockFile = {
+                          code: "${files.code}",
+                          name: "${files.fileName}",
+                          path: "/img/mappingFiles/${files.fileName}"
+                        };
+                    thisDropzone.emit("addedfile", mockFile);
+                    thisDropzone.emit("thumbnail", mockFile, mockFile.path);
+                    thisDropzone.emit("complete", mockFile);
+                    thisDropzone.files.push(mockFile);
+                </c:forEach>
+            }
+        },
         removedfile: function(file) { // 파일 삭제 시
           var code = file.code == undefined ? file.temp : file.code; // 파일 업로드시 return 받은 code값
           
@@ -389,6 +422,7 @@
       var is_search  = "N";
       var is_marker  = "N";
       var markers	 = [];
+      var markerPosition = new kakao.maps.LatLng(${mapping.latitude}, ${mapping.longitude});
       var place		 = new kakao.maps.services.Places();      //장소 검색
       var Overlay	 = new kakao.maps.CustomOverlay();        //마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
       var geocoder   = new kakao.maps.services.Geocoder();    // 주소-좌표 변환 객체를 생성합니다
@@ -397,11 +431,18 @@
 
       var container = document.getElementById('kakao_map'); //지도를 담을 영역의 DOM 레퍼런스
       var options = { //지도를 생성할 때 필요한 기본 옵션
-          center: new kakao.maps.LatLng(36.3505388993078, 127.384834846753), //지도의 중심좌표.
+          center: new kakao.maps.LatLng(${mapping.latitude}, ${mapping.longitude}), //지도의 중심좌표.
           level: 5, //지도의 레벨(확대, 축소 정도)
           scrollwheel: true, //  마우스 휠, 모바일 터치를 이용한 확대 및 축소 가능 여부(Boolean)
       };
+      
       var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+      
+      var marker = new kakao.maps.Marker({
+          position: markerPosition
+      });
+      marker.setMap(map);
+      markers.push(marker);
       
       $("#is_search").click(function () {
           is_search = "Y";
