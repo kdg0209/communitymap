@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +30,15 @@ import com.kdg.community.app.Common.GetUserIp;
 import com.kdg.community.app.Domain.Mapper;
 import com.kdg.community.app.Domain.MapperCategoryConfig;
 import com.kdg.community.app.Domain.MapperNameConfig;
+import com.kdg.community.app.Domain.Mapping;
+import com.kdg.community.app.Domain.MappingFiles;
 import com.kdg.community.app.Domain.Member;
 import com.kdg.community.app.Service.MapperCategoryConfigService;
 import com.kdg.community.app.Service.MapperNameConfigService;
 import com.kdg.community.app.Service.MapperService;
+import com.kdg.community.app.Service.MappingFilesService;
+import com.kdg.community.app.Service.MappingHasNamesService;
+import com.kdg.community.app.Service.MappingService;
 import com.kdg.community.app.Service.MemberService;
 
 @Controller
@@ -42,15 +48,25 @@ public class MapperController {
 	private final MapperNameConfigService mapperNameConfigService;
 	private final MapperCategoryConfigService mapperCategoryConfigService;
 	private final MemberService memberService;
+	private final MappingService mappingService;
+	private final MappingHasNamesService mappingHasNamesService;
+	private final MappingFilesService mappingFilesService;
 	 
-    private static final String UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mapperCover\\"; //파일 경로
-    
+    private static final String MAPPER_UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mapperCover\\"; //파일 경로
+    private static final String MAPPING_UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mappingCover\\"; //파일 경로
+	private static final String MAPPING_FILE_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mappingFiles\\"; //파일 경로
+	
 	public MapperController(MapperService mapperService, MapperNameConfigService mapperNameConfigService,
-			MapperCategoryConfigService mapperCategoryConfigService, MemberService memberService) {
+			MapperCategoryConfigService mapperCategoryConfigService, MemberService memberService,
+			MappingService mappingService, MappingHasNamesService mappingHasNamesService,
+			MappingFilesService mappingFilesService) {
 		this.mapperService = mapperService;
 		this.mapperNameConfigService = mapperNameConfigService;
 		this.mapperCategoryConfigService = mapperCategoryConfigService;
 		this.memberService = memberService;
+		this.mappingService = mappingService;
+		this.mappingHasNamesService = mappingHasNamesService;
+		this.mappingFilesService = mappingFilesService;
 	}
 
 	@GetMapping(value = "/app/mapper/index")
@@ -242,7 +258,7 @@ public class MapperController {
 				
 				mapper.setFileName(newFileName);
 				makeFileWithString(file, newFileName);
-				deleteFile(isMapper.getFileName());
+				deleteFile(isMapper.getFileName(), MAPPER_UPLOAD_PATH);
 			}
 			
 			mapper.setCode(code);
@@ -277,6 +293,7 @@ public class MapperController {
 	}
 	
 	@GetMapping(value = "/app/mapper/delete")
+	@Transactional
 	public void delete(HttpServletResponse response, HttpSession session, @RequestParam Long code) throws IOException {
 		Long memberCode = (Long)session.getAttribute("code");
 		Mapper mapper 	= mapperService.view(code, memberCode);
@@ -288,10 +305,30 @@ public class MapperController {
 			out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
 			out.flush();
 		}else {
-			if(mapper.getFileName() != null) {
-				deleteFile(mapper.getFileName());
+			List<Mapping> mappingList =  mappingService.mappingList(mapper.getCode());
+		
+			for(Mapping mapping : mappingList) {
+				List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
+				
+				for(MappingFiles item : mappingFileList) {
+					if(item.getFileName() != null) {
+						deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+					}
+				}
+				
+				if(mapping.getFileName() != null) {
+					deleteFile(mapping.getFileName(), MAPPING_UPLOAD_PATH);
+				}
+				
+				mappingFilesService.deleteByParent(mapping.getTimestamp());
+				mappingHasNamesService.deleteByParent(mapping.getCode());
+				mappingService.delete(mapping.getCode());
 			}
-
+			
+			if(mapper.getFileName() != null) {
+				deleteFile(mapper.getFileName(), MAPPER_UPLOAD_PATH);
+			}
+			
 			mapperCategoryConfigService.deleteByParent(mapper.getCode());
 			mapperNameConfigService.deleteByParent(mapper.getCode());
 			mapperService.delete(mapper.getCode());
@@ -306,7 +343,7 @@ public class MapperController {
 		FileOutputStream fos;
 		
 		try{
-			File target = new File(UPLOAD_PATH + "" + newFileName);
+			File target = new File(MAPPER_UPLOAD_PATH + "" + newFileName);
 			fos = new FileOutputStream(target);
 			fos.write(decode);
 			fos.close();
@@ -315,8 +352,8 @@ public class MapperController {
 		}
 	}
 	
-	private static boolean deleteFile(String fileName) {
-		File file = new File(UPLOAD_PATH + "" + fileName);
+	private static boolean deleteFile(String fileName, String path) {
+		File file = new File(path + "" + fileName);
 		
 		if( file.exists() ){
 			if(file.delete()){

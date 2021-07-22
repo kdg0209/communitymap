@@ -34,4 +34,8 @@ public class MappingFilesService {
 	public void delete(Long code) {
 		mappingFilesRepository.delete(code);
 	}
+	
+	public void deleteByParent (Long timestamp) {
+		mappingFilesRepository.deleteByParent(timestamp);
+	}
 }

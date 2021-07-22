@@ -168,7 +168,7 @@
 	   									   class="categoryCode" 
 	   									   name="categoryCode" 
 	   									   value="${item.code}"
-	   									   ${item.code eq mapping.categoryCode ? "checked" : ""}> ${item.name}                            
+	   									   ${item.code eq mapping.mapperCategoryConfig.code ? "checked" : ""}> ${item.name}                            
 	   					   		</label>
 	                    	</c:forEach>
 	                    </div>
@@ -198,7 +198,7 @@
                         <button type="button" id="submit" class="btn btn-secondary rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">확인</button>
                     </div>
                     <div class="col-md-4 col-4 m-auto text-right">
-                    	<a href="/app/mapping/delete?code=${mapping.code}" class="btn btn-danger rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">삭제</a>
+                    	<a href="/app/mapping/delete?code=${mapping.code}&mapperCode=${mapping.mapper.code}" class="btn btn-danger rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">삭제</a>
                     </div>
                     
                 </form>
@@ -329,6 +329,7 @@
 	        
 	        var data = $("#submitForm").serializeObject();
 	        data.NameValues   = nameValuesArray;
+	        data.mapperCode   = String(${mapping.mapper.code});
 	        
 	        var request = $.ajax({
                 url: "/app/mapping/edit",

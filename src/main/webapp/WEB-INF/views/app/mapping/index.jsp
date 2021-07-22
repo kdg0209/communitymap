@@ -20,9 +20,9 @@
 	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0">
 	                    <img class="card-img-top" src="<c:url value='/img/mappingCover/${item.fileName}'/>" style="width: 100%; height: 180px;" />
 	                    <div class="card-body">
-	                        <h5 class="card-title light-300 text-dark">1111</h5>
+	                        <h5 class="card-title light-300 text-dark">${item.address}</h5>
 	                        <p class="card-text light-300 text-dark">
-	                      	 	222222
+	                      	 	${item.writeDate}
 	                        </p>
 	                        <div style="float: right;">
 	                        	<span class="text-decoration-none text-dark light-300" onclick="EditFn('${item.code}', '${item.mapper.code}');">

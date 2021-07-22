@@ -38,6 +38,10 @@ public class MapperNameConfigService {
 		return true;
 	}
 	
+	public void delete (Long code) {
+		mapperNameConfigRepository.delete(code);
+	}
+	
 	public void deleteByParent (Long mapperCode) {
 		mapperNameConfigRepository.deleteByParent(mapperCode);
 	}

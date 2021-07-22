@@ -38,7 +38,7 @@ public class Mapper {
 	private String writeDate;
 	private String writeIp;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberCode")
 	private Member member;
 	
@@ -56,8 +56,7 @@ public class Mapper {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
 	private List<MapperCategoryConfig> mapperCategoryConfigList = new ArrayList<MapperCategoryConfig>();
 	
-	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "mapper")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
 	private List<Mapping> mappingList = new ArrayList<Mapping>();
 
 }

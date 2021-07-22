@@ -22,4 +22,9 @@ public interface MappingFilesRepository extends CrudRepository<MappingFiles, Lon
 	@Transactional
 	@Query(value = "DELETE FROM mappingfiles WHERE code = :code", nativeQuery = true)
 	public void delete(@Param("code") Long code);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM mappingfiles WHERE timestamp = :timestamp", nativeQuery = true)
+	public void deleteByParent(@Param("timestamp") Long timestamp);
 }

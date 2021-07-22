@@ -3,6 +3,7 @@ package com.kdg.community.app.Domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,6 @@ public class Mapping {
 	private String md_id;
 	private char status;
 	private Long timestamp;
-	private Long categoryCode;
 	private String markerImg;
 	private String fileName;
 	private String address;
@@ -47,6 +47,18 @@ public class Mapping {
 		
 		if(mapper != null) {
 			mapper.getMappingList().add(this);
+		}
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "categoryCode")
+	private MapperCategoryConfig mapperCategoryConfig;
+	
+	public void setMapperCategoryConfig(MapperCategoryConfig mapperCategoryConfig) {
+		this.mapperCategoryConfig = mapperCategoryConfig;
+		
+		if(mapperCategoryConfig != null) {
+			mapperCategoryConfig.getMappingList().add(this);
 		}
 	}
 	

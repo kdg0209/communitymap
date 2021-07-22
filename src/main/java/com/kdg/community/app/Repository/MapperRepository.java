@@ -16,7 +16,6 @@ public interface MapperRepository extends CrudRepository<Mapper, Long>{
 	public List<Mapper> findByMemberCodeOrderByWriteDateDesc(@Param("memberCode") Long memberCode);
 	
 	@Query(value = "SELECT m FROM Mapper m JOIN FETCH m.member WHERE m.code = :code AND m.member.code = :memberCode")
-//	@Query(value = "SELECT * FROM Mapper WHERE code = :code AND memberCode = :memberCode", nativeQuery = true)
 	public Mapper view(@Param("code") Long code, @Param("memberCode") Long memberCode);
 	
 	@Modifying

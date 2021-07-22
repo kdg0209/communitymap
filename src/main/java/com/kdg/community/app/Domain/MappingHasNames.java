@@ -24,7 +24,7 @@ public class MappingHasNames {
 	
 	private String fieldValues;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mappingCode")
 	private Mapping mapping;
 	

@@ -133,7 +133,7 @@
 	                    
 	                    <div class="col-4">
 	                    	<button type="button" class="btn btn-primary text-white light-300" onclick="nameConfigEdit('${item.code}');" style="width: 47.5%; margin-top: 4%;">수정</button>
-	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="nameConfigDelete('${item.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
+	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="nameConfigDelete('${item.code}', '${mapper.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
 	                    </div>
                     </c:forEach>
                     
@@ -444,6 +444,10 @@
          request.fail(function (jqXHR, textStatus) {
              alert("Request failed: " + textStatus);
          });
+	}
+	
+	function nameConfigDelete(code, mapperCode) {
+		window.location.href = "/app/mapperNameConfig/delete?code="+code+"&mapperCode="+mapperCode;
 	}
 </script>
 <script>

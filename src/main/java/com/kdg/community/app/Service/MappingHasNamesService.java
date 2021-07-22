@@ -26,6 +26,8 @@ public class MappingHasNamesService {
 		return mappingHasNamesRepository.getMappingHasNamesList(mappingCode);
 	}
 	
+	
+	@Transactional
 	public boolean update(MappingHasNames mappingHasNames) {
 		MappingHasNames updateMappingHasNames = mappingHasNamesRepository.view(mappingHasNames.getCode());
 		
@@ -33,6 +35,15 @@ public class MappingHasNamesService {
 		updateMappingHasNames.setFieldValues(mappingHasNames.getFieldValues());
 		
 		return true;
+	}
+	
+	public void deleteByMapperNameConfig (Long mapperNameCode) {
+		mappingHasNamesRepository.deleteByMapperNameConfig(mapperNameCode);
+	}
+	
+	
+	public void deleteByParent (Long mappingCode) {
+		mappingHasNamesRepository.deleteByParent(mappingCode);
 	}
 	
 }

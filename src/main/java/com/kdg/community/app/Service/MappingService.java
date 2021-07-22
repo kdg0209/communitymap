@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kdg.community.app.Domain.Mapper;
+import com.kdg.community.app.Domain.MapperCategoryConfig;
 import com.kdg.community.app.Domain.Mapping;
 import com.kdg.community.app.Repository.MappingRepository;
 
@@ -26,15 +28,15 @@ public class MappingService {
 		return mappingRepository.save(mapping);
 	}
 	
-	public Mapping view (Long code) {
-		return mappingRepository.view(code);
+	public Mapping view (Long code, Long mapperCode) {
+		return mappingRepository.view(code, mapperCode);
 	}
 	
-	public boolean update(Mapping mapping) {
-		Mapping updateMapping = mappingRepository.view(mapping.getCode());
+	public boolean update(Mapping mapping, Mapper mapper,MapperCategoryConfig mapperCategoryConfig) {
+		Mapping updateMapping = mappingRepository.view(mapping.getCode(), mapper.getCode());
 		
 		updateMapping.setStatus(mapping.getStatus());
-		updateMapping.setCategoryCode(mapping.getCategoryCode());
+		updateMapping.setMapperCategoryConfig(mapperCategoryConfig);
 		updateMapping.setMarkerImg(mapping.getMarkerImg());
 		updateMapping.setAddress(mapping.getAddress());
 		updateMapping.setLatitude(mapping.getLatitude());
@@ -44,5 +46,9 @@ public class MappingService {
 			updateMapping.setFileName(mapping.getFileName());
 		}
 		return true;
+	}
+	
+	public void delete (Long code) {
+		mappingRepository.delete(code);
 	}
 }

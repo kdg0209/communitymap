@@ -39,6 +39,6 @@ public class MapperNameConfig {
 		}
 	}
 	
-	@OneToMany(mappedBy = "mapperNameConfig", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "mapperNameConfig", fetch = FetchType.LAZY)
 	private List<MappingHasNames> mappingHasNamesList = new ArrayList<MappingHasNames>();
 }
