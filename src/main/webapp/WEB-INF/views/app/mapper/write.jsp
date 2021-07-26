@@ -123,7 +123,7 @@
                     <div class="col-8">
                         <div class="form-floating mb-4">
                             <input type="text" 
-                            		class="form-control form-control-lg light-300"  
+                            		class="form-control form-control-lg light-300 mapperName"  
                             		name="mapperName[0][name]" 
                             		placeholder="항목">
                             <label for="floatingname light-300">항목</label>
@@ -149,7 +149,7 @@
                     <div class="col-7">
                         <div class="form-floating mb-4">
                             <input type="text" 
-                            		class="form-control form-control-lg light-300"  
+                            		class="form-control form-control-lg light-300 mapperCategory"  
                             		name="mapperCategory[0][name]" 
                             		placeholder="카테고리">
                             <label for="floatingname light-300">카테고리</label>
@@ -275,7 +275,7 @@
 		    }
 		    return obj; 
 		}
-	
+		
 		$("#submit").click(function() {
 			if ($("#name").val().trim() == '') {
 		          $("#name").focus();
@@ -296,7 +296,25 @@
 	                 return false;
 	              }
 	        }
-		  
+	        
+	        for (qLoop = 0; qLoop < document.getElementsByClassName("mapperName").length; qLoop++) {
+	        	console.log(document.getElementsByClassName("mapperName")[qLoop].value);
+                if (!document.getElementsByClassName("mapperName")[qLoop].value) {
+                	document.getElementsByClassName("mapperName")[qLoop].focus();
+                    alert('항목값을 입력해주세요.');
+                    return false;
+                }
+			 }
+	        
+	        for (qLoop = 0; qLoop < document.getElementsByClassName("mapperCategory").length; qLoop++) {
+	        	console.log(document.getElementsByClassName("mapperCategory")[qLoop].value);
+                if (!document.getElementsByClassName("mapperCategory")[qLoop].value) {
+                	document.getElementsByClassName("mapperCategory")[qLoop].focus();
+                    alert('카테고리값을 입력해주세요.');
+                    return false;
+                }
+			 }
+			
 	        var data = $("#submitForm").serializeObject();
 	        
 	        var request = $.ajax({
@@ -310,7 +328,7 @@
 
             request.done(function (data) {
                 if (data == true) {
-                   	window.location.href = "/app/mapper/index";
+                   	window.location.href = "/app/mapper/index?page=1";
                 } else if (data == false) {
                 	alert("잘못된 접근입니다. 다시 시도해주세요.");
                 	return false;
@@ -339,7 +357,7 @@
 		html += "<div class='row'>";
 		html += 	"<div class='col-8'>";
 		html += 		"<div class='form-floating mb-4'>";
-		html += 			"<input type='text' class='form-control form-control-lg light-300' name='mapperName["+ number +"][name]' placeholder='항목' />";
+		html += 			"<input type='text' class='form-control form-control-lg light-300 mapperName' name='mapperName["+ number +"][name]' placeholder='항목' />";
 		html += 			"<label for='floatingname light-300'>항목</label>";
 		html += 		"</div>";
 		html += 	"</div>";
@@ -384,7 +402,7 @@
 		html += 	"</div>";
 		html += 	"<div class='col-7'>";
 		html += 		"<div class='form-floating mb-4'>";
-		html += 			"<input type='text' class='form-control form-control-lg light-300' name='mapperCategory["+ number +"][name]' placeholder='카테고리' />";
+		html += 			"<input type='text' class='form-control form-control-lg light-300 mapperCategory' name='mapperCategory["+ number +"][name]' placeholder='카테고리' />";
 		html += 			"<label for='floatingname light-300'>카테고리</label>";
 		html += 		"</div>";
 		html += 	"</div>";

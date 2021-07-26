@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@include file="./layouts/app/head.jsp"%>
 <%@include file="./layouts/app/header.jsp"%>
 
@@ -95,13 +97,13 @@
             <div class="col-md-12">
                 <ul class="nav d-flex justify-content-center">
                     <li class="nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary active shadow rounded-pill text-light px-4 light-300" href="#" data-filter=".project">All</a>
+                        <a class="filter-btn nav-link btn-outline-primary active shadow rounded-pill text-light px-4 light-300" href="#" data-filter=".project">최신순</a>
                     </li>
                     <li class="nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".graphic">Graphics</a>
+                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".graphic">인기순</a>
                     </li>
                     <li class="filter-btn nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".ui">UI/UX</a>
+                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".ui">데이터순</a>
                     </li>
                     <li class="nav-item mx-lg-4">
                         <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".branding">Branding</a>
@@ -109,117 +111,30 @@
                 </ul>
             </div>
         </div>
-
     </section>
 
     <section class="container overflow-hidden py-5">
-        <div class="row gx-5 gx-sm-3 gx-lg-5 gy-lg-5 gy-3 pb-3 projects">
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project ui branding">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="service card-img" src="../resources/assets/img/services-01.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">UI/UX design</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project ui graphic">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-02.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Social Media</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project branding">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-03.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Marketing</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project ui graphic">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-04.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Graphic</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project ui graphic">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-05.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Digtal Marketing</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project branding">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-06.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Market Research</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project branding">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-07.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Business</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-            <!-- Start Recent Work -->
-            <div class="col-xl-3 col-md-4 col-sm-6 project ui graphic branding">
-                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
-                    <img class="card-img" src="../resources/assets/img/services-08.jpg" alt="Card image">
-                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
-                        <div class="service-work-content text-left text-light">
-                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">Branding</span>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing</p>
-                        </div>
-                    </div>
-                </a>
-            </div><!-- End Recent Work -->
-
-        </div>
+    	<div class="row gx-5 gx-sm-3 gx-lg-5 gy-lg-5 gy-3 pb-3 projects">
+	    	<c:forEach var="item" items="${mapperList}">
+	            <div class="col-xl-3 col-md-4 col-sm-6 project ui branding">
+	                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
+	                    <img class="service card-img" src="<c:url value='/img/mapperCover/${item.fileName}'/>" style="width: 243px; height: 243px;">
+	                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
+	                        <div class="service-work-content text-left text-light">
+	                            <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300">
+	                            	 <c:if test = "${fn:contains(categoryList, item.categoryCode)}">
+								         ${categoryList[item.categoryCode]}
+								      </c:if>
+	                            </span>
+	                            <p class="card-text"><i class="fas fa-user"></i> by ${item.name}</p>
+	                            <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
+	                            <p class="card-text">${fn:substring(item.contents, 0, 10) }</p>
+	                        </div>
+	                    </div>
+	                </a>
+	            </div>
+	    	</c:forEach>
+    	</div>
     </section>
     <!-- End Service -->
 

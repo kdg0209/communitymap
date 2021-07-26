@@ -82,7 +82,7 @@ p, a {font-weight: 400;}
 }
 .service-work .service-work-vertical {
 	background: rgb(0,0,0);
-  background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 33.33%, rgba(255,255,255,1) 66.66%, rgba(255,255,255,0) 99.99%);
+  background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 33.33%, #e9ecef 66.66%, rgba(255,255,255,0) 99.99%);
   background-size: 300% 300%;
   background-position: 0% 100%;
   transition: .5s;

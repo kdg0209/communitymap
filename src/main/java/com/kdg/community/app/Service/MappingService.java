@@ -2,6 +2,8 @@ package com.kdg.community.app.Service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +22,16 @@ public class MappingService {
 		this.mappingRepository = mappingRepository;
 	}
 	
+	public Page<Mapping> mappingListByMapper(Long mapperCode, Pageable pageable){
+		return mappingRepository.mappingListByMapper(mapperCode,  pageable);
+	}
+	
 	public List<Mapping> mappingList(Long mapperCode){
-		return mappingRepository.findByMapperCodeOrderByWriteDateDesc(mapperCode);
+		return mappingRepository.mappingList(mapperCode);
+	}
+	
+	public List<Mapping> findCategoryCodeList(Long categoryCode){
+		return mappingRepository.findCategoryCodeList(categoryCode);
 	}
 	
 	public Mapping insert(Mapping mapping) {
@@ -45,6 +55,16 @@ public class MappingService {
 		if(mapping.getFileName() != null) {
 			updateMapping.setFileName(mapping.getFileName());
 		}
+		return true;
+	}
+	
+
+	public boolean updateByCategoryDelete(Mapping mapping) {
+		Mapping updateMapping = mappingRepository.view(mapping.getCode(), mapping.getMapper().getCode());
+		
+		updateMapping.setMapperCategoryConfig(null);
+		updateMapping.setMarkerImg(null);
+
 		return true;
 	}
 	

@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Data;
@@ -27,6 +28,9 @@ public class Mapper {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
+	
+	@Formula("(select count(*) from mapping m where m.mapperCode = code)")
+   private int countOfMapping;
 	
 	private char status;
 	private String fileName;

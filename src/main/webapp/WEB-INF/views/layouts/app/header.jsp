@@ -74,7 +74,7 @@ background-color: #fff!important;
                 		<a class="nav-link dropbtn" href="javascript:;"><i class='bx bx-user-circle bx-sm text-primary'></i></a>
 	                	 <div class="dropdown-content">
 						    <a href="/app/mypage/index">마이페이지</a>
-						    <a href="/app/mapper/index">나의 지도 관리</a>
+						    <a href="/app/mapper/index?page=1">나의 지도 관리</a>
 						    <a href="#">로그아웃</a>
 						  </div>
 				    </div>

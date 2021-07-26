@@ -163,7 +163,7 @@
 	                    
 	                    <div class="col-4">
 	                    	<button type="button" class="btn btn-primary text-white light-300" onclick="categoryConfigEdit('${item.code}');" style="width: 47.5%; margin-top: 4%;">수정</button>
-	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="categoryConfigDelete('${item.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
+	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="categoryConfigDelete('${item.code}', '${mapper.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
 	                    </div>
                     </c:forEach>
                      
@@ -330,7 +330,7 @@
 
             request.done(function (data) {
                 if (data == true) {
-                   	window.location.href = "/app/mapper/index";
+                   	window.location.href = "/app/mapper/index?page=1";
                 } else if (data == false) {
                 	alert("잘못된 접근입니다. 다시 시도해주세요.");
                 	return false;
@@ -447,7 +447,9 @@
 	}
 	
 	function nameConfigDelete(code, mapperCode) {
-		window.location.href = "/app/mapperNameConfig/delete?code="+code+"&mapperCode="+mapperCode;
+		if(confirm("삭제시 등록되어 있는 데이터도 함께 삭제됩니다. \n삭제하시겠습니까?")){
+			window.location.href = "/app/mapperNameConfig/delete?code="+code+"&mapperCode="+mapperCode;
+		}
 	}
 </script>
 <script>
@@ -467,5 +469,11 @@
         request.fail(function (jqXHR, textStatus) {
             alert("Request failed: " + textStatus);
         });
+	}
+	
+	function categoryConfigDelete(code, mapperCode) {
+		if(confirm("삭제시 등록되어 있는 데이터도 함께 삭제됩니다. \n삭제하시겠습니까?")){
+			window.location.href = "/app/mapperCategoryConfig/delete?code="+code+"&mapperCode="+mapperCode;
+		}
 	}
 </script>

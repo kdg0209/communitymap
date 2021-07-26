@@ -16,7 +16,7 @@ public interface MappingHasNamesRepository  extends CrudRepository<MappingHasNam
 	public List<MappingHasNames> getMappingHasNamesList(@Param("code") Long mappingCode);
 	
 	@Query(value = "SELECT m FROM MappingHasNames m JOIN FETCH m.mapping WHERE m.code = :code")
-	public MappingHasNames view(@Param("code") Long code);
+	public MappingHasNames getView(@Param("code") Long code);
 	
 	@Modifying
 	@Transactional

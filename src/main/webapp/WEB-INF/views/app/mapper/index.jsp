@@ -46,18 +46,33 @@
         
         <div class="row" style="margin-top: 50px;">
             <div class="btn-toolbar justify-content-center pb-4" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-secondary text-white">Previous</button>
-                </div>
-                <div class="btn-group me-2" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-light">1</button>
-                </div>
-                <div class="btn-group me-2" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary text-white">2</button>
-                </div>
-                <div class="btn-group" role="group" aria-label="Third group">
-                    <button type="button" class="btn btn-secondary text-white">Next</button>
-                </div>
+             <c:choose>
+		         <c:when test = "${hasPrevious}">
+		            <div class="btn-group me-2" role="group" aria-label="First group">
+		            	<a href="/app/mapper/index?page=${page -1}" class="btn btn-secondary text-white">
+		              	 	Previous
+		               	</a>
+	                </div>
+		         </c:when>
+		      </c:choose>
+      
+               <c:forEach var="loop" begin="1" end="${getTotalPages}" step="1">
+	               	<div class="btn-group me-2" role="group" aria-label="Second group">
+		               	<a href="/app/mapper/index?page=${loop}" class="${loop eq page ? 'btn btn-secondary text-white':'btn btn-light'}">
+		              	 	${loop}
+		               	</a>
+	                </div>
+               </c:forEach>
+               
+              <c:choose>
+		         <c:when test = "${hasNext}">
+		            <div class="btn-group" role="group" aria-label="Third group">
+		            	<a href="/app/mapper/index?page=${page +1}" class="btn btn-secondary text-white">
+		              	 	Next
+		               	</a>
+	                </div>
+		         </c:when>
+		      </c:choose>
             </div>
         </div>
     </section>
@@ -73,6 +88,6 @@
 	}
 	
 	function DetailFn(code) {
-		window.location.href = "/app/mapping/index?mapperCode="+code;
+		window.location.href = "/app/mapping/index?mapperCode="+code+"&page=1";
 	}
 </script>

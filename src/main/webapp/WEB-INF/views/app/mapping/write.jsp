@@ -178,6 +178,7 @@
 						    <div class="col-sm-10">
 						    		<input type="text"
 						    				data-code="${item.code}" 
+						    				name="NameValues"
 		                            		class="form-control form-control-lg light-300 NameValues"
 		                            		style="font-size: 15px;"
 		                            		placeholder="${item.name} 입력">
@@ -311,6 +312,14 @@
 		          alert("카테고리를 선택해주세요.");
 		          return false;
 		    }
+			
+			 for (qLoop = 0; qLoop < document.getElementsByName("NameValues").length; qLoop++) {
+                if (!document.getElementsByName("NameValues")[qLoop].value) {
+                	document.getElementsByName("NameValues")[qLoop].focus();
+                    alert('항목값을 입력해주세요.');
+                    return false;
+                }
+			 }
 			
 			let nameValuesArray = [];
 	        $(".NameValues").each(function (index) {

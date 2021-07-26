@@ -41,6 +41,10 @@ public class MapperCategoryConfigService {
 		return true;
 	}
 	
+	public void delete (Long code) {
+		mapperCategoryConfigRepository.delete(code);
+	}
+	
 	public void deleteByParent (Long mapperCode) {
 		mapperCategoryConfigRepository.deleteByParent(mapperCode);
 	}

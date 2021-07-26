@@ -182,6 +182,7 @@
 						    <div class="col-sm-10">
 						    		<input type="text"
 						    				data-code="${item.code}" 
+						    				name="NameValues"
 		                            		class="form-control form-control-lg light-300 NameValues"
 		                            		style="font-size: 15px;"
 		                            		placeholder="${item.name} 입력">
@@ -318,18 +319,28 @@
 		          return false;
 		    }
 			
+			 for (qLoop = 0; qLoop < document.getElementsByName("NameValues").length; qLoop++) {
+                if (!document.getElementsByName("NameValues")[qLoop].value) {
+                	document.getElementsByName("NameValues")[qLoop].focus();
+                    alert('항목값을 입력해주세요.');
+                    return false;
+                }
+			 }
+			
 			let nameValuesArray = [];
 	        $(".NameValues").each(function (index) {
-	        	let nameValuesObj 	 = {};
-	        	var code             = $(this).data('code');
-	        	nameValuesObj.code 	 = String(code);
-	        	nameValuesObj.values = $(this).val();
+	        	let nameValuesObj 		 = {};
+	        	var code            	 = $(this).data('code');
+	        	var configCode      	 = $(this).data('configCode');
+	        	nameValuesObj.code 		 = String(code);
+	        	nameValuesObj.configCode = String(configCode);
+	        	nameValuesObj.values	 = $(this).val();
 	        	nameValuesArray.push(nameValuesObj);
 			});
 	        
 	        var data = $("#submitForm").serializeObject();
-	        data.NameValues   = nameValuesArray;
-	        data.mapperCode   = String(${mapping.mapper.code});
+	        data.NameValues     = nameValuesArray;
+	        data.mapperCode     = String(${mapping.mapper.code});
 	        
 	        var request = $.ajax({
                 url: "/app/mapping/edit",
@@ -358,19 +369,25 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-	  var valueArray = new Array(); 
-	  var codeArray = new Array(); 
-
+	  var valueArray 		  = new Array(); 
+	  var codeArray			  = new Array(); 
+	  var nameConfigCodeArray = new Array(); 
+	  
+      <c:forEach var="item" items="${namesConfigList}">
+         nameConfigCodeArray.push("${item.code}");
+      </c:forEach>
+	    
 	  <c:forEach var="item" items="${mappingHasNamesList}">
 	  	valueArray.push("${item.fieldValues}");
 	  	codeArray.push("${item.code}");
       </c:forEach>
-     
+      
       $(".NameValues").each(function (index) {
 		 $(this).val(valueArray[index]);
 		 $(this).data('code',codeArray[index]);
+		 $(this).data('configCode',nameConfigCodeArray[index]);
 	  });
-	  
+      
       var fileCount = ${fn:length(mappingFilesList)};
       Dropzone.autoDiscover = false;
       var myDropzone = new Dropzone(".dropzone", {

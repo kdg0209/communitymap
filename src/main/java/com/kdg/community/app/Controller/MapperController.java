@@ -16,6 +16,10 @@ import org.apache.commons.codec.binary.Base64;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +74,7 @@ public class MapperController {
 	}
 
 	@GetMapping(value = "/app/mapper/index")
-	public String index(HttpServletResponse response, HttpSession session, Model model) throws Exception {
+	public String index(HttpServletResponse response, HttpSession session, Model model, @RequestParam int page) throws Exception {
 		Long memberCode = (Long)session.getAttribute("code");
 		
 		if(memberCode == null) {
@@ -82,9 +86,20 @@ public class MapperController {
 			
 			return "app/login/index";
 		}else {
-			List<Mapper> mapperList = mapperService.mapperList(memberCode);
+			page = page - 1;
 			
-			model.addAttribute("mapperList", mapperList);
+			Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "writeDate"));
+			
+			Page<Mapper> mapperList = mapperService.mapperList(memberCode, pageable);
+				
+			model.addAttribute("getTotalElements", mapperList.getTotalElements());  //전체 데이터 수
+			model.addAttribute("getTotalPages", mapperList.getTotalPages());        //전체 페이지 수
+			model.addAttribute("hasNext", mapperList.hasNext()); 					//이전 페이지 여부
+			model.addAttribute("hasPrevious", mapperList.hasPrevious());	        //다음 페이지 여부
+			model.addAttribute("page", page + 1);
+			
+			model.addAttribute("mapperList", mapperList.getContent());
+			
 			return "app/mapper/index";
 		}
 	}
@@ -333,7 +348,7 @@ public class MapperController {
 			mapperNameConfigService.deleteByParent(mapper.getCode());
 			mapperService.delete(mapper.getCode());
 			
-			out.println("<script>location.href='/app/mapper/index';</script>");
+			out.println("<script>location.href='/app/mapper/index?page=1';</script>");
 			out.flush();
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kdg.community.app.Domain.MapperNameConfig;
 import com.kdg.community.app.Domain.MappingHasNames;
 import com.kdg.community.app.Repository.MappingHasNamesRepository;
 
@@ -18,18 +19,21 @@ public class MappingHasNamesService {
 		this.mappingHasNamesRepository = mappingHasNamesRepository;
 	}
 	
-	public MappingHasNames insert(MappingHasNames mappingHasNames) {
-		return mappingHasNamesRepository.save(mappingHasNames);
-	}
-	
 	public List<MappingHasNames> getMappingHasNamesList (Long mappingCode){
 		return mappingHasNamesRepository.getMappingHasNamesList(mappingCode);
 	}
 	
+	public MappingHasNames insert(MappingHasNames mappingHasNames) {
+		return mappingHasNamesRepository.save(mappingHasNames);
+	}
+	
+	public MappingHasNames getView (Long code) {
+		return mappingHasNamesRepository.getView(code);
+	}
 	
 	@Transactional
 	public boolean update(MappingHasNames mappingHasNames) {
-		MappingHasNames updateMappingHasNames = mappingHasNamesRepository.view(mappingHasNames.getCode());
+		MappingHasNames updateMappingHasNames = mappingHasNamesRepository.getView(mappingHasNames.getCode());
 		
 		updateMappingHasNames.setCode(mappingHasNames.getCode());
 		updateMappingHasNames.setFieldValues(mappingHasNames.getFieldValues());

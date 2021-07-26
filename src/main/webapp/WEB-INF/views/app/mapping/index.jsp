@@ -22,6 +22,9 @@
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark">${item.address}</h5>
 	                        <p class="card-text light-300 text-dark">
+	                        	<c:if test="${empty item.mapperCategoryConfig}">
+									<i class="fas fa-exclamation-circle"></i>
+								</c:if>
 	                      	 	${item.writeDate}
 	                        </p>
 	                        <div style="float: right;">
@@ -37,7 +40,7 @@
         
         <div class="row" style="margin-top: 50px;">
         	<div class="col-md-4 col-4 m-auto">
-       			<a href="/app/mapper/index" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+       			<a href="/app/mapper/index?page=1" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
             </div>
             <div class="col-md-4 col-4 m-auto text-center"></div>
             <div class="col-md-4 col-4 m-auto text-right">
@@ -47,18 +50,33 @@
         
         <div class="row" style="margin-top: 50px;">
             <div class="btn-toolbar justify-content-center pb-4" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-secondary text-white">Previous</button>
-                </div>
-                <div class="btn-group me-2" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-light">1</button>
-                </div>
-                <div class="btn-group me-2" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary text-white">2</button>
-                </div>
-                <div class="btn-group" role="group" aria-label="Third group">
-                    <button type="button" class="btn btn-secondary text-white">Next</button>
-                </div>
+             <c:choose>
+		         <c:when test = "${hasPrevious}">
+		            <div class="btn-group me-2" role="group" aria-label="First group">
+		            	<a href="/app/mapping/index?mapperCode=${mapperCode}&page=${page -1}" class="btn btn-secondary text-white">
+		              	 	Previous
+		               	</a>
+	                </div>
+		         </c:when>
+		      </c:choose>
+      
+               <c:forEach var="loop" begin="1" end="${getTotalPages}" step="1">
+	               	<div class="btn-group me-2" role="group" aria-label="Second group">
+		               	<a href="/app/mapping/index?mapperCode=${mapperCode}&page=${loop}" class="${loop eq page ? 'btn btn-secondary text-white':'btn btn-light'}">
+		              	 	${loop}
+		               	</a>
+	                </div>
+               </c:forEach>
+               
+              <c:choose>
+		         <c:when test = "${hasNext}">
+		            <div class="btn-group" role="group" aria-label="Third group">
+		            	<a href="/app/mapping/index?mapperCode=${mapperCode}&page=${page +1}" class="btn btn-secondary text-white">
+		              	 	Next
+		               	</a>
+	                </div>
+		         </c:when>
+		      </c:choose>
             </div>
         </div>
     </section>

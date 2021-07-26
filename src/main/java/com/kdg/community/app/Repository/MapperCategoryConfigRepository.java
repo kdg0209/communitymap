@@ -20,6 +20,11 @@ public interface MapperCategoryConfigRepository extends CrudRepository<MapperCat
 	
 	@Modifying
 	@Transactional
+	@Query(value = "DELETE FROM MapperCategoryConfig WHERE code = :code")
+	public void delete(@Param("code") Long code);
+	
+	@Modifying
+	@Transactional
 	@Query(value = "DELETE FROM MapperCategoryConfig WHERE mapperCode = :mapperCode")
 	public void deleteByParent(@Param("mapperCode") Long mapperCode);
 }

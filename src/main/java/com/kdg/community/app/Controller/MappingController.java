@@ -15,6 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -65,10 +70,20 @@ public class MappingController {
 	}
 
 	@GetMapping(value = "/app/mapping/index")
-	public String index(Model model, @RequestParam Long mapperCode) {
-		List<Mapping> mappingList = mappingService.mappingList(mapperCode);
+	@Transactional
+	public String index(Model model, @RequestParam Long mapperCode, @RequestParam int page) {
+		page = page - 1;
 		
-		model.addAttribute("mappingList", mappingList);
+		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "writeDate"));
+		Page<Mapping> mappingList = mappingService.mappingListByMapper(mapperCode, pageable);
+		
+		model.addAttribute("getTotalElements", mappingList.getTotalElements()); //전체 데이터 수
+		model.addAttribute("getTotalPages", mappingList.getTotalPages());       //전체 페이지 수
+		model.addAttribute("hasNext", mappingList.hasNext()); 					//이전 페이지 여부
+		model.addAttribute("hasPrevious", mappingList.hasPrevious());	        //다음 페이지 여부
+		
+		model.addAttribute("mappingList", mappingList.getContent());
+		model.addAttribute("page", page + 1);
 		model.addAttribute("mapperCode", mapperCode);
 		
 		return "app/mapping/index";
@@ -219,19 +234,19 @@ public class MappingController {
 	@ResponseBody
 	@Transactional // MapperCategoryConfig Lazy속성으로 인한 설정
 	public boolean edit(Mapping mapping, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
-		Long code		    = Long.parseLong((String) param.get("code"));
-		Long mapperCode		= Long.parseLong((String) param.get("mapperCode"));
-		Long memberCode 	= (Long) session.getAttribute("code");
-		Long categoryCode   = Long.parseLong((String) param.get("categoryCode"));
-		Double latitude     = Double.parseDouble((String) param.get("latitude"));  
-		Double longitude    = Double.parseDouble((String) param.get("longitude"));  
-		String file	 	   	= (String) param.get("cover");
-		String filename    	= (String) param.get("filename");
-		String newFileName	= null;
-		char status 	    = ((String) param.get("status")).charAt(0);
-		String nameValues   = (String) param.get("NameValues").toString();
-		Mapper mapper 		= mapperService.view(mapperCode, memberCode);
-		Mapping view 		= mappingService.view(code, mapper.getCode());
+		Long code		    	= Long.parseLong((String) param.get("code"));
+		Long mapperCode			= Long.parseLong((String) param.get("mapperCode"));
+		Long memberCode 		= (Long) session.getAttribute("code");
+		Long categoryCode   	= Long.parseLong((String) param.get("categoryCode"));
+		Double latitude     	= Double.parseDouble((String) param.get("latitude"));  
+		Double longitude    	= Double.parseDouble((String) param.get("longitude"));  
+		String file	 	   		= (String) param.get("cover");
+		String filename    		= (String) param.get("filename");
+		String newFileName		= null;
+		char status 	    	= ((String) param.get("status")).charAt(0);
+		String nameValues   	= (String) param.get("NameValues").toString();
+		Mapper mapper 			= mapperService.view(mapperCode, memberCode);
+		Mapping view 			= mappingService.view(code, mapper.getCode());
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
 		
 		List<Map<String, Object>> nameValuesMap = new Gson().fromJson(
@@ -258,19 +273,39 @@ public class MappingController {
 		mappingService.update(mapping, mapper, categoryConfig);
 		
 		String replaceCode;
+		String replaceConfigCode;
 		String values;
 		for (int i = 0; i < nameValuesMap.size(); i++) {
-			values 			  = String.valueOf(nameValuesMap.get(i).get("values"));
-			replaceCode 	  = String.valueOf(nameValuesMap.get(i).get("code")).replace(".0", "");
-			Long hasNamesCode = Long.parseLong(replaceCode);
+			values 			    = String.valueOf(nameValuesMap.get(i).get("values"));
+			replaceCode 	    = String.valueOf(nameValuesMap.get(i).get("code")).replace(".0", "");
+			replaceConfigCode   = String.valueOf(nameValuesMap.get(i).get("configCode")).replace(".0", "");
+			Long hasNamesCode   = Long.parseLong(replaceCode);
+			Long nameConfigCode = Long.parseLong(replaceConfigCode);
 			
-			MappingHasNames hasNames = new MappingHasNames();
-			hasNames.setCode(hasNamesCode);
-			hasNames.setFieldValues(values);
+			MapperNameConfig MapperNameConfig = mapperNameConfigService.getView(nameConfigCode);
 			
-			mappingHasNamesService.update(hasNames);
+			MappingHasNames mappingHasNames = mappingHasNamesService.getView(hasNamesCode);
+			
+			if(mappingHasNames != null) {
+				MappingHasNames hasNames = new MappingHasNames();
+				hasNames.setCode(hasNamesCode);
+				hasNames.setFieldValues(values);
+				
+				mappingHasNamesService.update(hasNames);
+			}
+			
+			if(mappingHasNames == null && MapperNameConfig != null) {
+				MapperNameConfig config = mapperNameConfigService.getView(MapperNameConfig.getCode());
+				
+				MappingHasNames hasNames = new MappingHasNames();
+				hasNames.setMapping(mapping);
+				hasNames.setMapperNameConfig(config);
+				hasNames.setFieldValues(values);
+				
+				mappingHasNamesService.insert(hasNames);
+			}
+			
 		}
-		
 		return true;
 	}
 	

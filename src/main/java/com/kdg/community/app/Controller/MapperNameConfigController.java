@@ -2,7 +2,6 @@ package com.kdg.community.app.Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kdg.community.app.Domain.Mapper;
 import com.kdg.community.app.Domain.MapperNameConfig;
-import com.kdg.community.app.Domain.MappingHasNames;
 import com.kdg.community.app.Service.MapperNameConfigService;
 import com.kdg.community.app.Service.MapperService;
 import com.kdg.community.app.Service.MappingHasNamesService;
