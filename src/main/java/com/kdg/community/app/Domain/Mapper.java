@@ -30,7 +30,7 @@ public class Mapper {
 	private Long code;
 	
 	@Formula("(select count(*) from mapping m where m.mapperCode = code)")
-   private int countOfMapping;
+    private int countOfMapping;
 	
 	private char status;
 	private String fileName;

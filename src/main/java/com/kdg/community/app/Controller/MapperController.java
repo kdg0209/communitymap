@@ -74,7 +74,7 @@ public class MapperController {
 	}
 
 	@GetMapping(value = "/app/mapper/index")
-	public String index(HttpServletResponse response, HttpSession session, Model model, @RequestParam int page) throws Exception {
+	public String index(HttpServletResponse response, HttpSession session, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "writeDate") String sort) throws Exception {
 		Long memberCode = (Long)session.getAttribute("code");
 		
 		if(memberCode == null) {
@@ -88,7 +88,7 @@ public class MapperController {
 		}else {
 			page = page - 1;
 			
-			Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "writeDate"));
+			Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, sort));
 			
 			Page<Mapper> mapperList = mapperService.mapperList(memberCode, pageable);
 				
@@ -98,10 +98,41 @@ public class MapperController {
 			model.addAttribute("hasPrevious", mapperList.hasPrevious());	        //다음 페이지 여부
 			model.addAttribute("page", page + 1);
 			
+			model.addAttribute("sort", sort);
 			model.addAttribute("mapperList", mapperList.getContent());
 			
 			return "app/mapper/index";
 		}
+	}
+	
+	@GetMapping(value = "/app/mapper/up")
+	public String up(Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "writeDate") String sort, @RequestParam(defaultValue = "0") int categoryCode) throws Exception {
+		page = page - 1;
+	
+		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, sort));
+		
+		Page<Mapper> mapperList = mapperService.upMapperList(pageable, categoryCode);
+		Map<Integer, String> categoryMap = new HashMap<Integer, String>();
+			
+		model.addAttribute("getTotalElements", mapperList.getTotalElements());  //전체 데이터 수
+		model.addAttribute("getTotalPages", mapperList.getTotalPages());        //전체 페이지 수
+		model.addAttribute("hasNext", mapperList.hasNext()); 					//이전 페이지 여부
+		model.addAttribute("hasPrevious", mapperList.hasPrevious());	        //다음 페이지 여부
+		model.addAttribute("page", page + 1);
+		model.addAttribute("sort", sort);
+		model.addAttribute("categoryCode", categoryCode);
+		
+		categoryMap.put(1, "문화");	
+		categoryMap.put(2, "음식");	
+		categoryMap.put(3, "여행");	
+		categoryMap.put(4, "조사");	
+		categoryMap.put(5, "안전");	
+		categoryMap.put(6, "기타");	
+		
+		model.addAttribute("categoryList", categoryMap);
+		model.addAttribute("mapperList", mapperList.getContent());
+		
+		return "app/mapper/up";
 	}
 
 	@GetMapping(value = "/app/mapper/write")

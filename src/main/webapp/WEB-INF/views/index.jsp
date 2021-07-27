@@ -15,7 +15,6 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-
                         <div class="py-5 row d-flex align-items-center">
                             <div class="banner-content col-lg-8 col-8 offset-2 m-lg-auto text-left py-5 pb-5">
                                 <h1 class="banner-heading h1 text-secondary display-3 mb-0 pb-5 mx-0 px-0 light-300 typo-space-line">
@@ -27,86 +26,40 @@
                                 <a class="banner-button btn rounded-pill btn-outline-primary btn-lg px-4" href="/app/mapper/write" role="button">나의 지도 만들기</a>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="carousel-item">
-
-                        <div class="py-5 row d-flex align-items-center">
-                            <div class="banner-content col-lg-8 col-8 offset-2 m-lg-auto text-left py-5 pb-5">
-                                <h1 class="banner-heading h1 text-secondary display-3 mb-0 pb-3 mx-0 px-0 light-300">
-                                    HTML CSS Template with Bootstrap 5 Beta 1
-                                </h1>
-                                <p class="banner-body text-muted py-3">
-                                    You are not allowed to re-distribute this Purple Buzz HTML template as a downloadable ZIP file on any kind of Free CSS collection websites. This is strongly prohibited. Please contact TemplateMo for more information.
-                                </p>
-                                <a class="banner-button btn rounded-pill btn-outline-primary btn-lg px-4" href="#" role="button">Get Started</a>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="carousel-item">
-                        <div class="py-5 row d-flex align-items-center">
-                            <div class="banner-content col-lg-8 col-8 offset-2 m-lg-auto text-left py-5 pb-5">
-                                <h1 class="banner-heading h1 text-secondary display-3 mb-0 pb-3 mx-0 px-0 light-300">
-                                    Cupidatat non proident, sunt in culpa qui officia
-                                </h1>
-                                <p class="banner-body text-muted py-3">
-                                    Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                                    laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                                    irure dolor in reprehenderit in voluptate velit esse cillum
-                                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat.
-                                </p>
-                                <a class="banner-button btn rounded-pill btn-outline-primary btn-lg px-4" href="#" role="button">Get Started</a>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-                <a class="carousel-control-prev text-decoration-none" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                    <i class='bx bx-chevron-left'></i>
-                    <span class="visually-hidden">Previous</span>
-                </a>
-                <a class="carousel-control-next text-decoration-none" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                    <i class='bx bx-chevron-right'></i>
-                    <span class="visually-hidden">Next</span>
-                </a>
             </div>
         </div>
     </div>
 
-
-
-    <!-- Start Service -->
     <section class="service-wrapper py-3">
         <div class="container-fluid pb-3">
             <div class="row">
-                <h2 class="h2 text-center col-12 py-5 semi-bold-600">Services</h2>
+                <h2 class="h2 text-center col-12 py-5 semi-bold-600">Community Map</h2>
                 <div class="service-header col-2 col-lg-3 text-end light-300">
                     <i class='bx bx-gift h3 mt-1'></i>
                 </div>
                 <div class="service-heading col-10 col-lg-9 text-start float-end light-300">
-                    <h2 class="h3 pb-4 typo-space-line">Make Success for future</h2>
+                    <h2 class="h3 pb-4 typo-space-line">공유하는 지도 만들기</h2>
                 </div>
             </div>
             <p class="service-footer col-10 offset-2 col-lg-9 offset-lg-3 text-start pb-3 text-muted px-2">
-                You are free to use this template for your commercial or business websites. You are not allowed to re-distribute this template ZIP file on any template collection websites. It is too easy to illegally copy and repost this template.
-            </p>
+               모두가 공유 가능한 세상, 그 세상을 만들기 위해 고민하는 당신은 모두의 지도입니다. <br>
+               커뮤니티 지도는 나만의 장소를 공유하여 함께 추억을 쌓아가는 사이트입니다.
+            </p> 
         </div>
 
         <div class="service-tag py-5 bg-secondary">
             <div class="col-md-12">
                 <ul class="nav d-flex justify-content-center">
                     <li class="nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary active shadow rounded-pill text-light px-4 light-300" href="#" data-filter=".project">최신순</a>
+                        <a href="?sort=writeDate" class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300 ${sort eq 'writeDate' ? 'active shadow':''}">최신순</a>
                     </li>
                     <li class="nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".graphic">인기순</a>
-                    </li>
-                    <li class="filter-btn nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".ui">데이터순</a>
+                        <a class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300">인기순</a>
                     </li>
                     <li class="nav-item mx-lg-4">
-                        <a class="filter-btn nav-link btn-outline-primary rounded-pill text-light px-4 light-300" href="#" data-filter=".branding">Branding</a>
+                        <a href="?sort=countOfMapping" class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300 ${sort eq 'countOfMapping' ? 'active shadow':''}">데이터순</a>
                     </li>
                 </ul>
             </div>
@@ -117,7 +70,7 @@
     	<div class="row gx-5 gx-sm-3 gx-lg-5 gy-lg-5 gy-3 pb-3 projects">
 	    	<c:forEach var="item" items="${mapperList}">
 	            <div class="col-xl-3 col-md-4 col-sm-6 project ui branding">
-	                <a href="#" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
+	                <a href="/app/map/index?mapperCode=${item.code}" class="service-work card border-0 text-white shadow-sm overflow-hidden mx-5 m-sm-0">
 	                    <img class="service card-img" src="<c:url value='/img/mapperCover/${item.fileName}'/>" style="width: 243px; height: 243px;">
 	                    <div class="service-work-vertical card-img-overlay d-flex align-items-end">
 	                        <div class="service-work-content text-left text-light">
@@ -127,7 +80,7 @@
 								      </c:if>
 	                            </span>
 	                            <p class="card-text"><i class="fas fa-user"></i> by ${item.name}</p>
-	                            <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
+	                            <p class="card-text" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
 	                            <p class="card-text">${fn:substring(item.contents, 0, 10) }</p>
 	                        </div>
 	                    </div>
@@ -136,10 +89,6 @@
 	    	</c:forEach>
     	</div>
     </section>
-    <!-- End Service -->
-
-
-
 
 
     <!-- Start View Work -->
@@ -250,9 +199,6 @@
             </div>
         </div>
     </section>
-    <!-- End Recent Work -->
-
-
 	
 	<%@include file="./layouts/app/footer.jsp"%>
 </body>

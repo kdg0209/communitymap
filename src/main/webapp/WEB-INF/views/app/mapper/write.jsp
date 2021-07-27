@@ -162,10 +162,15 @@
                     <div id="mapperCategoryConfigDiv"></div>
                     <div class="dashed-line"></div>
                 	
+                	<div class="col-md-4 col-4 m-auto">
+                		<a href="/app/mapper/index" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+                    </div>
                 	
-                    <div class="col-md-12 col-12 m-auto text-center">
+                    <div class="col-md-4 col-4 m-auto text-center">
                         <button type="button" id="submit" class="btn btn-secondary rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">확인</button>
                     </div>
+                    
+                    <div class="col-md-4 col-4 m-auto text-right"></div>
                 </form>
             </div>
             <div class="col-lg-2"></div>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@include file="../../layouts/app/head.jsp"%>
 
 <%@include file="../../layouts/app/header.jsp"%>
@@ -9,6 +10,14 @@
         <div class="container-fluid pb-3">
             <div class="row">
                 <h2 class="h2 text-center col-12 py-5 semi-bold-600">나의 지도 관리</h2>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center my-5">
+            <div class="filter-btns shadow-md rounded-pill text-center col-auto">
+                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4  ${sort eq 'writeDate' ? 'active':''}" href="/app/mapper/index?page=1&sort=writeDate">최신순</a>
+                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4" href="/app/mapper/index?page=1&sort=writeDate">인기순</a>
+                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4 ${sort eq 'countOfMapping' ? 'active':''}" href="/app/mapper/index?page=1&sort=countOfMapping">데이터순</a>
             </div>
         </div>
     </section>
@@ -21,8 +30,9 @@
 	                    <img class="card-img-top" src="<c:url value='/img/mapperCover/${item.fileName}'/>" style="width: 100%; height: 180px;" />
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark"><c:out value="${item.name}"/></h5>
+	                        <p class="card-text" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
 	                        <p class="card-text light-300 text-dark">
-	                      	  <c:out value="${item.contents}"/>
+	                      	  <c:out value="${fn:substring(item.contents, 0, 25) }"/>
 	                        </p>
 	                        <div style="float: right;">
 	                        	<span class="text-decoration-none text-dark light-300" onclick="EditFn('${item.code}');">
@@ -49,7 +59,7 @@
              <c:choose>
 		         <c:when test = "${hasPrevious}">
 		            <div class="btn-group me-2" role="group" aria-label="First group">
-		            	<a href="/app/mapper/index?page=${page -1}" class="btn btn-secondary text-white">
+		            	<a href="/app/mapper/index?page=${page -1}&sort=${sort}" class="btn btn-secondary text-white">
 		              	 	Previous
 		               	</a>
 	                </div>
@@ -58,7 +68,7 @@
       
                <c:forEach var="loop" begin="1" end="${getTotalPages}" step="1">
 	               	<div class="btn-group me-2" role="group" aria-label="Second group">
-		               	<a href="/app/mapper/index?page=${loop}" class="${loop eq page ? 'btn btn-secondary text-white':'btn btn-light'}">
+		               	<a href="/app/mapper/index?page=${loop}&sort=${sort}" class="${loop eq page ? 'btn btn-secondary text-white':'btn btn-light'}">
 		              	 	${loop}
 		               	</a>
 	                </div>
@@ -67,7 +77,7 @@
               <c:choose>
 		         <c:when test = "${hasNext}">
 		            <div class="btn-group" role="group" aria-label="Third group">
-		            	<a href="/app/mapper/index?page=${page +1}" class="btn btn-secondary text-white">
+		            	<a href="/app/mapper/index?page=${page +1}&sort=${sort}" class="btn btn-secondary text-white">
 		              	 	Next
 		               	</a>
 	                </div>

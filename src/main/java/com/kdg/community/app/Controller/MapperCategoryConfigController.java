@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kdg.community.app.Domain.Mapper;
 import com.kdg.community.app.Domain.MapperCategoryConfig;
-import com.kdg.community.app.Domain.MapperNameConfig;
 import com.kdg.community.app.Domain.Mapping;
 import com.kdg.community.app.Service.MapperCategoryConfigService;
 import com.kdg.community.app.Service.MapperService;

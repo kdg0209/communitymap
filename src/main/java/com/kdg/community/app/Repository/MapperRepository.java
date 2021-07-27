@@ -15,11 +15,17 @@ public interface MapperRepository extends CrudRepository<Mapper, Long>{
 	@Query(value = "SELECT m FROM Mapper m")
 	Page<Mapper> mainMapperList(Pageable pageable);
 	
+	@Query(value = "SELECT m FROM Mapper m WHERE m.categoryCode = :categoryCode")
+	Page<Mapper> upMapperList(Pageable pageable, @Param("categoryCode") int categoryCode);
+	
 	@Query(value = "SELECT m FROM Mapper m INNER JOIN m.member WHERE m.member.code = :memberCode")
 	Page<Mapper> mapperList(@Param("memberCode") Long memberCode, Pageable pageable);
 	
 	@Query(value = "SELECT m FROM Mapper m JOIN FETCH m.member WHERE m.code = :code AND m.member.code = :memberCode")
 	public Mapper view(@Param("code") Long code, @Param("memberCode") Long memberCode);
+	
+	@Query(value = "SELECT m FROM Mapper m WHERE m.code = :code")
+	public Mapper issetMapper(@Param("code") Long code);
 	
 	@Modifying
 	@Transactional

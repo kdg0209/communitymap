@@ -8,7 +8,7 @@
 	<section class="service-wrapper py-3">
         <div class="container-fluid pb-3">
             <div class="row">
-                <h2 class="h2 text-center col-12 py-5 semi-bold-600">나의 지도 관리</h2>
+                <h2 class="h2 text-center col-12 py-5 semi-bold-600">나의 데이터 관리</h2>
             </div>
         </div>
     </section>

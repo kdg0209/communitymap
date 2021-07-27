@@ -23,6 +23,14 @@ public class MapperService {
 		return mapperRepository.mainMapperList(pageable);
 	}
 	
+	public Page<Mapper> upMapperList (Pageable pageable, int categoryCode){
+		if(categoryCode == 0) {
+			return mapperRepository.mainMapperList(pageable);
+		}else {
+			return mapperRepository.upMapperList(pageable, categoryCode);
+		}
+	}
+	
 	public Page<Mapper> mapperList (Long memberCode, Pageable pageable){
 		return mapperRepository.mapperList(memberCode, pageable);
 	}
@@ -33,6 +41,9 @@ public class MapperService {
 	
 	public Mapper view (Long code, Long memberCode) {
 		return mapperRepository.view(code, memberCode);
+	}
+	public Mapper issetMapper (Long code) {
+		return mapperRepository.issetMapper(code);
 	}
 	
 	public boolean update(Long memberCode, Mapper mapper) {

@@ -48,16 +48,16 @@ background-color: #fff!important;
             <div class="flex-fill mx-xl-5 mb-2">
                 <ul class="nav navbar-nav d-flex justify-content-between mx-xl-5 text-center text-dark">
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="index.html">Home</a>
+                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="/app/mapper/up">지도UP</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="about.html">About</a>
+                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="about.html">랭킹</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="work.html">Work</a>
+                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="work.html">알립니다</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="pricing.html">Pricing</a>
+                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="pricing.html">랭킹</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn-outline-primary rounded-pill px-3" href="/app/join/index">회원가입</a>
