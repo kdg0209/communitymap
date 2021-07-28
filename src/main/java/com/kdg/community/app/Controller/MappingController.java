@@ -70,7 +70,7 @@ public class MappingController {
 
 	@GetMapping(value = "/app/mapping/index")
 	@Transactional
-	public String index(Model model, @RequestParam Long mapperCode, @RequestParam int page) {
+	public String index(Model model, @RequestParam Long mapperCode, @RequestParam(defaultValue = "1") int page) {
 		page = page - 1;
 		
 		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "writeDate"));
@@ -270,6 +270,8 @@ public class MappingController {
 		mapping.setLongitude(longitude);
 		
 		mappingService.update(mapping, mapper, categoryConfig);
+		
+		
 		
 		String replaceCode;
 		String replaceConfigCode;

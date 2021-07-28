@@ -65,7 +65,7 @@
             </div>
         </div>
     </section>
-
+    
     <section class="container overflow-hidden py-5">
     	<div class="row gx-5 gx-sm-3 gx-lg-5 gy-lg-5 gy-3 pb-3 projects">
 	    	<c:forEach var="item" items="${mapperList}">

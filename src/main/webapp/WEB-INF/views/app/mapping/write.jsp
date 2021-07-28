@@ -335,7 +335,7 @@
 	        var data = $("#submitForm").serializeObject();
 	        data.NameValues   = nameValuesArray;
 	        data.mapperCode	  = String(${mapperCode});
-	        
+	    
 	        var request = $.ajax({
                 url: "/app/mapping/write",
                 type : "POST",

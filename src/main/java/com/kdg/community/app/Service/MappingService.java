@@ -26,6 +26,10 @@ public class MappingService {
 		return mappingRepository.mappingListByMapper(mapperCode,  pageable);
 	}
 	
+	public List<Object[]> mappingListByAllMap(Long mapperCode){
+		return mappingRepository.mappingListByAllMap(mapperCode);
+	}
+	
 	public List<Mapping> mappingList(Long mapperCode){
 		return mappingRepository.mappingList(mapperCode);
 	}

@@ -17,6 +17,13 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 	@Query(value = "SELECT m FROM Mapping m INNER JOIN m.mapper WHERE m.mapper.code = :mapperCode")
 	Page<Mapping> mappingListByMapper(@Param("mapperCode") Long mapperCode, Pageable pageable);
 	
+	@Query(value = "SELECT mapping.*, mappercategoryconfig.name AS categoryName, hasName.fieldValues AS fieldValues FROM mapping " +
+			" JOIN mappercategoryconfig ON mapping.categoryCode = mappercategoryconfig.code" +  
+			" JOIN mappinghasnames AS hasName ON hasName.code = " +   
+			" (SELECT mappinghasnames.code FROM mappinghasnames WHERE mapping.code = mappinghasnames.mappingCode LIMIT 1) " +   
+			" WHERE mapping.mapperCode = :mapperCode", nativeQuery = true)
+	List<Object[]> mappingListByAllMap(@Param("mapperCode") Long mapperCode);
+	
 	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.mapper.code = :mapperCode")
 	List<Mapping> mappingList(@Param("mapperCode") Long mapperCode);
 	
@@ -30,4 +37,7 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 	@Transactional
 	@Query(value = "DELETE FROM Mapping WHERE code = :code")
 	public void delete(@Param("code") Long code);
+	
+	
+
 }
