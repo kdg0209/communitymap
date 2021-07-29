@@ -26,8 +26,16 @@ public class MappingService {
 		return mappingRepository.mappingListByMapper(mapperCode,  pageable);
 	}
 	
-	public List<Object[]> mappingListByAllMap(Long mapperCode){
-		return mappingRepository.mappingListByAllMap(mapperCode);
+	public List<Object[]> mappingListByAllMap(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
+		return mappingRepository.mappingListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
+	}
+	
+	public List<Object[]> mappingMarkerListData(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
+		return mappingRepository.mappingMarkerListData(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
+	}
+	
+	public List<Object[]> mappingSelectOneMarker(Long code){
+		return mappingRepository.mappingSelectOneMarker(code);
 	}
 	
 	public List<Mapping> mappingList(Long mapperCode){

@@ -50,38 +50,36 @@ h2 a{color:#fff; font-weight:bold;}
 	          <div class="row">
 	            <div class="col-sm-3 col-md-3 Map-contents">
 	              <div id="Map-List">
-	                <div id="Map-Item-List">
-                       <div class="mapping-item">
-                         <div class="media map_view m-t-30">
-                             <img src="https://moyeoyou.kr/files/travel_destination/d81b72fdac02b88acaf2dc720294efd5_thumb.jpg" style="width:100%; height:auto;">
-                             <div class="media-body pl-3">
-                               <div class="title">
-                                   ${mapper.name}
-                               </div>
-                               <div class="address">
-                                 ${mapper.contents}
-                                </div>
-                               <div class="category">
-                                 <i class="fas fa-tags"></i>
-                                 <span>
-                                 	 <c:if test = "${fn:contains(categoryList, mapper.categoryCode)}">
-								         ${categoryList[mapper.categoryCode]}
-								      </c:if>
-                                 </span>
-                               </div>
+                     <div class="mapping-item">
+                       <div class="media m-t-30">
+                           <img src="https://moyeoyou.kr/files/travel_destination/d81b72fdac02b88acaf2dc720294efd5_thumb.jpg" style="width:100%; height:auto;">
+                           <div class="media-body pl-3">
+                             <div class="title">
+                                 ${mapper.name}
                              </div>
-                         </div>
-                         <a href="javascript:;" class="btn btn-dark btn-icon-split f-s-10" style="float:right; font-size: 12px;">
-                           <i class="far fa-thumbs-up"></i>
-                           <span class="text">좋아요(10)</span>
-                         </a>
+                             <div class="address">
+                               ${mapper.contents}
+                              </div>
+                             <div class="category">
+                               <i class="fas fa-tags"></i>
+                               <span>
+                               	 <c:if test = "${fn:contains(categoryList, mapper.categoryCode)}">
+						         ${categoryList[mapper.categoryCode]}
+						      </c:if>
+                               </span>
+                             </div>
+                           </div>
                        </div>
-	                </div>
+                       <a href="javascript:;" class="btn btn-dark btn-icon-split f-s-10" style="float:right; font-size: 12px;">
+                         <i class="far fa-thumbs-up"></i>
+                         <span class="text">좋아요(10)</span>
+                       </a>
+                     </div>
 	         
 	                <div id="Map-Item-List">
 	                 <c:forEach var="loop" begin="0" end="${fn:length(dataList)-1}">
                        <div class="mapping-item">
-                         <div class="media map_view m-t-30">
+                         <div class="media map_view m-t-30" data-code="${dataList[loop].code}" data-latitude="${dataList[loop].latitude}" data-longitude="${dataList[loop].longitude}">
                              <img src="/img/mappingCover/${dataList[loop].fileName}" style="width:100px; height:100px; margin-top: 5px;">
                              <div class="media-body pl-3">
                                <div class="item-title">
@@ -153,10 +151,6 @@ h2 a{color:#fff; font-weight:bold;}
 	    for (var loop = 0; loop < mapList.length; loop++) {
 	    	var aJson            = new Object();
 	        aJson.code           = mapList[loop].code;
-	        aJson.mapperCode     = mapList[loop].mapperCode;
-	        aJson.categoryCode   = mapList[loop].categoryCode;
-	        aJson.categoryName   = mapList[loop].categoryName;
-	        aJson.address   	   = mapList[loop].address;
 	        aJson.markerImg      = mapList[loop].markerImg;
 	        aJson.latlng         = new kakao.maps.LatLng(mapList[loop].latitude, mapList[loop].longitude);
 	        aJson.latitude       = mapList[loop].latitude;
@@ -165,13 +159,76 @@ h2 a{color:#fff; font-weight:bold;}
 	    }
 	      
 	    for (var Loop = 0; Loop < aJsonArray.length; Loop++) {
-	        displayMarker(aJsonArray[Loop], 'dragendMap');
+	        displayMarker(aJsonArray[Loop]);
 	    }
-	      
+	    
+	    /*
+        *
+        * 지도가 마우스 드래그로 지도 이동이 완료되었을 때 중심좌표가 변경되면 새롭게 지도, 목록에 데이터 그려줌
+        *
+       */
+        kakao.maps.event.addListener(map, 'dragend', function() {
+          var bounds   = map.getBounds();        // 지도의 현재 영역을 얻어옵니다
+          var neLatLng = bounds.getNorthEast();  // 영역의 북동쪽 좌표를 얻어옵니다
+          var swLatLng = bounds.getSouthWest();  // 영역의 남서쪽 좌표를 얻어옵니다
+
+          displayMap(neLatLng.getLng(), neLatLng.getLat(), swLatLng.getLng(), swLatLng.getLat());
+        });
+	    
+        /*
+        *
+        * 지도를 그려주는 함수
+        *
+       */
+        function displayMap(north_east_lng, north_east_lat, south_west_lng, south_west_lat){
+          var request = $.ajax({
+              url: "/app/map/data",
+              type: "post",
+              dataType: "json",
+              contentType: 'application/json',
+              data: JSON.stringify({
+        		  "north_east_lng" : String(north_east_lng),
+                  "north_east_lat" : String(north_east_lat),
+                  "south_west_lng" : String(south_west_lng),
+                  "south_west_lat" : String(south_west_lat),
+                  "mapperCode": String(${mapper.code})
+        	  })
+          });
+          request.done(function(data) {
+        	
+            var page    = '';
+            $("#Map-Item-List").html('');
+
+            resetList(page, north_east_lng, north_east_lat, south_west_lng, south_west_lat, ${mapper.code});
+
+            //그려진 마커를 지워주는 함수
+            removeMarker();
+
+            var aJsonArray = new Array();
+            for (var Loop = 0; Loop < data.dataList.length; Loop++) {
+            	var aJson                  = new Object();
+            	aJson.code           = data.dataList[Loop].code;
+     	        aJson.markerImg      = data.dataList[Loop].markerImg;
+     	        aJson.latlng         = new kakao.maps.LatLng(data.dataList[Loop].latitude, data.dataList[Loop].longitude);
+     	        aJson.latitude       = data.dataList[Loop].latitude;
+     	        aJson.longitude      = data.dataList[Loop].longitude;
+                aJsonArray.push(aJson);
+            }
+            
+            for (var DLoop = 0; DLoop < aJsonArray.length; DLoop++) {
+                displayMarker(aJsonArray[DLoop]); // 지도에 마커를 표시하는 함수
+            }
+          });
+
+          request.fail(function( jqXHR, textStatus ) {
+              alert( "Request failed: " + textStatus );
+          });
+        }  
 	     	
 	      
 	    // 지도에 마커를 표시하는 함수
-        function displayMarker(data, type) {
+        function displayMarker(data) {
+	    	// console.log(data);
             var imageSize   = new kakao.maps.Size(22, 35);                    // 마커 이미지의 이미지 크기 입니다
             var markerImage = new kakao.maps.MarkerImage(data.markerImg, imageSize) // 마커 이미지를 생성합니다
             var marker = new kakao.maps.Marker({
@@ -179,44 +236,53 @@ h2 a{color:#fff; font-weight:bold;}
                 position: data.latlng,
                 image : markerImage
             });
-
             markers.push(marker);           //마커 삭제하기 위해 array에 담음
-            clusterer.addMarkers(markers);  // 클러스터러에 마커들을 추가합니다
+      		clusterer.addMarkers(markers);  // 클러스터러에 마커들을 추가합니다
 
             kakao.maps.event.addListener(marker, 'click', function () {
               var request = $.ajax({
-                  url: "/app/mapping/map_view",
-                  type: "get",
-                  dataType: "json",
-                  data: {
-                    code : data.code
-                  }
+            	   url: "/app/map/selectMarker",
+                   type: "post",
+                   dataType: "json",
+                   contentType: 'application/json',
+                   data: JSON.stringify({
+             		  "code" : String(data.code),
+             	  })
               });
 
               request.done(function(data) {
-                if(data.result == 'true'){
-                	$("#Map-Item-List").html('');
-                    var html       = "";
+                  $("#Map-Item-List").html('');
+                  var html       = "";
 
-                    if(data.data.code != ""){
-                      html += "<div class='media map_view'>";
-                      html +=   "<div class='media-body pl-3'>";
-                      html +=     "<div class='title' data-code='"+data.data.code+"' data-title='"+data.data.title+"' data-address='"+data.data.address+"' data-longitude='"+data.data.longitude+"' data-latitude='"+data.data.latitude+"'>"+data.data.title+"</div>";
-                      html +=     "<div class='address'><i class='fas fa-map-marker-alt'></i> "+data.data.title+"</div>";
-                      html +=     "<div class='write_date'><i class='fas fa-calendar-week'></i> "+data.data.write_date+"</div>";
-                      html +=   "</div>";
-                      html += "</div>";
-                    }else{
-                      html += "<div style='height:300px; text-align:center; padding-top:120px;'>";
-                      html +=   "등록된 내용이 없습니다.";
-                      html += "</div>";
-                    }
-                    $("#Map-Item-List").append(html);
+                  html += "<div class='mapping-item'>";
+                  html +=   "<div class='media map_view m-t-30' data-code='"+data.dataSelectOne[0].code+"' data-latitude='"+data.dataSelectOne[0].latitude+"' data-longitude='"+data.dataSelectOne[0].longitude+"'>";
+                  
+                  if(data.dataSelectOne[0].fileName != ""){
+                    html +=   "<img src='/img/mappingCover/"+ data.dataSelectOne[0].fileName +"' style='width:100px; height:100px; margin-top: 5px;'>";
+                  }else{
+                    html +=   "<img src='/assets/img/default_user.jpg' style='width:100px; height:100px;'>";
+                  }
 
-                    $(".map_view").click(function () {
-                      markerPosition($(this).data('code'), $(this).data('title'), $(this).data('address'), $(this).data('longitude'), $(this).data('latitude'));
-                    });
-                }
+                  html +=     "<div class='media-body pl-3'>";
+                  html +=       "<div class='item=title'>";
+                  html +=          data.dataSelectOne[0].fieldValues
+                  html +=       "</div>";
+                  html +=       "<div class='item-address'>"+ data.dataSelectOne[0].address +"</div>";
+                  html +=       "<div class='item-category'><i class='fas fa-tags'></i> "+ data.dataSelectOne[0].categoryName +"</div>";
+                  html +=     "</div>";
+                  html +=   "</div>";
+                  
+                  html +=   "<a href='javascript:;' class='btn btn-danger btn-icon-split f-s-10' style='float:right; font-size: 10px; color: white;'>";
+                  html +=     "<i class='fas fa-exclamation-circle'></i>";
+                  html +=     "<span class='text'>신고하기</span>";
+                  html +=   "</a>";
+                  html += "</div>";
+                 
+                  $("#Map-Item-List").append(html);
+                  
+                  $(".map_view").click(function () {
+                	  markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
+                  });
               });
 
               request.fail(function( jqXHR, textStatus ) {
@@ -224,6 +290,129 @@ h2 a{color:#fff; font-weight:bold;}
               });
             });
           }
-	      
+	    
+     	  // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+          function removeMarker(type) {
+              //클러스터러 초기화 
+              clusterer.clear();
+
+              for(var loop = 0; loop < markers.length; loop++){
+                  markers[loop].setMap(null);
+              }
+              markers = []; 
+
+              for(var doop = 0; doop < map_view_markers.length; doop++){
+                  map_view_markers[doop].setMap(null);
+              }
+              map_view_markers = [];
+          }
+	    
+          function resetList(page, north_east_lng, north_east_lat, south_west_lng, south_west_lat, mapperCode){
+              var request = $.ajax({
+                  url: "/app/map/dataList",
+                  type: "post",
+                  dataType: "json",
+                  contentType: 'application/json',
+                  data: JSON.stringify({
+                	  "page" : page,
+            		  "north_east_lng" : String(north_east_lng),
+                      "north_east_lat" : String(north_east_lat),
+                      "south_west_lng" : String(south_west_lng),
+                      "south_west_lat" : String(south_west_lat),
+                      "mapperCode": String(mapperCode)
+            	  }) 
+              });
+
+              request.done(function(data) {
+            	  $(".slideDetail").remove();
+            	  $("#Map-List").show();
+                  $("#Map-Item-List").html('');
+                  var html         = "";
+                  
+                  if(data.dataList.length > 0){
+                    for (var loop = 0; loop < data.dataList.length; loop++) {
+                      html += "<div class='mapping-item'>";
+                      html +=   "<div class='media map_view m-t-30' data-code='"+data.dataList[loop].code+"' data-latitude='"+data.dataList[loop].latitude+"' data-longitude='"+data.dataList[loop].longitude+"'>";
+
+                      if(data.dataList[loop].fileName != ""){
+                        html +=   "<img src='/img/mappingCover/"+ data.dataList[loop].fileName +"' style='width:100px; height:100px; margin-top: 5px;'>";
+                      }else{
+                        html +=   "<img src='/assets/img/default_user.jpg' style='width:100px; height:100px;'>";
+                      }
+
+                      html +=     "<div class='media-body pl-3'>";
+                      html +=       "<div class='item=title'>";
+                      html +=          data.dataList[loop].fieldValues
+                      html +=       "</div>";
+                      html +=       "<div class='item-address'>"+ data.dataList[loop].address +"</div>";
+                      html +=       "<div class='item-category'><i class='fas fa-tags'></i> "+ data.dataList[loop].categoryName +"</div>";
+                      html +=     "</div>";
+                      html +=   "</div>";
+                      
+                      html +=   "<a href='javascript:;' class='btn btn-danger btn-icon-split f-s-10' style='float:right; font-size: 10px; color: white;'>";
+                      html +=     "<i class='fas fa-exclamation-circle'></i>";
+                      html +=     "<span class='text'>신고하기</span>";
+                      html +=   "</a>";
+                      html += "</div>";
+                    }
+                  }else{
+                    html += "<div style='height:300px; text-align:center; padding-top:120px;'>";
+                    html +=   "등록된 내용이 없습니다.";
+                    html += "</div>";
+                  }
+                  $("#Map-Item-List").append(html);
+                  
+                  $(".map_view").click(function () {
+                      markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
+                  });
+              });
+          }
+          
+          function markerPosition(code, longitude, latitude){
+              var request = $.ajax({
+                url: "/app/map/slideDetail",
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json',
+                data: JSON.stringify({
+          		  "code" : String(code),
+          		  "mapperCode": String(${mapper.code})
+          	  	}) 
+              });
+
+              request.done(function(data) {
+            	console.log(longitude, latitude);
+                var latlng      = new kakao.maps.LatLng(latitude, longitude);
+                var bounds      = new kakao.maps.LatLngBounds();
+                var imageSrc    = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+                var imageSize   = new kakao.maps.Size(30, 41);
+                var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+             
+                for(var doop = 0; doop < map_view_markers.length; doop++){
+                    map_view_markers[doop].setMap(null);
+                }
+                
+                map_view_markers = [];
+
+                var marker = new kakao.maps.Marker({
+                    map: map,
+                    position: latlng,
+                    image : markerImage
+                });
+       
+                bounds.extend(latlng);
+                map_view_markers.push(marker);
+                map.setBounds(bounds);
+
+                $("#Map-List").parent().parent().find('.Map-contents').addClass('show-detail');
+                $('#Map-List').fadeOut();
+                $(".show-detail").append(data);
+                $(".show-detail").fadeIn();
+              });
+          }
+          
+          $(".map_view").click(function () {
+        	  markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
+          });
 	});
 </script>

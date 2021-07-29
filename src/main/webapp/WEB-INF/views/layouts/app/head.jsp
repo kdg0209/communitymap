@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="../../resources/common/app/css/module.css">
     <link rel="stylesheet" href="../../resources/common/app/css/markerSearch.css">
     <link rel="stylesheet" href="../../resources/common/app/css/map.css">
+    <link rel="stylesheet" href="../../resources/common/app/css/slideDetail.css">
      
     <link rel="stylesheet" href="../../resources/common/app/plugun/categorySelect/categorySelectbox.css">
     <link rel="stylesheet" href="../../resources/common/app/plugun/dropzone-5.7.0/dist/dropzone.css">

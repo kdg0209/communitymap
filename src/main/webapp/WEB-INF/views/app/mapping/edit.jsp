@@ -413,7 +413,7 @@
                     thisDropzone.emit("thumbnail", mockFile, mockFile.path);
                     thisDropzone.emit("complete", mockFile);
                     thisDropzone.files.push(mockFile);
-                </c:forEach>
+                  </c:forEach>
             }
         },
         removedfile: function(file) { // 파일 삭제 시

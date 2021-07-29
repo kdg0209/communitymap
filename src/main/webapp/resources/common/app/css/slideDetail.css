@@ -1,0 +1,128 @@
+@charset "UTF-8";
+.cont-box {
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+.content_tit_box {
+    padding: 10px;
+}
+.cont-box .tit01 {
+    font-weight: bold;
+    display: inline-block;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+.tit01 {
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 15px;
+    padding-left: 20px;
+    position: relative;
+    word-break: keep-all;
+    font-size: 20px;
+    font-weight: bold;
+}
+.tit01::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 3px;
+    z-index: 1;
+    background-color: #82AEFA;
+    left: 0px;
+    top: 6px;
+}
+.tit01::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 3px;
+    z-index: 2;
+    background-color: #4477D0;
+    left: 4px;
+    top: 8px;
+}
+.top_p_none {
+    padding: 0 10px 10px 10px;
+}
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    list-style-type: none;
+}
+.content_box .list-ul .detail_list {
+    display: flex;
+}
+.list-ul li:first-child {
+    border-top: 1px solid #eee;
+}
+.list-ul li {
+    position: relative;
+    padding: 0;
+    margin: 0 !important;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+.list-ul .detail_list strong {
+    font-weight: 500 !important;
+    color: #000;
+    font-size: 13px;
+}
+.list-ul li strong {
+    float: none;
+    margin-right: 0;
+    position: relative;
+    display: table-cell;
+    width: 80px;
+    padding: 0 0 0 0;
+    font-weight: 400;
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+}
+.list-ul .detail_list .txt {
+    font-size: 13px;
+}
+.list-ul li .txt {
+    float: none;
+    width: auto;
+    display: table-cell;
+    color: #666;
+    padding-right: 20px;
+    line-height: 1.4;
+    font-size: 15px;
+    color: #333;
+}
+.sidebar_tourism-tag .sidebar_tourism-tag_ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 3px 10px;
+}
+.btn.btn-xs {
+    font-size: 10px;
+    padding: 2px 7px;
+}
+.tourism-tag li > a {
+    background-color: #555baf;
+    border-radius: 4px;
+    padding: 4px 12px;
+    box-shadow: none;
+    border: none;
+}
+.tourism-tag li a {
+    font-size: 14px;
+    font-weight: 400;
+    color: #555;
+}
+a.btn {
+    display: inline-block;
+}
+.tourism-tag li > a span {
+    color: #fff;
+}
+.tourism-tag li {
+    float: left;
+    margin: 0 0 6px 6px;
+}
