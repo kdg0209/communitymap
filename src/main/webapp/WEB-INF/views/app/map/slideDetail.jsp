@@ -66,51 +66,36 @@
 </style>
 
 <div class="slideDetail">
-  <div class="title">
-    <div class="back">
-      <i class="fas fa-arrow-alt-circle-left"></i>
+  <div class="row">
+    <div class="col-sm-4 col-md-4"></div>
+    <div class="col-sm-4 col-md-4">
+      <a href="javascript:;" class="btn btn-info btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
+        <i class="fas fa-edit"></i>
+        <span class="text">수정</span>
+      </a>
     </div>
-
-    <div class="row">
-      <div class="col-sm-4 col-md-4"></div>
-      <div class="col-sm-4 col-md-4">
-        <a href="javascript:;" class="btn btn-info btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
-          <i class="fas fa-edit"></i>
-          <span class="text">수정</span>
-        </a>
-      </div>
-      <div class="col-sm-4 col-md-4">
-        <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
-          <i class="fas fa-trash-alt"></i>
-          <span class="text">삭제</span>
-        </a>
-      </div>
+    <div class="col-sm-4 col-md-4">
+      <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
+        <i class="fas fa-trash-alt"></i>
+        <span class="text">삭제</span>
+      </a>
     </div>
   </div>
   
   <div class="swiper-container tourism-top">
     <div class="swiper-wrapper">
-      <c:forEach items="${mappingFilesList}" var="files">
-      	<div class="swiper-slide">
-          <div class="thumbs-img">
-              <img src="/img/mappingFiles/${files.fileName}">
-          </div>
-        </div>
-         </c:forEach>
-    </div>
-  </div>
-  
-  <div class="thumbs_wrap">
-    <div class="swiper-container tourism-thumbs tourism-thumbs2 thumbs_width2">
-      <div class="swiper-wrapper">
-        <c:forEach items="${mappingFilesList}" var="files">
+       <div class="swiper-slide">
+         <div class="thumbs-img">
+             <img src="/img/mappingCover/${mapping.fileName}">
+         </div>
+       </div>
+       <c:forEach items="${mappingFilesList}" var="files">
           <div class="swiper-slide">
             <div class="thumbs-img">
                 <img src="/img/mappingFiles/${files.fileName}">
             </div>
           </div>
         </c:forEach>
-      </div>
     </div>
   </div>
 
@@ -161,5 +146,15 @@
       $(".NameValues").each(function (index) {
  		 $(this).html(valueArray[index]);
  	  });
+      
+      var Swipes = new Swiper('.swiper-container', {
+   	    navigation: {
+   	        nextEl: '.swiper-button-next',
+   	        prevEl: '.swiper-button-prev',
+   	    },
+   	    pagination: {
+   	        el: '.swiper-pagination',
+   	    },
+   	  });
   });
  </script>

@@ -50,6 +50,10 @@ h2 a{color:#fff; font-weight:bold;}
 	          <div class="row">
 	            <div class="col-sm-3 col-md-3 Map-contents">
 	              <div id="Map-List">
+	                 <a href="javascript:history.back();" class="btn btn-dark btn-icon-split f-s-10" style="float:left; font-size: 12px; margin-bottom: 8px; margin-top: -18px;">
+	            	     <i class="fas fa-chevron-left"></i>
+                         <span class="text">이전으로</span>
+                       </a>
                      <div class="mapping-item">
                        <div class="media m-t-30">
                            <img src="https://moyeoyou.kr/files/travel_destination/d81b72fdac02b88acaf2dc720294efd5_thumb.jpg" style="width:100%; height:auto;">
@@ -58,7 +62,7 @@ h2 a{color:#fff; font-weight:bold;}
                                  ${mapper.name}
                              </div>
                              <div class="address">
-                               ${mapper.contents}
+                             	 ${fn:substring(mapper.contents, 0, 30) }
                               </div>
                              <div class="category">
                                <i class="fas fa-tags"></i>
@@ -75,31 +79,33 @@ h2 a{color:#fff; font-weight:bold;}
                          <span class="text">좋아요(10)</span>
                        </a>
                      </div>
-	         
+                    
 	                <div id="Map-Item-List">
-	                 <c:forEach var="loop" begin="0" end="${fn:length(dataList)-1}">
-                       <div class="mapping-item">
-                         <div class="media map_view m-t-30" data-code="${dataList[loop].code}" data-latitude="${dataList[loop].latitude}" data-longitude="${dataList[loop].longitude}">
-                             <img src="/img/mappingCover/${dataList[loop].fileName}" style="width:100px; height:100px; margin-top: 5px;">
-                             <div class="media-body pl-3">
-                               <div class="item-title">
-                                   ${dataList[loop].fieldValues}
-                               </div>
-                               <div class="item-address">
-                                	${dataList[loop].address}
-                                </div>
-                               <div class="item-category">
-                                 <i class="fas fa-tags"></i>
-                                 ${dataList[loop].categoryName}
-                               </div>
-                             </div>
-                         </div>
-                         <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
-                           <i class="fas fa-exclamation-circle"></i>
-                           <span class="text">신고하기</span>
-                         </a>
-                       </div>
-                      </c:forEach>
+		                <c:if test="${not empty dataList}">
+							<c:forEach var="loop" begin="0" end="${fn:length(dataList)-1}">
+		                       <div class="mapping-item">
+		                         <div class="media map_view m-t-30" data-code="${dataList[loop].code}" data-latitude="${dataList[loop].latitude}" data-longitude="${dataList[loop].longitude}">
+		                             <img src="/img/mappingCover/${dataList[loop].fileName}" style="width:100px; height:100px; margin-top: 5px;">
+		                             <div class="media-body pl-3">
+		                               <div class="item-title">
+		                                   ${dataList[loop].fieldValues}
+		                               </div>
+		                               <div class="item-address">
+		                                	${dataList[loop].address}
+		                                </div>
+		                               <div class="item-category">
+		                                 <i class="fas fa-tags"></i>
+		                                 ${dataList[loop].categoryName}
+		                               </div>
+		                             </div>
+		                         </div>
+		                         <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
+		                           <i class="fas fa-exclamation-circle"></i>
+		                           <span class="text">신고하기</span>
+		                         </a>
+		                       </div>
+	                        </c:forEach>
+						</c:if>
                 	</div>
 	              </div>
 	            </div>
@@ -280,7 +286,8 @@ h2 a{color:#fff; font-weight:bold;}
                  
                   $("#Map-Item-List").append(html);
                   
-                  $(".map_view").click(function () {
+                  $(".map_view").click(function (e) {
+                	  e.preventDefault();
                 	  markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
                   });
               });
@@ -362,7 +369,8 @@ h2 a{color:#fff; font-weight:bold;}
                   }
                   $("#Map-Item-List").append(html);
                   
-                  $(".map_view").click(function () {
+                  $(".map_view").click(function (e) {
+                	  e.preventDefault();
                       markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
                   });
               });
@@ -411,7 +419,8 @@ h2 a{color:#fff; font-weight:bold;}
               });
           }
           
-          $(".map_view").click(function () {
+          $(".map_view").click(function (e) {
+        	  e.preventDefault();
         	  markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
           });
 	});

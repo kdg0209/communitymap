@@ -27,6 +27,11 @@ public class MappingService {
 	}
 	
 	public List<Object[]> mappingListByAllMap(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
+		System.out.println(mapperCode);
+		System.out.println(south_west_lng);
+		System.out.println(north_east_lng);
+		System.out.println(south_west_lat);
+		System.out.println(north_east_lat);
 		return mappingRepository.mappingListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 	}
 	
