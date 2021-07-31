@@ -73,7 +73,7 @@ public class MappingController {
 	public String index(Model model, @RequestParam Long mapperCode, @RequestParam(defaultValue = "1") int page) {
 		page = page - 1;
 		
-		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "writeDate"));
+		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "is_declare", "writeDate"));
 		Page<Mapping> mappingList = mappingService.mappingListByMapper(mapperCode, pageable);
 		
 		model.addAttribute("getTotalElements", mappingList.getTotalElements()); //전체 데이터 수
@@ -99,7 +99,7 @@ public class MappingController {
 			
 			out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
 			out.flush();
-			return "";
+			return "/";
 		}else {
 			long timestamp 								  = System.currentTimeMillis();
 			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(mapper.getCode());
@@ -219,10 +219,15 @@ public class MappingController {
 			model.addAttribute("mappingHasNamesList",mappingHasNamesList);
 			
 			Map<Character, String> statusConfig = new HashMap<Character, String>();
+			Map<Character, String> declareConfig = new HashMap<Character, String>();
 			
 			statusConfig.put('C', "공개");	
 			statusConfig.put('S', "비공개");	
+			
+			declareConfig.put('N', "해결됨");	
+			declareConfig.put('Y', "해결안됨");	
 		
+			model.addAttribute("declareConfig", declareConfig);
 			model.addAttribute("statusConfig", statusConfig);
 
 			return "app/mapping/edit";
@@ -238,74 +243,78 @@ public class MappingController {
 		Long memberCode 		= (Long) session.getAttribute("code");
 		Long categoryCode   	= Long.parseLong((String) param.get("categoryCode"));
 		Double latitude     	= Double.parseDouble((String) param.get("latitude"));  
-		Double longitude    	= Double.parseDouble((String) param.get("longitude"));  
+		Double longitude    	= Double.parseDouble((String) param.get("longitude")); 
 		String file	 	   		= (String) param.get("cover");
 		String filename    		= (String) param.get("filename");
 		String newFileName		= null;
+		char is_declare	 		= ((String) param.get("is_declare")).charAt(0);
 		char status 	    	= ((String) param.get("status")).charAt(0);
 		String nameValues   	= (String) param.get("NameValues").toString();
 		Mapper mapper 			= mapperService.view(mapperCode, memberCode);
 		Mapping view 			= mappingService.view(code, mapper.getCode());
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
 		
-		List<Map<String, Object>> nameValuesMap = new Gson().fromJson(
-				nameValues, new TypeToken<List<Map<String,Object>>>() {}.getType()
-		);
-		
-		if(file != "") {
-			UUID uuid = UUID.randomUUID();
-			newFileName = uuid + "_" +filename;
+		try {
+			List<Map<String, Object>> nameValuesMap = new Gson().fromJson(
+					nameValues, new TypeToken<List<Map<String,Object>>>() {}.getType()
+			);
 			
-			mapping.setFileName(newFileName);
-			makeFileWithString(file, newFileName);
-			deleteFile(view.getFileName(), UPLOAD_PATH);
-		}
-		
-		mapping.setCode(code);
-		mapping.setStatus(status);
-		mapping.setMapperCategoryConfig(categoryConfig);
-		mapping.setMarkerImg(categoryConfig.getImgPath());
-		mapping.setAddress((String) param.get("address"));
-		mapping.setLatitude(latitude);
-		mapping.setLongitude(longitude);
-		
-		mappingService.update(mapping, mapper, categoryConfig);
-		
-		
-		
-		String replaceCode;
-		String replaceConfigCode;
-		String values;
-		for (int i = 0; i < nameValuesMap.size(); i++) {
-			values 			    = String.valueOf(nameValuesMap.get(i).get("values"));
-			replaceCode 	    = String.valueOf(nameValuesMap.get(i).get("code")).replace(".0", "");
-			replaceConfigCode   = String.valueOf(nameValuesMap.get(i).get("configCode")).replace(".0", "");
-			Long hasNamesCode   = Long.parseLong(replaceCode);
-			Long nameConfigCode = Long.parseLong(replaceConfigCode);
-			
-			MapperNameConfig MapperNameConfig = mapperNameConfigService.getView(nameConfigCode);
-			
-			MappingHasNames mappingHasNames = mappingHasNamesService.getView(hasNamesCode);
-			
-			if(mappingHasNames != null) {
-				MappingHasNames hasNames = new MappingHasNames();
-				hasNames.setCode(hasNamesCode);
-				hasNames.setFieldValues(values);
+			if(file != "") {
+				UUID uuid = UUID.randomUUID();
+				newFileName = uuid + "_" +filename;
 				
-				mappingHasNamesService.update(hasNames);
+				mapping.setFileName(newFileName);
+				makeFileWithString(file, newFileName);
+				deleteFile(view.getFileName(), UPLOAD_PATH);
 			}
 			
-			if(mappingHasNames == null && MapperNameConfig != null) {
-				MapperNameConfig config = mapperNameConfigService.getView(MapperNameConfig.getCode());
-				
-				MappingHasNames hasNames = new MappingHasNames();
-				hasNames.setMapping(mapping);
-				hasNames.setMapperNameConfig(config);
-				hasNames.setFieldValues(values);
-				
-				mappingHasNamesService.insert(hasNames);
-			}
+			mapping.setCode(code);
+			mapping.setStatus(status);
+			mapping.setIs_declare(is_declare);
+			mapping.setMapperCategoryConfig(categoryConfig);
+			mapping.setMarkerImg(categoryConfig.getImgPath());
+			mapping.setAddress((String) param.get("address"));
+			mapping.setLatitude(latitude);
+			mapping.setLongitude(longitude);
 			
+			mappingService.update(mapping, mapper, categoryConfig);
+			
+			String replaceCode;
+			String replaceConfigCode;
+			String values;
+			for (int i = 0; i < nameValuesMap.size(); i++) {
+				values 			    = String.valueOf(nameValuesMap.get(i).get("values"));
+				replaceCode 	    = String.valueOf(nameValuesMap.get(i).get("code")).replace(".0", "");
+				replaceConfigCode   = String.valueOf(nameValuesMap.get(i).get("configCode")).replace(".0", "");
+				Long hasNamesCode   = Long.parseLong(replaceCode);
+				Long nameConfigCode = Long.parseLong(replaceConfigCode);
+				
+				MapperNameConfig MapperNameConfig = mapperNameConfigService.getView(nameConfigCode);
+				
+				MappingHasNames mappingHasNames = mappingHasNamesService.getView(hasNamesCode);
+				
+				if(mappingHasNames != null) {
+					MappingHasNames hasNames = new MappingHasNames();
+					hasNames.setCode(hasNamesCode);
+					hasNames.setFieldValues(values);
+					
+					mappingHasNamesService.update(hasNames);
+				}
+				
+				if(mappingHasNames == null && MapperNameConfig != null) {
+					MapperNameConfig config = mapperNameConfigService.getView(MapperNameConfig.getCode());
+					
+					MappingHasNames hasNames = new MappingHasNames();
+					hasNames.setMapping(mapping);
+					hasNames.setMapperNameConfig(config);
+					hasNames.setFieldValues(values);
+					
+					mappingHasNamesService.insert(hasNames);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}

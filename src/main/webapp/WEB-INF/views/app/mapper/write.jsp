@@ -120,11 +120,26 @@
                     
                     <div class="dashed-line"></div>
                     
-                    <div class="col-8">
+                    <div class="col-12">
                         <div class="form-floating mb-4">
                             <input type="text" 
                             		class="form-control form-control-lg light-300 mapperName"  
                             		name="mapperName[0][name]" 
+                            		value="제목"
+                            		placeholder="항목"
+                            		readonly="readonly"
+                            		style="background-color: white;">
+                            <label for="floatingname light-300">항목</label>
+                            
+                        	<span style="color:#198754; font-size: 13px;">첫번째 항목값은 제목으로 설정됩니다.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-8">
+                        <div class="form-floating mb-4">
+                            <input type="text" 
+                            		class="form-control form-control-lg light-300 mapperName"  
+                            		name="mapperName[1][name]" 
                             		placeholder="항목">
                             <label for="floatingname light-300">항목</label>
                         </div>
@@ -349,10 +364,10 @@
 </script>
 <script>
 	function mapperNameIncrease() {
-		var count = $("#mapperNameConfigDiv").find('.row').length;
+		var count = $("#mapperNameConfigDiv").find('.row').length +1;
 		var number = count + 1;
 		var mapperNameCount = number + 1;
-			
+		
 		if(count == 4){
 			alert("최대 5개까지 설정가능합니다.");
 			return;

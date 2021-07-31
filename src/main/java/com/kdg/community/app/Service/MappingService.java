@@ -27,11 +27,6 @@ public class MappingService {
 	}
 	
 	public List<Object[]> mappingListByAllMap(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
-		System.out.println(mapperCode);
-		System.out.println(south_west_lng);
-		System.out.println(north_east_lng);
-		System.out.println(south_west_lat);
-		System.out.println(north_east_lat);
 		return mappingRepository.mappingListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 	}
 	
@@ -63,6 +58,7 @@ public class MappingService {
 		Mapping updateMapping = mappingRepository.view(mapping.getCode(), mapper.getCode());
 		
 		updateMapping.setStatus(mapping.getStatus());
+		updateMapping.setIs_declare(mapping.getIs_declare());
 		updateMapping.setMapperCategoryConfig(mapperCategoryConfig);
 		updateMapping.setMarkerImg(mapping.getMarkerImg());
 		updateMapping.setAddress(mapping.getAddress());
@@ -72,6 +68,12 @@ public class MappingService {
 		if(mapping.getFileName() != null) {
 			updateMapping.setFileName(mapping.getFileName());
 		}
+		return true;
+	}
+	public boolean DeclareUpdate(Long mappingCode, Long mapperCode) {
+		Mapping updateMapping = mappingRepository.view(mappingCode, mapperCode);
+		
+		updateMapping.setIs_declare('Y');
 		return true;
 	}
 	

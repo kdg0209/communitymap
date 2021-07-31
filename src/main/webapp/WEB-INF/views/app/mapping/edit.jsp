@@ -156,6 +156,30 @@
 	                    	</c:forEach>
 	                    </div>
                     </div>
+                    
+	                <c:if test="${fn:contains(mapping.is_declare, 'Y')}">
+	                	<div class="dashed-line"></div>
+	                	
+	                	<div class="form-group row">
+	                    	<label class="col-sm-2">신고 해결 유무</label>   
+		                    <div class="col-sm-10">
+		                    	<c:forEach var="item" items="${declareConfig}">
+		                    		<label class="btn btn-white m-t-5">
+		   								<input type="radio" 
+		   									   class="is_declare" 
+		   									   name="is_declare" 
+		   									   value="${item.key}"
+		   									   ${item.key eq mapping.is_declare ? "checked" : ""}> ${item.value}                            
+		   					   		</label>
+		                    	</c:forEach>
+		                    </div>
+                    	</div>
+					</c:if>
+					
+					<c:if test="${fn:contains(mapping.is_declare, 'N')}">
+	                	<input type="hidden" name="is_declare" value="N">
+					</c:if>
+						
 			        
 			        <div class="dashed-line"></div>
                     

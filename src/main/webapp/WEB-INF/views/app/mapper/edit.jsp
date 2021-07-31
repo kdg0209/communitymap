@@ -123,18 +123,20 @@
                     
                     <div class="dashed-line"></div>
                     
-                    <c:forEach var="item" items="${nameConfigList}">
-	                    <div class="col-8">
+                    <c:forEach var="item" items="${nameConfigList}" varStatus="status">
+	                    <div class="${status.index == 0 ? 'col-12':'col-8'}">
 	                        <div class="form-floating mb-4">
 	                        	<span class="form-control form-control-lg light-300 nameConfig">${item.name}</span>
 	                        	<label for="floatingname light-300">항목</label>
 	                        </div>
 	                    </div>
 	                    
-	                    <div class="col-4">
-	                    	<button type="button" class="btn btn-primary text-white light-300" onclick="nameConfigEdit('${item.code}');" style="width: 47.5%; margin-top: 4%;">수정</button>
-	                    	<button type="button" class="btn btn-danger text-white light-300" onclick="nameConfigDelete('${item.code}', '${mapper.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
-	                    </div>
+	                    <c:if test="${status.index >= 1}">
+		                    <div class="col-4">
+		                    	<button type="button" class="btn btn-primary text-white light-300" onclick="nameConfigEdit('${item.code}');" style="width: 47.5%; margin-top: 4%;">수정</button>
+		                    	<button type="button" class="btn btn-danger text-white light-300" onclick="nameConfigDelete('${item.code}', '${mapper.code}');" style="width: 47.5%; margin-top: 4%;">삭제</button>
+		                    </div>
+	                    </c:if>
                     </c:forEach>
                     
                     <div id="mapperNameConfigDiv"></div>
@@ -173,9 +175,6 @@
                     	<button type="button" class="btn btn-dark text-white light-300" onclick="mapperCategoryIncrease();" style="width:100%; margin-bottom: 5%;">추가</button>
                     </div>
                     
-                    <div class="dashed-line"></div>
-                	
-                	
                 	<div class="col-md-4 col-4 m-auto">
                 		<a href="/app/mapper/index" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
                     </div>

@@ -16,8 +16,9 @@
         <div class="row justify-content-center my-5">
             <div class="filter-btns shadow-md rounded-pill text-center col-auto">
                 <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4  ${sort eq 'writeDate' ? 'active':''}" href="/app/mapper/index?page=1&sort=writeDate">최신순</a>
-                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4" href="/app/mapper/index?page=1&sort=writeDate">인기순</a>
+                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4 ${sort eq 'mapperRecommendCount' ? 'active':''}" href="/app/mapper/index?page=1&sort=mapperRecommendCount">인기순</a>
                 <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4 ${sort eq 'countOfMapping' ? 'active':''}" href="/app/mapper/index?page=1&sort=countOfMapping">데이터순</a>
+                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4 ${sort eq 'declareCount' ? 'active':''}" href="/app/mapper/index?page=1&sort=declareCount">신고건수순</a>
             </div>
         </div>
     </section>
@@ -31,6 +32,7 @@
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark"><c:out value="${item.name}"/></h5>
 	                        <p class="card-text" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
+	                   		<p class="card-text" style="font-size: 14px;"><i class="fas fa-exclamation-circle"></i>${item.declareCount}개의 신고접수가 있습니다.</p>
 	                        <p class="card-text light-300 text-dark">
 	                      	  <c:out value="${fn:substring(item.contents, 0, 25) }"/>
 	                        </p>

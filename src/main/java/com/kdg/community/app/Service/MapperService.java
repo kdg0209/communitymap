@@ -42,6 +42,7 @@ public class MapperService {
 	public Mapper view (Long code, Long memberCode) {
 		return mapperRepository.view(code, memberCode);
 	}
+
 	public Mapper issetMapper (Long code) {
 		return mapperRepository.issetMapper(code);
 	}

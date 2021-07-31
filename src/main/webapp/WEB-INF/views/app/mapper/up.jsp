@@ -64,7 +64,7 @@
         <div class="row justify-content-center my-5">
             <div class="filter-btns shadow-md rounded-pill text-center col-auto">
                 <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4  ${sort eq 'writeDate' ? 'active':''}" href="/app/mapper/up?page=1&sort=writeDate&categoryCode=${categoryCode}">최신순</a>
-                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4" href="/app/mapper/up?page=1&sort=writeDate&categoryCode=${categoryCode}">인기순</a>
+                <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4 ${sort eq 'mapperRecommendCount' ? 'active':''}" href="/app/mapper/up?page=1&sort=mapperRecommendCount">인기순</a>
                 <a class="btn rounded-pill btn-outline-primary border-0 m-md-2 px-md-4 ${sort eq 'countOfMapping' ? 'active':''}" href="/app/mapper/up?page=1&sort=countOfMapping&categoryCode=${categoryCode}">데이터순</a>
             </div>
         </div>
@@ -86,16 +86,18 @@
  	<section class="container py-5">
         <div class="row projects gx-lg-5">
 	        <c:forEach var="item" items="${mapperList}">
-		        <a href="javascript:;" class="col-sm-6 col-lg-4 text-decoration-none project marketing social business" style="margin-top: 50px;">
-	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0">
+		        <a href="/app/map/index?mapperCode=${item.code}" class="col-sm-6 col-lg-4 text-decoration-none project marketing social business" style="margin-top: 50px;">
+	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0" style="position: relative;">
+                		<div style="position: absolute; margin-top: 3%; margin-left: 3%;">
+	               			<span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300" style="color: black; border-color: black; font-size: 12px;">
+	                       	  <c:if test = "${fn:contains(categoryList, item.categoryCode)}">
+						         ${categoryList[item.categoryCode]}
+						      </c:if>
+	                        </span>
+                		</div>
 	                    <img class="card-img-top" src="<c:url value='/img/mapperCover/${item.fileName}'/>" style="width: 100%; height: 180px;" />
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark"><c:out value="${item.name}"/></h5>
-	                        <span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300" style="color: black; border-color: black; font-size: 12px;">
-                           	  <c:if test = "${fn:contains(categoryList, item.categoryCode)}">
-						         ${categoryList[item.categoryCode]}
-						      </c:if>
-                            </span>
 	                        <p class="card-text light-300 text-dark" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
 	                        <p class="card-text light-300 text-dark">
 	                      	  <c:out value="${fn:substring(item.contents, 0, 20) }"/>

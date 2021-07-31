@@ -72,7 +72,7 @@ public class MapController {
 			
 			List<Object[]> mappingList = mappingService.mappingListByAllMap(mapper.getCode(), south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 			List<Object> dataList = new ArrayList<Object>();
-			String nameArray [] = {"code", "md_type", "md_id", "status", "timestamp", "mapperCode", 
+			String nameArray [] = {"code", "md_type", "md_id", "status", "timestamp", "is_declare", "mapperCode", 
 								   "categoryCode", "markerImg", "fileName", "address", "latitude",
 								   "longitude", "writeDate", "writeIp", "categoryName", "fieldValues"};
 			
@@ -142,7 +142,7 @@ public class MapController {
 		
 		List<Object[]> mappingList = mappingService.mappingListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 		List<Object> dataList = new ArrayList<Object>();
-		String nameArray [] = {"code", "md_type", "md_id", "status", "timestamp", "mapperCode", 
+		String nameArray [] = {"code", "md_type", "md_id", "status", "timestamp", "is_declare", "mapperCode", 
 				   "categoryCode", "markerImg", "fileName", "address", "latitude",
 				   "longitude", "writeDate", "writeIp", "categoryName", "fieldValues"};
 		
@@ -169,7 +169,7 @@ public class MapController {
 		
 		List<Object[]> mappingList = mappingService.mappingSelectOneMarker(code);
 		List<Object> dataSelectOne = new ArrayList<Object>();
-		String nameArray [] = {"code", "md_type", "md_id", "status", "timestamp", "mapperCode", 
+		String nameArray [] = {"code", "md_type", "md_id", "status", "timestamp", "is_declare", "mapperCode", 
 				   "categoryCode", "markerImg", "fileName", "address", "latitude",
 				   "longitude", "writeDate", "writeIp", "categoryName", "fieldValues"};
 		

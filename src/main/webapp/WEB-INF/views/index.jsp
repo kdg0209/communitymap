@@ -56,7 +56,7 @@
                         <a href="?sort=writeDate" class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300 ${sort eq 'writeDate' ? 'active shadow':''}">최신순</a>
                     </li>
                     <li class="nav-item mx-lg-4">
-                        <a class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300">인기순</a>
+                  	    <a href="?sort=mapperRecommendCount" class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300 ${sort eq 'mapperRecommendCount' ? 'active shadow':''}">인기순</a>
                     </li>
                     <li class="nav-item mx-lg-4">
                         <a href="?sort=countOfMapping" class="nav-link btn-outline-primary rounded-pill text-light px-4 light-300 ${sort eq 'countOfMapping' ? 'active shadow':''}">데이터순</a>

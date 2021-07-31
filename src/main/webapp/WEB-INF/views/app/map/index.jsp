@@ -53,7 +53,7 @@ h2 a{color:#fff; font-weight:bold;}
 	                 <a href="javascript:history.back();" class="btn btn-dark btn-icon-split f-s-10" style="float:left; font-size: 12px; margin-bottom: 8px; margin-top: -18px;">
 	            	     <i class="fas fa-chevron-left"></i>
                          <span class="text">이전으로</span>
-                       </a>
+                     </a>
                      <div class="mapping-item">
                        <div class="media m-t-30">
                            <img src="https://moyeoyou.kr/files/travel_destination/d81b72fdac02b88acaf2dc720294efd5_thumb.jpg" style="width:100%; height:auto;">
@@ -74,10 +74,12 @@ h2 a{color:#fff; font-weight:bold;}
                              </div>
                            </div>
                        </div>
-                       <a href="javascript:;" class="btn btn-dark btn-icon-split f-s-10" style="float:right; font-size: 12px;">
-                         <i class="far fa-thumbs-up"></i>
-                         <span class="text">좋아요(10)</span>
-                       </a>
+                       <%if(session.getAttribute("id") != null) {%>
+	                       <a href="javascript:;" class="btn btn-dark btn-icon-split f-s-10" onclick="mapperLikeFn('${mapper.code}');" style="float:right; font-size: 12px;">
+	                         <i class="far fa-thumbs-up"></i>
+	                         <span class="text">좋아요(${mapper.mapperRecommendCount})건</span>
+	                       </a>
+                       <%} %>
                      </div>
                     
 	                <div id="Map-Item-List">
@@ -99,7 +101,7 @@ h2 a{color:#fff; font-weight:bold;}
 		                               </div>
 		                             </div>
 		                         </div>
-		                         <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
+		                         <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" onclick="declareFn('${mapper.code}', '${dataList[loop].code}');" style="float:right; font-size: 10px; color: white;">
 		                           <i class="fas fa-exclamation-circle"></i>
 		                           <span class="text">신고하기</span>
 		                         </a>
@@ -278,7 +280,7 @@ h2 a{color:#fff; font-weight:bold;}
                   html +=     "</div>";
                   html +=   "</div>";
                   
-                  html +=   "<a href='javascript:;' class='btn btn-danger btn-icon-split f-s-10' style='float:right; font-size: 10px; color: white;'>";
+                  html +=   "<a href='javascript:;' class='btn btn-danger btn-icon-split f-s-10' onclick='declareFn("+data.dataSelectOne[0].mapperCode+", "+data.dataSelectOne[0].code+");' style='float:right; font-size: 10px; color: white;'>";
                   html +=     "<i class='fas fa-exclamation-circle'></i>";
                   html +=     "<span class='text'>신고하기</span>";
                   html +=   "</a>";
@@ -356,7 +358,7 @@ h2 a{color:#fff; font-weight:bold;}
                       html +=     "</div>";
                       html +=   "</div>";
                       
-                      html +=   "<a href='javascript:;' class='btn btn-danger btn-icon-split f-s-10' style='float:right; font-size: 10px; color: white;'>";
+                      html +=   "<a href='javascript:;' class='btn btn-danger btn-icon-split f-s-10' onclick='declareFn("+data.dataList[loop].mapperCode+", "+data.dataList[loop].code+");' style='float:right; font-size: 10px; color: white;'>";
                       html +=     "<i class='fas fa-exclamation-circle'></i>";
                       html +=     "<span class='text'>신고하기</span>";
                       html +=   "</a>";
@@ -389,7 +391,6 @@ h2 a{color:#fff; font-weight:bold;}
               });
 
               request.done(function(data) {
-            	console.log(longitude, latitude);
                 var latlng      = new kakao.maps.LatLng(latitude, longitude);
                 var bounds      = new kakao.maps.LatLngBounds();
                 var imageSrc    = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
@@ -424,4 +425,48 @@ h2 a{color:#fff; font-weight:bold;}
         	  markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
           });
 	});
+</script>
+<script>
+	function mapperLikeFn(mapperCode) {
+		var request = $.ajax({
+            url: "/app/mapperRecommend/like",
+            type: "post",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify({
+      		  "mapperCode": String(mapperCode)
+      	  	}) 
+          });
+		
+		 request.done(function(data) {
+			  if (data == true) {
+	            window.location.reload();
+	          } else if (data == false) {
+	         	alert("잘못된 접근입니다.");
+	          	return false;
+	          }
+          });
+		
+		 request.fail(function( jqXHR, textStatus ) {
+             console.log("Request failed: " + textStatus);
+         });
+	}
+</script>
+<script>
+	function declareFn(mapperCode, mappingCode) {
+		var request = $.ajax({
+            url: "/app/mappingDeclare/write?mappingCode=" + mappingCode + "&mapperCode=" + mapperCode,
+            type: "get",
+            dataType: "html",
+          });
+		
+		 request.done(function(data) {
+			 $('body').append(data);
+	         $('.modal').show();
+          });
+		
+		 request.fail(function( jqXHR, textStatus ) {
+             console.log("Request failed: " + textStatus);
+         });
+	}
 </script>

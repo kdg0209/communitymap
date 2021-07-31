@@ -3,7 +3,6 @@ package com.kdg.community.app.Domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Formula;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Data;
 import lombok.ToString;
@@ -29,8 +27,14 @@ public class Mapper {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
 	
-	@Formula("(select count(*) from mapping m where m.mapperCode = code)")
+	@Formula("(SELECT count(*) FROM mapping m WHERE m.mapperCode = code)")
     private int countOfMapping;
+	
+	@Formula("(SELECT count(*) FROM mapper_recommend m WHERE m.mapperCode = code)")
+    private int mapperRecommendCount;
+	
+	@Formula("(SELECT COUNT(*) FROM mapping m WHERE m.mapperCode = code AND m.is_declare = 'Y' )")
+    private int declareCount;
 	
 	private char status;
 	private String fileName;
@@ -62,5 +66,8 @@ public class Mapper {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
 	private List<Mapping> mappingList = new ArrayList<Mapping>();
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapper")
+	private List<MapperRecommend> mapperRecommendList = new ArrayList<MapperRecommend>();
 
 }

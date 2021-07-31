@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@include file="../../layouts/app/head.jsp"%>
 
 <%@include file="../../layouts/app/header.jsp"%>
@@ -17,7 +18,13 @@
         <div class="row projects gx-lg-5">
 	        <c:forEach var="item" items="${mappingList}">
 		        <a href="javascript:;" class="col-sm-6 col-lg-4 text-decoration-none project marketing social business" style="margin-top: 50px;">
-	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0">
+	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0" style="positon :relative;">
+		                <c:if test="${fn:contains(item.is_declare, 'Y')}">
+		                	<div class="btn btn-danger btn-icon-split f-s-10" style="margin-top: 3%; margin-left: 3%; font-size: 10px; color: white; position: absolute;">
+		                	   <i class="fas fa-exclamation-circle"></i>
+	                           <span class="text">신고</span>
+		                	</div>
+						</c:if>
 	                    <img class="card-img-top" src="<c:url value='/img/mappingCover/${item.fileName}'/>" style="width: 100%; height: 180px;" />
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark">${item.address}</h5>
@@ -28,6 +35,12 @@
 	                      	 	${item.writeDate}
 	                        </p>
 	                        <div style="float: right;">
+		                        <c:if test="${fn:contains(item.is_declare, 'Y')}">
+				                	 <span class="text-decoration-none text-dark light-300" onclick="DeclareFn('${item.code}', '${item.mapper.code}');">
+		                              신고내역 조회 <i class="fas fa-angle-right"></i> 
+			                        </span>
+								</c:if>
+							
 	                        	<span class="text-decoration-none text-dark light-300" onclick="EditFn('${item.code}', '${item.mapper.code}');">
 	                              수정 <i class="fas fa-edit"></i>
 		                        </span>
@@ -92,3 +105,9 @@
 		window.location.href = "/app/mapping/edit?code="+code+"&mapperCode="+mapperCode;
 	}
 </script>
+<script>
+	function DeclareFn(code, mapperCode) {
+		window.location.href = "/app/mappingDeclare/index?mappingCode="+code+"&mapperCode="+mapperCode;
+	}
+</script>
+

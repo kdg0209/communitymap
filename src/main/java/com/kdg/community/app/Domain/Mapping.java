@@ -3,7 +3,6 @@ package com.kdg.community.app.Domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +17,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = {"mappingHasNamesList"})
+@ToString(exclude = {"mappingHasNamesList", "mappingdeclareList"})
 @Entity
 @Table(name = "mapping")
 public class Mapping {
@@ -30,6 +29,7 @@ public class Mapping {
 	private String md_id;
 	private char status;
 	private Long timestamp;
+	private char is_declare;
 	private String markerImg;
 	private String fileName;
 	private String address;
@@ -64,4 +64,7 @@ public class Mapping {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapping")
 	private List<MappingHasNames> mappingHasNamesList = new ArrayList<MappingHasNames>();
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapping")
+	private List<MappingDeclare> mappingdeclareList = new ArrayList<MappingDeclare>();
 }
