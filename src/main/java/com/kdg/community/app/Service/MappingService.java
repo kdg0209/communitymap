@@ -30,8 +30,16 @@ public class MappingService {
 		return mappingRepository.mappingListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 	}
 	
+	public List<Object[]> mappingCategoryListByAllMap(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat, List<Long> categoryCode){
+		return mappingRepository.mappingCategoryListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat, categoryCode);
+	}
+	
 	public List<Object[]> mappingMarkerListData(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
 		return mappingRepository.mappingMarkerListData(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
+	}
+	
+	public List<Object[]> mappingMarkerCategoryListData(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat, List<Long> categoryCode){
+		return mappingRepository.mappingMarkerCategoryListData(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat, categoryCode);
 	}
 	
 	public List<Object[]> mappingSelectOneMarker(Long code){

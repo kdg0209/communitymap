@@ -14,7 +14,8 @@
 }
 
 .dropdown-content {
-background-color: #fff!important;
+  z-index: 999 !important;
+  background-color: #fff!important;
   display: none;
   position: absolute;
   min-width: 160px;
@@ -75,11 +76,11 @@ background-color: #fff!important;
 	                	 <div class="dropdown-content">
 						    <a href="/app/mypage/index">마이페이지</a>
 						    <a href="/app/mapper/index?page=1">나의 지도 관리</a>
-						    <a href="#">로그아웃</a>
+						    <a href="/app/login/logout">로그아웃</a>
 						  </div>
 				    </div>
                 <%}else{ %>
-               	 	<a class="nav-link" href="/app/login/index"><i class="fas fa-sign-in-alt fa-2x  text-primary"></i></a>
+               	 	<a class="nav-link" href="/app/login/index" style="font-size: 12px;"><i class="fas fa-sign-in-alt fa-2x  text-primary"></i></a>
                 <%} %>
             </div>
         </div>

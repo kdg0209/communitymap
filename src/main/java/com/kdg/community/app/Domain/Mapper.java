@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Formula;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data

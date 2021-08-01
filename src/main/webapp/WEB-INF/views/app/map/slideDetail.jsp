@@ -65,22 +65,24 @@
 }
 </style>
 
-<div class="slideDetail">
+<div class="slideDetail">         
   <div class="row">
-    <div class="col-sm-4 col-md-4"></div>
-    <div class="col-sm-4 col-md-4">
-      <a href="javascript:;" class="btn btn-info btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
-        <i class="fas fa-edit"></i>
-        <span class="text">수정</span>
-      </a>
-    </div>
-    <div class="col-sm-4 col-md-4">
-      <a href="javascript:;" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white;">
-        <i class="fas fa-trash-alt"></i>
-        <span class="text">삭제</span>
-      </a>
+    <div class="col-sm-12" style="margin-bottom: 3%;">
+    	<c:if test="${memberCode eq mapperMemberCode }">
+			 <a href="/app/mapping/delete?code=${mapping.code}&mapperCode=${mapping.mapper.code}" class="btn btn-danger btn-icon-split f-s-10" style="float:right; font-size: 10px; color: white; margin-left: 3%;">
+			    <i class="fas fa-edit"></i>
+			  	삭제
+			 </a>
+		</c:if>
+    	<c:if test="${userAuthority eq 'friend' }">
+			 <a href="javascript:;" class="btn btn-info btn-icon-split f-s-10"  onclick="mappingEditFn('${mapping.code}', '${mapping.mapper.code}');" style="float:right; font-size: 10px; color: white;">
+			    <i class="fas fa-edit"></i>
+			  	수정
+			 </a>
+		</c:if>
     </div>
   </div>
+  
   
   <div class="swiper-container tourism-top">
     <div class="swiper-wrapper">
@@ -157,4 +159,24 @@
    	    },
    	  });
   });
- </script>
+</script>
+
+<script>
+	function mappingEditFn(mappingCode, mapperCode) {
+		var request = $.ajax({
+            url: "/app/map/editPasswordConfirm?mappingCode=" + mappingCode +"&mapperCode="+mapperCode,
+            type: "GET",
+            dataType: "html",
+          });
+		
+		 request.done(function(data) {
+			 $('body').append(data);
+	         $('.modal').show();
+          });
+		
+		 request.fail(function( jqXHR, textStatus ) {
+             console.log("Request failed: " + textStatus);
+         });
+	}
+</script>
+ 

@@ -29,6 +29,7 @@
                 	<input type="hidden" id="nickname_checker" value="N"/>
                 	<input type="hidden" id="phone_checker" value="N"/>
                 	<input type="hidden" id="email_checker" value="N"/>
+                	<input type="hidden" id="email_confirm_checker" value="N"/>
                 	<div class="col-12">
                         <div class="form-floating mb-4">
                             <input type="text" 
@@ -209,11 +210,24 @@ function doSubmit(frm){
           return false;
       }
       
-      if ($("#email").val().trim() == '' || $("#email_checker").val() == 'N') {
+      if ($("#email").val().trim() == '') {
           $("#email").focus();
           $('#email_checker').val('N');
           $('.is_email_null_chk').show();
           $('.is_email_chk').hide();
+          return false;
+      }
+     
+      if ($("#email_checker").val() == 'N') {
+          $("#email").focus();
+          $('#email_checker').val('N');
+          return false;
+      }
+      
+      if ($("#email_confirm_checker").val() == 'N') {
+    	  alert("이메일 인증이 이루어지지 않았습니다.");
+          $("#email").focus();
+          $("#email_confirm_checker").val('N');
           return false;
       }
       
@@ -429,6 +443,7 @@ function doSubmit(frm){
                  	countdown("countdown", 3, 0);
                  	emailStatus = true;
                 } else if (data == false) {
+                	$("#email_confirm_checker").val('N');
                 	alert("잘못된 접근입니다. \n다시 시도해주세요.");
                 	$("#email-div").hide();
                 	$("#email-send-btn").attr("disabled", false);
@@ -456,14 +471,15 @@ function doSubmit(frm){
                 });
         		
         		request.done(function (data) {
-            		console.log(data);
                     if (data == 'true') {
+                    	$("#email_confirm_checker").val('Y');
                     	alert("정상적으로 처리되었습니다.");
                     	$("#email-check-btn").attr("disabled", true);
                     	$("#email-send-btn").attr("disabled", true);
                     	$("#emailvalue").attr("disabled", true);
                     	$("#countdown").remove();
                     } else if(data == 'pass'){
+                    	$("#email_confirm_checker").val('N');
                     	alert("시간이 초과되었습니다. \n다시 인증해주세요.");
                     	$("#email-div").hide();
                     	$("#emailvalue").val('');

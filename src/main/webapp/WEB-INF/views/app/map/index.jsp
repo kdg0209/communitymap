@@ -74,6 +74,25 @@ h2 a{color:#fff; font-weight:bold;}
                              </div>
                            </div>
                        </div>
+                       
+                       <c:if test="${userAuthority eq 'all' || userAuthority eq 'friend' }">
+	                       <div class="text-center">
+		                       <a href="javascript:;" class="btn btn-dark btn-icon-split f-s-10" onclick="mappingWriteFn('${mapper.code}', '${userAuthority}');" style="font-size: 12px;">
+			                       <i class="far fa-edit"></i>
+			                       	장소 추가 
+		                       </a>
+	                       </div>
+                       </c:if>
+                       
+                       <c:if test="${userAuthority eq 'me' }">
+	                       <div class="text-center">
+		                       <a href="/app/mapping/write?mapperCode=${mapper.code}" class="btn btn-dark btn-icon-split f-s-10" style="font-size: 12px;">
+			                       <i class="far fa-edit"></i>
+			                       	장소 추가
+		                       </a>
+	                       </div>
+                       </c:if>
+                       
                        <%if(session.getAttribute("id") != null) {%>
 	                       <a href="javascript:;" class="btn btn-dark btn-icon-split f-s-10" onclick="mapperLikeFn('${mapper.code}');" style="float:right; font-size: 12px;">
 	                         <i class="far fa-thumbs-up"></i>
@@ -81,6 +100,20 @@ h2 a{color:#fff; font-weight:bold;}
 	                       </a>
                        <%} %>
                      </div>
+                     
+                     <div class="row m-t-20">
+	                 	<ul style="list-style-type: none;">
+		                  <c:forEach var="item" items="${categoryConfigList}">
+	                   		 <li style="float: left;">
+	                   		 	 <label class="btn btn-white m-t-5" style="font-size: 11px; margin-right: 5px; margin-top: 5px;">
+		                   		 	  <input type="checkbox" name="category" class="category" data-code="${item.code}">
+			                          <img src="${item.imgPath}" style="height:20px;">
+			                          ${item.name}
+		                   		 </label>
+		                      </li>
+	                   	   </c:forEach>
+	                    </ul>	
+	                 </div>
                     
 	                <div id="Map-Item-List">
 		                <c:if test="${not empty dataList}">
@@ -135,8 +168,9 @@ h2 a{color:#fff; font-weight:bold;}
 	    };
 	    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 	      
-	    var markers          = [];
-	    var map_view_markers = [];
+	    var markers            = [];
+	    var map_view_markers   = [];
+	    var category_Array     = [];
 	    var mapper_code 	   = ${mapper.code};
 	    var aJsonArray  	   = new Array();
 	    var mapContainer = document.getElementById('kakao_map'), // 지도를 표시할 div
@@ -188,19 +222,33 @@ h2 a{color:#fff; font-weight:bold;}
         * 지도를 그려주는 함수
         *
        */
+     
         function displayMap(north_east_lng, north_east_lat, south_west_lng, south_west_lat){
+       	  let categoryArray = [];
+          for(var loop = 0; loop < category_Array.length; loop++){
+        	  var categoryObj 		 = {};
+  		       	  categoryObj.key 	 = String(loop);
+  		  	   	  categoryObj.values = String(category_Array[loop]);
+  		  	  categoryArray.push(categoryObj);
+          }
+          
+          var categoryList = JSON.stringify(categoryArray);
+        
+          var JsonData = JSON.stringify({
+      		  "north_east_lng" : String(north_east_lng),
+              "north_east_lat" : String(north_east_lat),
+              "south_west_lng" : String(south_west_lng),
+              "south_west_lat" : String(south_west_lat),
+              "mapperCode": String(${mapper.code}),
+              "categoryList":categoryList
+    	  });
+          
           var request = $.ajax({
               url: "/app/map/data",
               type: "post",
+           	  data: JsonData,
+         	  contentType:'application/json',
               dataType: "json",
-              contentType: 'application/json',
-              data: JSON.stringify({
-        		  "north_east_lng" : String(north_east_lng),
-                  "north_east_lat" : String(north_east_lat),
-                  "south_west_lng" : String(south_west_lng),
-                  "south_west_lat" : String(south_west_lat),
-                  "mapperCode": String(${mapper.code})
-        	  })
           });
           request.done(function(data) {
         	
@@ -236,7 +284,6 @@ h2 a{color:#fff; font-weight:bold;}
 	      
 	    // 지도에 마커를 표시하는 함수
         function displayMarker(data) {
-	    	// console.log(data);
             var imageSize   = new kakao.maps.Size(22, 35);                    // 마커 이미지의 이미지 크기 입니다
             var markerImage = new kakao.maps.MarkerImage(data.markerImg, imageSize) // 마커 이미지를 생성합니다
             var marker = new kakao.maps.Marker({
@@ -316,20 +363,33 @@ h2 a{color:#fff; font-weight:bold;}
               map_view_markers = [];
           }
 	    
+     	  // 리스트를 그려주는 함수
           function resetList(page, north_east_lng, north_east_lat, south_west_lng, south_west_lat, mapperCode){
+        	  let categoryArray = [];
+              for(var loop = 0; loop < category_Array.length; loop++){
+            	  var categoryObj 		 = {};
+      		       	  categoryObj.key 	 = String(loop);
+      		  	   	  categoryObj.values = String(category_Array[loop]);
+      		  	  categoryArray.push(categoryObj);
+              }
+              
+              var categoryList = JSON.stringify(categoryArray);
+            
+              var JsonData = JSON.stringify({
+          		  "north_east_lng" : String(north_east_lng),
+                  "north_east_lat" : String(north_east_lat),
+                  "south_west_lng" : String(south_west_lng),
+                  "south_west_lat" : String(south_west_lat),
+                  "mapperCode": String(mapperCode),
+                  "categoryList":categoryList
+        	  });
+              
               var request = $.ajax({
                   url: "/app/map/dataList",
                   type: "post",
                   dataType: "json",
                   contentType: 'application/json',
-                  data: JSON.stringify({
-                	  "page" : page,
-            		  "north_east_lng" : String(north_east_lng),
-                      "north_east_lat" : String(north_east_lat),
-                      "south_west_lng" : String(south_west_lng),
-                      "south_west_lat" : String(south_west_lat),
-                      "mapperCode": String(mapperCode)
-            	  }) 
+                  data: JsonData
               });
 
               request.done(function(data) {
@@ -424,6 +484,20 @@ h2 a{color:#fff; font-weight:bold;}
         	  e.preventDefault();
         	  markerPosition($(this).data('code'), $(this).data('longitude'), $(this).data('latitude'));
           });
+          
+          $(".category").click(function() {
+              category_Array = [];
+   			  $("input[name=category]:checked").each(function() {
+   				  var code = $(this).data('code');
+           	  	  category_Array.push(code);
+   			  });
+
+              var bounds = map.getBounds();          // 지도의 현재 영역을 얻어옵니다
+              var swLatLng = bounds.getSouthWest();  // 영역의 남서쪽 좌표를 얻어옵니다
+              var neLatLng = bounds.getNorthEast();  // 영역의 북동쪽 좌표를 얻어옵니다
+
+              displayMap(neLatLng.getLng(), neLatLng.getLat(), swLatLng.getLng(), swLatLng.getLat());
+        });
 	});
 </script>
 <script>
@@ -469,4 +543,27 @@ h2 a{color:#fff; font-weight:bold;}
              console.log("Request failed: " + textStatus);
          });
 	}
+</script>
+<script>
+function mappingWriteFn(mapperCode, userAuthority) {
+	if(userAuthority == 'all'){
+		window.location.href = "/app/mapping/write?mapperCode="+mapperCode;
+	}
+	if(userAuthority == 'friend'){
+		var request = $.ajax({
+            url: "/app/map/passwordConfirm?mapperCode=" + mapperCode,
+            type: "GET",
+            dataType: "html",
+          });
+		
+		 request.done(function(data) {
+			 $('body').append(data);
+	         $('.modal').show();
+          });
+		
+		 request.fail(function( jqXHR, textStatus ) {
+             console.log("Request failed: " + textStatus);
+         });
+	}
+}
 </script>

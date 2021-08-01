@@ -48,4 +48,11 @@ public class LoginController {
 			out.flush();
 		}
 	}
+	
+	@GetMapping(value = "/app/login/logout")
+	public String logout(HttpSession session) throws Exception{
+		
+		session.invalidate();
+		return "redirect:/";
+	}
 }

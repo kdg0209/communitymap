@@ -187,9 +187,14 @@
 						
 						<div class="dashed-line"></div>
 					 </c:forEach>
-                	
+               
                		<div class="col-md-4 col-4 m-auto">
-               			<a href="/app/mapping/index?mapperCode=${mapperCode}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+               			<c:if test="${editAuth eq '1' || editAuth eq '2'}">
+               				<a href="/app/map/index?mapperCode=${mapperCode}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+               			</c:if>
+               			<c:if test="${editAuth eq '3'}">
+               				<a href="/app/mapping/index?mapperCode=${mapperCode}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
+               			</c:if>
                     </div>
                     <div class="col-md-4 col-4 m-auto text-center">
                         <button type="button" id="submit" class="btn btn-secondary rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">확인</button>
@@ -335,7 +340,8 @@
 	        var data = $("#submitForm").serializeObject();
 	        data.NameValues   = nameValuesArray;
 	        data.mapperCode	  = String(${mapperCode});
-	    
+	        data.key	  	  = String("${key}");
+	        
 	        var request = $.ajax({
                 url: "/app/mapping/write",
                 type : "POST",
@@ -344,15 +350,13 @@
            	 	contentType:'application/json',
                 dataType:'json',
             });
-
+	        
             request.done(function (data) {
-            	if (data != true) {
-                   	window.location.href = "/app/mapping/index?mapperCode="+data;
-                } else if (data == null) {
-                	alert("잘못된 접근입니다. 다시 시도해주세요.");
-                	return false;
-                }
-               
+            	if(${editAuth} == 1 || ${editAuth} == 2){
+            		window.location.href = "/app/map/index?mapperCode="+data;
+            	}else{
+            		window.location.href = "/app/mapping/index?mapperCode="+data;
+            	}
             });
 
             request.fail(function (jqXHR, textStatus) {

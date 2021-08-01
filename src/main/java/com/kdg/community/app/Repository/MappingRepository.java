@@ -32,6 +32,23 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 									   @Param("south_west_lat") Double south_west_lat, 
 									   @Param("north_east_lat") Double north_east_lat);
 	
+	@Query(value = "SELECT mapping.*, mappercategoryconfig.name AS categoryName, hasName.fieldValues AS fieldValues FROM mapping " +
+			" JOIN mappercategoryconfig ON mapping.categoryCode = mappercategoryconfig.code" +  
+			" JOIN mappinghasnames AS hasName ON hasName.code = " +   
+			" (SELECT mappinghasnames.code FROM mappinghasnames WHERE mapping.code = mappinghasnames.mappingCode LIMIT 1) " +   
+			" WHERE mapping.mapperCode = :mapperCode " +
+			" AND mapping.longitude >= :south_west_lng " +
+			" AND mapping.longitude <= :north_east_lng " +
+			" AND mapping.latitude >= :south_west_lat " +
+			" AND mapping.latitude <= :north_east_lat " +
+			" AND categoryCode IN :categoryCode ", nativeQuery = true)
+	List<Object[]> mappingCategoryListByAllMap(@Param("mapperCode") Long mapperCode, 
+									   @Param("south_west_lng") Double south_west_lng, 
+									   @Param("north_east_lng") Double north_east_lng, 
+									   @Param("south_west_lat") Double south_west_lat, 
+									   @Param("north_east_lat") Double north_east_lat,
+									   @Param("categoryCode") List<Long> categoryCode);
+	
 	@Query(value = "SELECT code, markerImg, latitude, longitude FROM mapping WHERE mapperCode = :mapperCode " +
 			" AND longitude >= :south_west_lng " +
 			" AND longitude <= :north_east_lng " +
@@ -42,6 +59,19 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 									   @Param("north_east_lng") Double north_east_lng, 
 									   @Param("south_west_lat") Double south_west_lat, 
 									   @Param("north_east_lat") Double north_east_lat);
+	
+	@Query(value = "SELECT code, markerImg, latitude, longitude FROM mapping WHERE mapperCode = :mapperCode " +
+			" AND longitude >= :south_west_lng " +
+			" AND longitude <= :north_east_lng " +
+			" AND latitude >= :south_west_lat " +
+			" AND latitude <= :north_east_lat " + 
+			" AND categoryCode IN :categoryCode ", nativeQuery = true)
+	List<Object[]> mappingMarkerCategoryListData(@Param("mapperCode") Long mapperCode, 
+									   @Param("south_west_lng") Double south_west_lng, 
+									   @Param("north_east_lng") Double north_east_lng, 
+									   @Param("south_west_lat") Double south_west_lat, 
+									   @Param("north_east_lat") Double north_east_lat,
+									   @Param("categoryCode") List<Long> categoryCode);
 	
 	@Query(value = "SELECT mapping.*, mappercategoryconfig.name AS categoryName, hasName.fieldValues AS fieldValues FROM mapping " +
 			" JOIN mappercategoryconfig ON mapping.categoryCode = mappercategoryconfig.code" +  

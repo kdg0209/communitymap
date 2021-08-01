@@ -99,6 +99,7 @@
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark"><c:out value="${item.name}"/></h5>
 	                        <p class="card-text light-300 text-dark" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
+	                        <p class="card-text light-300 text-dark" style="font-size: 14px;"><i class="far fa-thumbs-up"></i> ${item.mapperRecommendCount}개</p>
 	                        <p class="card-text light-300 text-dark">
 	                      	  <c:out value="${fn:substring(item.contents, 0, 20) }"/>
 	                        </p>

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -89,9 +92,11 @@ public class MappingController {
 	}
 	
 	@GetMapping(value = "/app/mapping/write")
-	public String write(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long mapperCode) throws IOException {
+	public String write(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long mapperCode, @RequestParam(defaultValue = "") String key) throws IOException {
 		Long memberCode = (Long)session.getAttribute("code");
-		Mapper mapper 	= mapperService.view(mapperCode, memberCode);
+		Mapper mapper 	= mapperService.issetMapper(mapperCode);
+		
+		List<String> userWriteAuthorityList = (List)session.getAttribute("userWriteAuthorityList");
 		
 		if(mapper == null) {
 			response.setContentType("text/html; charset=UTF-8");
@@ -101,12 +106,39 @@ public class MappingController {
 			out.flush();
 			return "/";
 		}else {
+			
+			if(mapper.getEditAuth() == 2) {
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out   = response.getWriter();
+				boolean isContain = userKeyCheck(userWriteAuthorityList, key); 
+				
+				if(!isContain) {
+					out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
+					out.flush();
+					return "index";
+				}
+			}
+			if(mapper.getEditAuth() == 3) {
+				Mapper isMapper = mapperService.view(mapper.getCode(), memberCode);
+				
+				if(isMapper == null) {
+					response.setContentType("text/html; charset=UTF-8");
+					PrintWriter out = response.getWriter();
+					
+					out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
+					out.flush();
+					return "index";
+				}
+			}
+			
 			long timestamp 								  = System.currentTimeMillis();
 			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(mapper.getCode());
 			List<MapperNameConfig> namesConfigList 		  = mapperNameConfigService.getNameConfigList(mapper.getCode());
 			
+			model.addAttribute("key", key);
 			model.addAttribute("timestamp", timestamp);
 			model.addAttribute("mapperCode", mapperCode);
+			model.addAttribute("editAuth", mapper.getEditAuth());
 			model.addAttribute("categoryConfigList", categoryConfigList);
 			model.addAttribute("namesConfigList", namesConfigList);
 			
@@ -124,11 +156,13 @@ public class MappingController {
 	@PostMapping(value = "/app/mapping/write")
 	@ResponseBody
 	@Transactional
-	public Long write(Mapping mapping, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
+	public Long write(Mapping mapping, HttpSession session, Model model, @RequestBody Map<String, Object> param) throws Exception {
+		List<String> userAuthorityList = (List)session.getAttribute("userAuthorityList");
 		GetUserIp getUserIp 	= new GetUserIp();
 		SimpleDateFormat format = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date time 				= new Date();
 		String nameValues       = (String) param.get("NameValues").toString();
+		String key	 	   		= (String) param.get("key");
 		String file	 	   		= (String) param.get("cover");
 		String filename    		= (String) param.get("filename");
 		String newFileName 		= null;
@@ -137,7 +171,6 @@ public class MappingController {
 				nameValues, new TypeToken<List<Map<String,Object>>>() {}.getType()
 		);
 		
-		Long memberCode   = (Long)session.getAttribute("code");
 		Long mapperCode   = Long.parseLong((String) param.get("mapperCode")); 
 		Long categoryCode = Long.parseLong((String) param.get("categoryCode"));  
 		Long timestamp 	  = Long.parseLong((String) param.get("timestamp"));  
@@ -145,8 +178,9 @@ public class MappingController {
 		Double longitude  = Double.parseDouble((String) param.get("longitude"));  
 		char status 	  = ((String) param.get("status")).charAt(0);
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
-		Mapper mapper 	  = mapperService.view(mapperCode, memberCode);
-	
+		Mapper mapper 	  = mapperService.issetMapper(mapperCode);
+		
+		
 		if(file != "") {
 			UUID uuid = UUID.randomUUID();
 			
@@ -188,14 +222,19 @@ public class MappingController {
 			mappingHasNamesService.insert(hasNames);
 		}
 		
+		userAuthorityList.remove(key);
+		session.setAttribute("userWriteAuthorityList", userAuthorityList);
+		
 		return mapperCode;
 	}
 	
 	@GetMapping(value = "/app/mapping/edit")
 	@Transactional
-	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code, @RequestParam Long mapperCode) throws IOException {
+	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code, @RequestParam Long mapperCode, @RequestParam(defaultValue = "") String key) throws IOException {
 		Long memberCode = (Long)session.getAttribute("code");
-		Mapper mapper 	= mapperService.view(mapperCode, memberCode);
+		Mapper mapper 	= mapperService.issetMapper(mapperCode);
+		
+		List<String> userEditAuthorityList = (List)session.getAttribute("userEditAuthorityList");
 		
 		if(mapper == null) {
 			response.setContentType("text/html; charset=UTF-8");
@@ -206,6 +245,31 @@ public class MappingController {
 			
 			return "app/login/index";
 		}else {
+			
+			if(mapper.getEditAuth() == 2) {
+				response.setContentType("text/html; charset=UTF-8");
+				PrintWriter out   = response.getWriter();
+				boolean isContain = userKeyCheck(userEditAuthorityList, key); 
+				
+				if(!isContain) {
+					out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
+					out.flush();
+					return "index";
+				}
+			}
+			if(mapper.getEditAuth() == 3) {
+				Mapper isMapper = mapperService.view(mapper.getCode(), memberCode);
+				
+				if(isMapper == null) {
+					response.setContentType("text/html; charset=UTF-8");
+					PrintWriter out = response.getWriter();
+					
+					out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
+					out.flush();
+					return "index";
+				}
+			}
+			
 			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(mapper.getCode());
 			List<MapperNameConfig> namesConfigList 		  = mapperNameConfigService.getNameConfigList(mapper.getCode());
 			Mapping mapping 							  = mappingService.view(code, mapper.getCode());
@@ -229,6 +293,9 @@ public class MappingController {
 		
 			model.addAttribute("declareConfig", declareConfig);
 			model.addAttribute("statusConfig", statusConfig);
+			
+			userEditAuthorityList.remove(key);
+			session.setAttribute("userEditAuthorityList", userEditAuthorityList);
 
 			return "app/mapping/edit";
 		}
@@ -240,7 +307,6 @@ public class MappingController {
 	public boolean edit(Mapping mapping, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
 		Long code		    	= Long.parseLong((String) param.get("code"));
 		Long mapperCode			= Long.parseLong((String) param.get("mapperCode"));
-		Long memberCode 		= (Long) session.getAttribute("code");
 		Long categoryCode   	= Long.parseLong((String) param.get("categoryCode"));
 		Double latitude     	= Double.parseDouble((String) param.get("latitude"));  
 		Double longitude    	= Double.parseDouble((String) param.get("longitude")); 
@@ -250,7 +316,7 @@ public class MappingController {
 		char is_declare	 		= ((String) param.get("is_declare")).charAt(0);
 		char status 	    	= ((String) param.get("status")).charAt(0);
 		String nameValues   	= (String) param.get("NameValues").toString();
-		Mapper mapper 			= mapperService.view(mapperCode, memberCode);
+		Mapper mapper 			= mapperService.issetMapper(mapperCode);
 		Mapping view 			= mappingService.view(code, mapper.getCode());
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
 		
@@ -380,6 +446,20 @@ public class MappingController {
 		}else{
 			return false;
 		}
+	}
+	
+	private boolean userKeyCheck(List<String> userKeyAuthorityList, String key) {
+		try {
+			boolean isContain = userKeyAuthorityList.contains(key);
+			
+			if(!isContain) {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 }
