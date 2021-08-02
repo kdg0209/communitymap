@@ -39,6 +39,7 @@ import com.kdg.community.app.Domain.MappingFiles;
 import com.kdg.community.app.Domain.Member;
 import com.kdg.community.app.Service.MapperCategoryConfigService;
 import com.kdg.community.app.Service.MapperNameConfigService;
+import com.kdg.community.app.Service.MapperRecommendService;
 import com.kdg.community.app.Service.MapperService;
 import com.kdg.community.app.Service.MappingFilesService;
 import com.kdg.community.app.Service.MappingHasNamesService;
@@ -49,6 +50,7 @@ import com.kdg.community.app.Service.MemberService;
 public class MapperController {
 
 	private final MapperService mapperService;
+	private final MapperRecommendService mapperRecommendService;
 	private final MapperNameConfigService mapperNameConfigService;
 	private final MapperCategoryConfigService mapperCategoryConfigService;
 	private final MemberService memberService;
@@ -60,11 +62,14 @@ public class MapperController {
     private static final String MAPPING_UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mappingCover\\"; //파일 경로
 	private static final String MAPPING_FILE_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mappingFiles\\"; //파일 경로
 	
-	public MapperController(MapperService mapperService, MapperNameConfigService mapperNameConfigService,
-			MapperCategoryConfigService mapperCategoryConfigService, MemberService memberService,
-			MappingService mappingService, MappingHasNamesService mappingHasNamesService,
+	
+
+	public MapperController(MapperService mapperService, MapperRecommendService mapperRecommendService,
+			MapperNameConfigService mapperNameConfigService, MapperCategoryConfigService mapperCategoryConfigService,
+			MemberService memberService, MappingService mappingService, MappingHasNamesService mappingHasNamesService,
 			MappingFilesService mappingFilesService) {
 		this.mapperService = mapperService;
+		this.mapperRecommendService = mapperRecommendService;
 		this.mapperNameConfigService = mapperNameConfigService;
 		this.mapperCategoryConfigService = mapperCategoryConfigService;
 		this.memberService = memberService;
@@ -171,14 +176,14 @@ public class MapperController {
 	
 	@PostMapping(value = "/app/mapper/write")
 	@ResponseBody
-	public boolean write(Mapper mapper, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
+	public boolean write(Mapper mapper, HttpSession session, @RequestBody Map<String, String> param) throws Exception {
 		
 		try {
-			String file	 	   = (String) param.get("cover");
-			String filename    = (String) param.get("filename");
+			String file	 	   = param.get("cover");
+			String filename    = param.get("filename");
 			String newFileName = null;
-			int categoryCode   = Integer.parseInt((String) param.get("categoryCode"));
-			int editAuth 	   = Integer.parseInt((String) param.get("editAuth"));
+			int categoryCode   = Integer.parseInt(param.get("categoryCode"));
+			int editAuth 	   = Integer.parseInt(param.get("editAuth"));
 			Long memberCode    = (Long) session.getAttribute("code");
 			Member member 	   = memberService.findByCode(memberCode);
 			
@@ -196,14 +201,14 @@ public class MapperController {
 			}
 			
 			if(param.get("editPassword") != "") {
-				securePassword = encoder.encode((String)param.get("editPassword"));
+				securePassword = encoder.encode(param.get("editPassword"));
 			}
 			
 			mapper.setMember(member);
 			mapper.setStatus('C');
 			mapper.setFileName(newFileName);
-			mapper.setName((String)param.get("name"));
-			mapper.setContents((String)param.get("contents"));
+			mapper.setName(param.get("name"));
+			mapper.setContents(param.get("contents"));
 			mapper.setCategoryCode(categoryCode);
 			mapper.setEditAuth(editAuth);
 			mapper.setEditPassword(securePassword);
@@ -211,19 +216,19 @@ public class MapperController {
 			mapper.setWriteIp(getUserIp.returnIP());
 			mapperService.insert(mapper);
 			
-			int mapperNameCount = Integer.parseInt((String) param.get("mapperNameCount"));
+			int mapperNameCount = Integer.parseInt(param.get("mapperNameCount"));
 			for (int i = 0; i < mapperNameCount; i++) {
 				MapperNameConfig config = new MapperNameConfig();
-				config.setName((String)param.get("mapperName["+ i +"][name]"));
+				config.setName(param.get("mapperName["+ i +"][name]"));
 				config.setMapper(mapper);
 				mapperNameConfigService.insert(config);
 			}
 			
-			int mapperCategoryCount = Integer.parseInt((String) param.get("mapperCategoryCount"));
+			int mapperCategoryCount = Integer.parseInt(param.get("mapperCategoryCount"));
 			for (int i = 0; i < mapperCategoryCount; i++) {
 				MapperCategoryConfig config = new MapperCategoryConfig();
-				config.setName((String)param.get("mapperCategory["+ i +"][name]"));
-				config.setImgPath((String)param.get("mapperCategoryImgPath["+ i +"][name]"));
+				config.setName(param.get("mapperCategory["+ i +"][name]"));
+				config.setImgPath(param.get("mapperCategoryImgPath["+ i +"][name]"));
 				config.setMapper(mapper);
 				mapperCategoryConfigService.insert(config);
 			}
@@ -279,13 +284,13 @@ public class MapperController {
 	
 	@PostMapping(value = "/app/mapper/edit")
 	@ResponseBody
-	public boolean edit(Mapper mapper, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
+	public boolean edit(Mapper mapper, HttpSession session, @RequestBody Map<String, String> param) throws Exception {
 		Long memberCode    		      = (Long)session.getAttribute("code");
-		Long code		   			  = Long.parseLong((String) param.get("code"));
-		int categoryCode   			  = Integer.parseInt((String) param.get("categoryCode"));
-		int editAuth 	   			  = Integer.parseInt((String) param.get("editAuth"));
-		String file	 	   			  = (String) param.get("cover");
-		String filename    			  = (String) param.get("filename");
+		Long code		   			  = Long.parseLong(param.get("code"));
+		int categoryCode   			  = Integer.parseInt(param.get("categoryCode"));
+		int editAuth 	   			  = Integer.parseInt(param.get("editAuth"));
+		String file	 	   			  = param.get("cover");
+		String filename    			  = param.get("filename");
 		String newFileName			  = null;
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		String securePassword		  = null;
@@ -294,7 +299,7 @@ public class MapperController {
 		
 		if(isMapper.getCode() != null) {
 			if(param.get("editPassword") != "") {
-				securePassword = encoder.encode((String)param.get("editPassword"));
+				securePassword = encoder.encode(param.get("editPassword"));
 				mapper.setEditPassword(securePassword);
 			}
 			
@@ -308,26 +313,26 @@ public class MapperController {
 			}
 			
 			mapper.setCode(code);
-			mapper.setName((String) param.get("name"));
-			mapper.setContents((String) param.get("contents"));
+			mapper.setName(param.get("name"));
+			mapper.setContents(param.get("contents"));
 			mapper.setCategoryCode(categoryCode);
 			mapper.setEditAuth(editAuth);
 
 			mapperService.update(memberCode, mapper);
 			
-			int mapperNameCount = Integer.parseInt((String) param.get("mapperNameCount"));
+			int mapperNameCount = Integer.parseInt(param.get("mapperNameCount"));
 			for (int i = 0; i < mapperNameCount; i++) {
 				MapperNameConfig config = new MapperNameConfig();
-				config.setName((String)param.get("mapperName["+ i +"][name]"));
+				config.setName(param.get("mapperName["+ i +"][name]"));
 				config.setMapper(mapper);
 				mapperNameConfigService.insert(config);
 			}
 			
-			int mapperCategoryCount = Integer.parseInt((String) param.get("mapperCategoryCount"));
+			int mapperCategoryCount = Integer.parseInt(param.get("mapperCategoryCount"));
 			for (int i = 0; i < mapperCategoryCount; i++) {
 				MapperCategoryConfig config = new MapperCategoryConfig();
-				config.setName((String)param.get("mapperCategory["+ i +"][name]"));
-				config.setImgPath((String)param.get("mapperCategoryImgPath["+ i +"][name]"));
+				config.setName(param.get("mapperCategory["+ i +"][name]"));
+				config.setImgPath(param.get("mapperCategoryImgPath["+ i +"][name]"));
 				config.setMapper(mapper);
 				mapperCategoryConfigService.insert(config);
 			}
@@ -377,6 +382,7 @@ public class MapperController {
 			
 			mapperCategoryConfigService.deleteByParent(mapper.getCode());
 			mapperNameConfigService.deleteByParent(mapper.getCode());
+			mapperRecommendService.deleteByMember(mapper.getCode());
 			mapperService.delete(mapper.getCode());
 			
 			out.println("<script>location.href='/app/mapper/index?page=1';</script>");

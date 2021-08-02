@@ -1,12 +1,15 @@
 package com.kdg.community.app.Service;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kdg.community.app.Domain.Mapper;
+import com.kdg.community.app.Domain.Member;
 import com.kdg.community.app.Repository.MapperRepository;
 
 @Service
@@ -41,6 +44,10 @@ public class MapperService {
 	
 	public Mapper view (Long code, Long memberCode) {
 		return mapperRepository.view(code, memberCode);
+	}
+	
+	public List<Mapper> selectOneByMember (Long memberCode) {
+		return mapperRepository.selectOneByMember(memberCode);
 	}
 
 	public Mapper issetMapper (Long code) {

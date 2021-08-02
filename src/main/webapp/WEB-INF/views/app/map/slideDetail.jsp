@@ -123,13 +123,6 @@
                   ${mapping.address}
                 </div>
             </li>
-      
-            <li class="detail_list">
-                <strong>카테고리</strong>
-                <div class="txt">
-                 ??
-                </div>
-            </li>
           </ul>
         </div>
       </div>

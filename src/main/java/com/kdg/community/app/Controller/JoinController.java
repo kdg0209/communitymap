@@ -161,6 +161,8 @@ public class JoinController {
 
 		member.setPassword(securePassword);
 		member.setIs_certification('Y');
+		member.setIsDenie('N');
+		member.setIsAdmin('N');
 		member.setWrite_date(format.format(time));
 		member.setWrite_ip(getUserIp());
 		

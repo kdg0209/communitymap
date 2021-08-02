@@ -156,27 +156,27 @@ public class MappingController {
 	@PostMapping(value = "/app/mapping/write")
 	@ResponseBody
 	@Transactional
-	public Long write(Mapping mapping, HttpSession session, Model model, @RequestBody Map<String, Object> param) throws Exception {
+	public Long write(Mapping mapping, HttpSession session, Model model, @RequestBody Map<String, String> param) throws Exception {
 		List<String> userAuthorityList = (List)session.getAttribute("userAuthorityList");
 		GetUserIp getUserIp 	= new GetUserIp();
 		SimpleDateFormat format = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date time 				= new Date();
-		String nameValues       = (String) param.get("NameValues").toString();
-		String key	 	   		= (String) param.get("key");
-		String file	 	   		= (String) param.get("cover");
-		String filename    		= (String) param.get("filename");
+		String nameValues       = param.get("NameValues").toString();
+		String key	 	   		= param.get("key");
+		String file	 	   		= param.get("cover");
+		String filename    		= param.get("filename");
 		String newFileName 		= null;
 		
 		List<Map<String, Object>> nameValuesMap = new Gson().fromJson(
 				nameValues, new TypeToken<List<Map<String,Object>>>() {}.getType()
 		);
 		
-		Long mapperCode   = Long.parseLong((String) param.get("mapperCode")); 
-		Long categoryCode = Long.parseLong((String) param.get("categoryCode"));  
-		Long timestamp 	  = Long.parseLong((String) param.get("timestamp"));  
-		Double latitude   = Double.parseDouble((String) param.get("latitude"));  
-		Double longitude  = Double.parseDouble((String) param.get("longitude"));  
-		char status 	  = ((String) param.get("status")).charAt(0);
+		Long mapperCode   = Long.parseLong(param.get("mapperCode")); 
+		Long categoryCode = Long.parseLong(param.get("categoryCode"));  
+		Long timestamp 	  = Long.parseLong(param.get("timestamp"));  
+		Double latitude   = Double.parseDouble(param.get("latitude"));  
+		Double longitude  = Double.parseDouble(param.get("longitude"));  
+		char status 	  = (param.get("status")).charAt(0);
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
 		Mapper mapper 	  = mapperService.issetMapper(mapperCode);
 		
@@ -191,13 +191,14 @@ public class MappingController {
 		mapping.setMd_type("mapping");
 		mapping.setMd_id("mapping");
 		mapping.setMd_id("mapping");
+		mapping.setIs_declare('N');
 		mapping.setFileName(newFileName);
 		mapping.setStatus(status);
 		mapping.setTimestamp(timestamp);
 		mapping.setMapper(mapper);
 		mapping.setMapperCategoryConfig(categoryConfig);
 		mapping.setMarkerImg(categoryConfig.getImgPath());
-		mapping.setAddress((String) param.get("address"));
+		mapping.setAddress(param.get("address"));
 		mapping.setLatitude(latitude);
 		mapping.setLongitude(longitude);
 		mapping.setWriteDate(format.format(time));
@@ -222,8 +223,10 @@ public class MappingController {
 			mappingHasNamesService.insert(hasNames);
 		}
 		
-		userAuthorityList.remove(key);
-		session.setAttribute("userWriteAuthorityList", userAuthorityList);
+		if(userAuthorityList != null) {
+			userAuthorityList.remove(key);
+			session.setAttribute("userWriteAuthorityList", userAuthorityList);
+		}
 		
 		return mapperCode;
 	}
@@ -294,8 +297,10 @@ public class MappingController {
 			model.addAttribute("declareConfig", declareConfig);
 			model.addAttribute("statusConfig", statusConfig);
 			
-			userEditAuthorityList.remove(key);
-			session.setAttribute("userEditAuthorityList", userEditAuthorityList);
+			if(userEditAuthorityList != null) {
+				userEditAuthorityList.remove(key);
+				session.setAttribute("userEditAuthorityList", userEditAuthorityList);
+			}
 
 			return "app/mapping/edit";
 		}
@@ -304,18 +309,18 @@ public class MappingController {
 	@PostMapping(value = "/app/mapping/edit")
 	@ResponseBody
 	@Transactional // MapperCategoryConfig Lazy속성으로 인한 설정
-	public boolean edit(Mapping mapping, HttpSession session, @RequestBody Map<String, Object> param) throws Exception {
-		Long code		    	= Long.parseLong((String) param.get("code"));
-		Long mapperCode			= Long.parseLong((String) param.get("mapperCode"));
-		Long categoryCode   	= Long.parseLong((String) param.get("categoryCode"));
-		Double latitude     	= Double.parseDouble((String) param.get("latitude"));  
-		Double longitude    	= Double.parseDouble((String) param.get("longitude")); 
-		String file	 	   		= (String) param.get("cover");
-		String filename    		= (String) param.get("filename");
+	public boolean edit(Mapping mapping, HttpSession session, @RequestBody Map<String, String> param) throws Exception {
+		Long code		    	= Long.parseLong(param.get("code"));
+		Long mapperCode			= Long.parseLong(param.get("mapperCode"));
+		Long categoryCode   	= Long.parseLong(param.get("categoryCode"));
+		Double latitude     	= Double.parseDouble(param.get("latitude"));  
+		Double longitude    	= Double.parseDouble(param.get("longitude")); 
+		String file	 	   		= param.get("cover");
+		String filename    		= param.get("filename");
 		String newFileName		= null;
-		char is_declare	 		= ((String) param.get("is_declare")).charAt(0);
-		char status 	    	= ((String) param.get("status")).charAt(0);
-		String nameValues   	= (String) param.get("NameValues").toString();
+		char is_declare	 		= (param.get("is_declare")).charAt(0);
+		char status 	    	= (param.get("status")).charAt(0);
+		String nameValues   	= param.get("NameValues").toString();
 		Mapper mapper 			= mapperService.issetMapper(mapperCode);
 		Mapping view 			= mappingService.view(code, mapper.getCode());
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
@@ -339,7 +344,7 @@ public class MappingController {
 			mapping.setIs_declare(is_declare);
 			mapping.setMapperCategoryConfig(categoryConfig);
 			mapping.setMarkerImg(categoryConfig.getImgPath());
-			mapping.setAddress((String) param.get("address"));
+			mapping.setAddress(param.get("address"));
 			mapping.setLatitude(latitude);
 			mapping.setLongitude(longitude);
 			

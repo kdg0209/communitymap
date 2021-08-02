@@ -80,7 +80,10 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 			" WHERE mapping.code = :code ", nativeQuery = true)
 	List<Object[]> mappingSelectOneMarker(@Param("code") Long code);
 	
-	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.mapper.code = :mapperCode")
+//	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.mapper.code = :mapperCode")
+//	List<Mapping> mappingList(@Param("mapperCode") Long mapperCode);
+	
+	@Query(value = "SELECT * FROM Mapping WHERE mapperCode = :mapperCode", nativeQuery = true)
 	List<Mapping> mappingList(@Param("mapperCode") Long mapperCode);
 	
 	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapperCategoryConfig WHERE m.mapperCategoryConfig.code = :categoryCode")

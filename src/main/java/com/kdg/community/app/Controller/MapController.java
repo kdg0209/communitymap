@@ -3,7 +3,6 @@ package com.kdg.community.app.Controller;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +39,6 @@ import com.kdg.community.app.Service.MapperService;
 import com.kdg.community.app.Service.MappingFilesService;
 import com.kdg.community.app.Service.MappingHasNamesService;
 import com.kdg.community.app.Service.MappingService;
-import com.mysql.cj.Session;
 
 @Controller
 public class MapController {
@@ -123,12 +121,12 @@ public class MapController {
 	
 	@PostMapping(value = "/app/map/data")
 	public ModelAndView data(Model model, @RequestBody Map<String, String> params) throws Exception {
-		Long mapperCode 	  = Long.parseLong((String) params.get("mapperCode"));
-		double south_west_lng = Double.parseDouble((String) params.get("south_west_lng"));
-		double north_east_lng = Double.parseDouble((String) params.get("north_east_lng"));
-		double south_west_lat = Double.parseDouble((String) params.get("south_west_lat"));
-		double north_east_lat = Double.parseDouble((String) params.get("north_east_lat"));
-		String categoryList   = (String) params.get("categoryList").toString();
+		Long mapperCode 	  = Long.parseLong(params.get("mapperCode"));
+		double south_west_lng = Double.parseDouble(params.get("south_west_lng"));
+		double north_east_lng = Double.parseDouble(params.get("north_east_lng"));
+		double south_west_lat = Double.parseDouble(params.get("south_west_lat"));
+		double north_east_lat = Double.parseDouble(params.get("north_east_lat"));
+		String categoryList   = params.get("categoryList").toString();
 		List<Map<String, Object>> categoryMap = null;
 		List<Long> categoryCodeValues = new ArrayList<Long>();
 		List<Object[]> mappingList	  = new ArrayList<Object[]>();
@@ -171,12 +169,12 @@ public class MapController {
 	
 	@PostMapping(value = "/app/map/dataList")
 	public ModelAndView dataList(Model model, @RequestBody Map<String, String> params) throws Exception {
-		Long mapperCode 	  = Long.parseLong((String) params.get("mapperCode"));
-		double south_west_lng = Double.parseDouble((String) params.get("south_west_lng"));
-		double north_east_lng = Double.parseDouble((String) params.get("north_east_lng"));
-		double south_west_lat = Double.parseDouble((String) params.get("south_west_lat"));
-		double north_east_lat = Double.parseDouble((String) params.get("north_east_lat"));
-		String categoryList   = (String) params.get("categoryList").toString();
+		Long mapperCode 	  = Long.parseLong(params.get("mapperCode"));
+		double south_west_lng = Double.parseDouble(params.get("south_west_lng"));
+		double north_east_lng = Double.parseDouble(params.get("north_east_lng"));
+		double south_west_lat = Double.parseDouble(params.get("south_west_lat"));
+		double north_east_lat = Double.parseDouble(params.get("north_east_lat"));
+		String categoryList   = params.get("categoryList").toString();
 		List<Map<String, Object>> categoryMap = null;
 		List<Long> categoryCodeValues = new ArrayList<Long>();
 		List<Object[]> mappingList	  = new ArrayList<Object[]>();
@@ -221,7 +219,7 @@ public class MapController {
 	
 	@PostMapping(value = "/app/map/selectMarker")
 	public ModelAndView selectMarker(Model model, @RequestBody Map<String, String> params) throws Exception {
-		Long code = Long.parseLong((String) params.get("code"));
+		Long code = Long.parseLong(params.get("code"));
 		
 		List<Object[]> mappingList = mappingService.mappingSelectOneMarker(code);
 		List<Object> dataSelectOne = new ArrayList<Object>();
@@ -250,8 +248,8 @@ public class MapController {
 	@Transactional
 	public String slideDetail(HttpSession session, Model model, @RequestBody Map<String, String> params) throws Exception {
 		Long memberCode = (Long)session.getAttribute("code");
-		Long code = Long.parseLong((String) params.get("code"));
-		Long mapperCode = Long.parseLong((String) params.get("mapperCode"));
+		Long code 		= Long.parseLong(params.get("code"));
+		Long mapperCode = Long.parseLong(params.get("mapperCode"));
 		
 		Mapper mapper 								  = mapperService.issetMapper(mapperCode);
 		List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(mapperCode);
@@ -293,10 +291,10 @@ public class MapController {
 	
 	@PostMapping(value = "/app/map/editPasswordConfirm")
 	@ResponseBody
-	public ModelAndView editPasswordConfirm(HttpSession session, Model model, @RequestBody Map<String, Object> params) throws Exception {
-		Long mappingCode 	= Long.parseLong((String) params.get("mappingCode"));
-		Long mapperCode 	= Long.parseLong((String) params.get("mapperCode"));
-		String editPassword = (String)params.get("editPassword");
+	public ModelAndView editPasswordConfirm(HttpSession session, Model model, @RequestBody Map<String, String> params) throws Exception {
+		Long mappingCode 	= Long.parseLong(params.get("mappingCode"));
+		Long mapperCode 	= Long.parseLong(params.get("mapperCode"));
+		String editPassword = params.get("editPassword");
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Mapper mapper		= mapperService.issetMapper(mapperCode);
 		
@@ -346,9 +344,9 @@ public class MapController {
 	
 	@PostMapping(value = "/app/map/passwordConfirm")
 	@ResponseBody
-	public ModelAndView passwordConfirm(HttpSession session, Model model, @RequestBody Map<String, Object> params) throws Exception {
-		Long mapperCode 	= Long.parseLong((String) params.get("mapperCode"));
-		String editPassword = (String)params.get("editPassword");
+	public ModelAndView passwordConfirm(HttpSession session, Model model, @RequestBody Map<String, String> params) throws Exception {
+		Long mapperCode 	= Long.parseLong(params.get("mapperCode"));
+		String editPassword = params.get("editPassword");
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Mapper mapper 		= mapperService.issetMapper(mapperCode);
 		

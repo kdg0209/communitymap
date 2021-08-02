@@ -333,12 +333,12 @@
 	        	var code             = $(this).data('code');
 	        	nameValuesObj.key 	 = String(index + 1);
 	        	nameValuesObj.code 	 = String(code);
-	        	nameValuesObj.values = $(this).val();
+	        	nameValuesObj.values = String($(this).val());
 	        	nameValuesArray.push(nameValuesObj);
 			});
 	        
 	        var data = $("#submitForm").serializeObject();
-	        data.NameValues   = nameValuesArray;
+	        data.NameValues   = JSON.stringify(nameValuesArray);
 	        data.mapperCode	  = String(${mapperCode});
 	        data.key	  	  = String("${key}");
 	        

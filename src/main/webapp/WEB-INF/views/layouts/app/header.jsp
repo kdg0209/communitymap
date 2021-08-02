@@ -74,6 +74,7 @@
                 	<div class="dropdown">
                 		<a class="nav-link dropbtn" href="javascript:;"><i class='bx bx-user-circle bx-sm text-primary'></i></a>
 	                	 <div class="dropdown-content">
+	                	 	<a href="/admin/main/index">관리자</a>
 						    <a href="/app/mypage/index">마이페이지</a>
 						    <a href="/app/mapper/index?page=1">나의 지도 관리</a>
 						    <a href="/app/login/logout">로그아웃</a>

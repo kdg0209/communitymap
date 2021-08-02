@@ -365,12 +365,12 @@
 	        	var configCode      	 = $(this).data('configCode');
 	        	nameValuesObj.code 		 = String(code);
 	        	nameValuesObj.configCode = String(configCode);
-	        	nameValuesObj.values	 = $(this).val();
+	        	nameValuesObj.values	 = String($(this).val());
 	        	nameValuesArray.push(nameValuesObj);
 			});
 	        
 	        var data = $("#submitForm").serializeObject();
-	        data.NameValues     = nameValuesArray;
+	        data.NameValues     = JSON.stringify(nameValuesArray);
 	        data.mapperCode     = String(${mapping.mapper.code});
 	        
 	        var request = $.ajax({

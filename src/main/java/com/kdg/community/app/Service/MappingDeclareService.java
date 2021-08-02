@@ -25,4 +25,8 @@ public class MappingDeclareService {
 	public MappingDeclare insert(MappingDeclare mappingdeclare) {
 		return mappingdeclareRepository.save(mappingdeclare);
 	}
+	
+	public void deleteByParent (Long mappingCode) {
+		mappingdeclareRepository.deleteByParent(mappingCode);
+	}
 }

@@ -24,8 +24,12 @@ public class MapperRecommendService {
 		return mapperRecommendRepository.save(mapperRecommend);
 	}
 	
-	public void delete (Long code) {
-		System.out.println(code);
-		mapperRecommendRepository.delete(code);
+	public void deleteByMapper (Long mapperCode) {
+		mapperRecommendRepository.deleteByMapper(mapperCode);
+	}
+	
+	
+	public void deleteByMember (Long memberCode) {
+		mapperRecommendRepository.deleteByMember(memberCode);
 	}
 }

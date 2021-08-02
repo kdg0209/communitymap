@@ -15,6 +15,11 @@ public interface MapperRecommendRepository extends CrudRepository<MapperRecommen
 	
 	@Modifying
 	@Transactional
+	@Query(value = "DELETE FROM MapperRecommend WHERE mapperCode = :mapperCode")
+	public void deleteByMapper(@Param("mapperCode") Long mapperCode);
+	
+	@Modifying
+	@Transactional
 	@Query(value = "DELETE FROM MapperRecommend WHERE memberCode = :memberCode")
-	public void delete(@Param("memberCode") Long memberCode);
+	public void deleteByMember(@Param("memberCode") Long memberCode);
 }

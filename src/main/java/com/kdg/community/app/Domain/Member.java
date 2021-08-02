@@ -25,6 +25,8 @@ public class Member {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long code;
 	
+	private char isAdmin;
+	private char isDenie;
 	private char is_certification;
 	private String id;
 	private String password;

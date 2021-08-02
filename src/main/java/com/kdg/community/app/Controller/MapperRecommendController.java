@@ -60,7 +60,7 @@ public class MapperRecommendController {
 				mapperRecommend.setMember(member);
 				mapperRecommendService.insert(mapperRecommend);
 			}else {
-				mapperRecommendService.delete(isMapperRecommend.getMember().getCode());
+				mapperRecommendService.deleteByMember(isMapperRecommend.getMember().getCode());
 			}
 			
 			return true;

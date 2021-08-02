@@ -16,11 +16,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Formula;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = {"member", "mapperNameConfigList", "mapperCategoryConfigList", "mappingList"})
+@ToString(exclude = {"member", "mapperNameConfigList", "mapperCategoryConfigList", "mappingList", "mapperRecommendList"})
 @Entity
 @Table(name = "mapper")
 public class Mapper {
