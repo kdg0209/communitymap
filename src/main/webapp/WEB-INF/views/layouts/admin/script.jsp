@@ -13,6 +13,9 @@
   <!-- Template JS File -->
   <script src="../../resources/admin/js/scripts.js"></script>
   <script src="../../resources/admin/js/custom.js"></script>
+  
+  <!-- category selectbox -->
+  <script src="../../resources/common/app/plugun/categorySelect/categorySelectbox.js"></script>
 
   
   <script>

@@ -1,21 +1,19 @@
-package com.kdg.community.app.Controller;
+package com.kdg.community.admin.Controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.codec.binary.Base64;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kdg.community.app.Common.GetUserIp;
 import com.kdg.community.app.Domain.Mapper;
 import com.kdg.community.app.Domain.MapperCategoryConfig;
 import com.kdg.community.app.Domain.MapperNameConfig;
@@ -48,113 +45,94 @@ import com.kdg.community.app.Service.MappingService;
 import com.kdg.community.app.Service.MemberService;
 
 @Controller
-public class MapperController {
+public class AdminMapperController {
 
+	private final MemberService memberService;
 	private final MapperService mapperService;
 	private final MapperRecommendService mapperRecommendService;
 	private final MapperNameConfigService mapperNameConfigService;
 	private final MapperCategoryConfigService mapperCategoryConfigService;
-	private final MemberService memberService;
 	private final MappingService mappingService;
 	private final MappingHasNamesService mappingHasNamesService;
 	private final MappingFilesService mappingFilesService;
 	private final MappingDeclareService mappingDeclareService;
-	 
-    private static final String MAPPER_UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mapperCover\\"; //파일 경로
+	
+	private static final String MAPPER_UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mapperCover\\"; //파일 경로
     private static final String MAPPING_UPLOAD_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mappingCover\\"; //파일 경로
 	private static final String MAPPING_FILE_PATH = "C:\\Users\\cova7\\eclipse-workspace\\communitymap\\src\\main\\webapp\\resources\\files\\mappingFiles\\"; //파일 경로
 	
-	public MapperController(MapperService mapperService, MapperRecommendService mapperRecommendService,
-			MapperNameConfigService mapperNameConfigService, MapperCategoryConfigService mapperCategoryConfigService,
-			MemberService memberService, MappingService mappingService, MappingHasNamesService mappingHasNamesService,
-			MappingFilesService mappingFilesService, MappingDeclareService mappingDeclareService) {
+	public AdminMapperController(MemberService memberService, MapperService mapperService,
+			MapperRecommendService mapperRecommendService, MapperNameConfigService mapperNameConfigService,
+			MapperCategoryConfigService mapperCategoryConfigService, MappingService mappingService,
+			MappingHasNamesService mappingHasNamesService, MappingFilesService mappingFilesService,
+			MappingDeclareService mappingDeclareService) {
+		super();
+		this.memberService = memberService;
 		this.mapperService = mapperService;
 		this.mapperRecommendService = mapperRecommendService;
 		this.mapperNameConfigService = mapperNameConfigService;
 		this.mapperCategoryConfigService = mapperCategoryConfigService;
-		this.memberService = memberService;
 		this.mappingService = mappingService;
 		this.mappingHasNamesService = mappingHasNamesService;
 		this.mappingFilesService = mappingFilesService;
 		this.mappingDeclareService = mappingDeclareService;
 	}
 
-	@GetMapping(value = "/app/mapper/index")
-	public String index(HttpServletResponse response, HttpSession session, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "writeDate") String sort) throws Exception {
-		Long memberCode = (Long)session.getAttribute("code");
+	@GetMapping(value = "/admin/mapper/index")
+	public String index(Model model, @RequestParam(defaultValue = "1") int page) {
+		page = page - 1;
 		
-		if(memberCode == null) {
-			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
+		Pageable pageable 		  = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "write_date"));
+		Page<Object[]> memberList = memberService.mapperCountOfmemberList(pageable);
+		List<Object> dataList 	  = new ArrayList<Object>();
+		String nameArray []		  = {"code", "isAdmin", "isDenie", "is_certification", "id", "password", "name", 
+								     "nickname", "phone", "email", "write_date", "write_ip", "mapperCount"};
 			
-			out.println("<script>alert('로그인 후 이용할 수 있습니다.'); location.href='/app/login/index';</script>");
+		for(Object[] item : memberList) {
+			int loop = 0;
+			Map<String, Object> data = new HashMap<String, Object>();
+			for(Object deppItem : item) {
+				data.put(nameArray[loop++], deppItem);
+			}
+			dataList.add(data);
+		}
+
+		model.addAttribute("getTotalElements", memberList.getTotalElements());  //전체 데이터 수
+		model.addAttribute("getTotalPages", memberList.getTotalPages());        //전체 페이지 수
+		model.addAttribute("hasNext", memberList.hasNext()); 					//이전 페이지 여부
+		model.addAttribute("hasPrevious", memberList.hasPrevious());	        //다음 페이지 여부
+		
+		model.addAttribute("page", page + 1);
+		model.addAttribute("memberList", dataList);
+		
+		return "admin/mapper/index";
+	}
+	
+	@GetMapping(value = "/admin/mapper/detailIndex")
+	public String detailIndex(HttpServletResponse response, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam Long memberCode) throws IOException {
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		Member member   = memberService.findByCode(memberCode);
+		
+		if(member == null) {
+			out.println("<script>alert('잘못된 접근입니다.'); location.href='/admin/mapper/index';</script>");
 			out.flush();
-			
-			return "app/login/index";
+			return "admin/mapper/index";
 		}else {
 			page = page - 1;
 			
-			Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, sort));
+			Pageable pageable 		= PageRequest.of(page, 8, Sort.by(Sort.Direction.DESC, "countOfMapping"));
+			Page<Mapper> mapperList = mapperService.mapperList(member.getCode(), pageable);
+			Map<Integer, String> categoryMap = new HashMap<Integer, String>();
 			
-			Page<Mapper> mapperList = mapperService.mapperList(memberCode, pageable);
-				
 			model.addAttribute("getTotalElements", mapperList.getTotalElements());  //전체 데이터 수
 			model.addAttribute("getTotalPages", mapperList.getTotalPages());        //전체 페이지 수
 			model.addAttribute("hasNext", mapperList.hasNext()); 					//이전 페이지 여부
 			model.addAttribute("hasPrevious", mapperList.hasPrevious());	        //다음 페이지 여부
 			model.addAttribute("page", page + 1);
 			
-			model.addAttribute("sort", sort);
+			model.addAttribute("member", member);
 			model.addAttribute("mapperList", mapperList.getContent());
-			
-			return "app/mapper/index";
-		}
-	}
-	
-	@GetMapping(value = "/app/mapper/up")
-	public String up(Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "writeDate") String sort, @RequestParam(defaultValue = "0") int categoryCode) throws Exception {
-		page = page - 1;
-	
-		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, sort));
-		
-		Page<Mapper> mapperList = mapperService.upMapperList(pageable, categoryCode);
-		Map<Integer, String> categoryMap = new HashMap<Integer, String>();
-			
-		model.addAttribute("getTotalElements", mapperList.getTotalElements());  //전체 데이터 수
-		model.addAttribute("getTotalPages", mapperList.getTotalPages());        //전체 페이지 수
-		model.addAttribute("hasNext", mapperList.hasNext()); 					//이전 페이지 여부
-		model.addAttribute("hasPrevious", mapperList.hasPrevious());	        //다음 페이지 여부
-		model.addAttribute("page", page + 1);
-		model.addAttribute("sort", sort);
-		model.addAttribute("categoryCode", categoryCode);
-		
-		categoryMap.put(1, "문화");	
-		categoryMap.put(2, "음식");	
-		categoryMap.put(3, "여행");	
-		categoryMap.put(4, "조사");	
-		categoryMap.put(5, "안전");	
-		categoryMap.put(6, "기타");	
-		
-		model.addAttribute("categoryList", categoryMap);
-		model.addAttribute("mapperList", mapperList.getContent());
-		
-		return "app/mapper/up";
-	}
-
-	@GetMapping(value = "/app/mapper/write")
-	public String write(HttpServletResponse response, HttpSession session, Model model) throws Exception {
-		String memberID = (String)session.getAttribute("id");
-		
-		if(memberID == null) {
-			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			
-			out.println("<script>alert('로그인 후 이용할 수 있습니다.'); location.href='/app/login/index';</script>");
-			out.flush();
-			
-			return "app/login/index";
-		}else {
-			Map<Integer, String> categoryMap = new HashMap<Integer, String>();
 			
 			categoryMap.put(1, "문화");	
 			categoryMap.put(2, "음식");	
@@ -162,102 +140,30 @@ public class MapperController {
 			categoryMap.put(4, "조사");	
 			categoryMap.put(5, "안전");	
 			categoryMap.put(6, "기타");	
+			
 			model.addAttribute("categoryList", categoryMap);
 			
-			Map<Integer, String> editAuth = new HashMap<Integer, String>();
-			
-			editAuth.put(1, "누구나 작성/수정 가능");	
-			editAuth.put(2, "아는 사람끼리");	
-			editAuth.put(3, "나만 가능");
-			model.addAttribute("editAuth", editAuth);
-			
-			return "app/mapper/write";
+			return "admin/mapper/detailIndex";
 		}
 	}
 	
-	@PostMapping(value = "/app/mapper/write")
-	@ResponseBody
-	public boolean write(Mapper mapper, HttpSession session, @RequestBody Map<String, String> param) throws Exception {
+	@GetMapping(value = "/admin/mapper/edit")
+	public String edit(HttpServletResponse response, Model model, @RequestParam Long mapperCode, @RequestParam Long memberCode) throws Exception {
+		Mapper mapper 	= mapperService.issetMapper(mapperCode);
 		
-		try {
-			String file	 	   = param.get("cover");
-			String filename    = param.get("filename");
-			String newFileName = null;
-			int categoryCode   = Integer.parseInt(param.get("categoryCode"));
-			int editAuth 	   = Integer.parseInt(param.get("editAuth"));
-			Long memberCode    = (Long) session.getAttribute("code");
-			Member member 	   = memberService.findByCode(memberCode);
-			
-			GetUserIp getUserIp 		  = new GetUserIp();
-			SimpleDateFormat format 	  = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-			Date time 				      = new Date();
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			String securePassword		  = null;
-			
-			if(file != "") {
-				UUID uuid = UUID.randomUUID();
-				
-				newFileName = uuid + "_" +filename;
-				makeFileWithString(file, newFileName);
-			}
-			
-			if(param.get("editPassword") != "") {
-				securePassword = encoder.encode(param.get("editPassword"));
-			}
-			
-			mapper.setMember(member);
-			mapper.setStatus('C');
-			mapper.setFileName(newFileName);
-			mapper.setName(param.get("name"));
-			mapper.setContents(param.get("contents"));
-			mapper.setCategoryCode(categoryCode);
-			mapper.setEditAuth(editAuth);
-			mapper.setEditPassword(securePassword);
-			mapper.setWriteDate(format.format(time));
-			mapper.setWriteIp(getUserIp.returnIP());
-			mapperService.insert(mapper);
-			
-			int mapperNameCount = Integer.parseInt(param.get("mapperNameCount"));
-			for (int i = 0; i < mapperNameCount; i++) {
-				MapperNameConfig config = new MapperNameConfig();
-				config.setName(param.get("mapperName["+ i +"][name]"));
-				config.setMapper(mapper);
-				mapperNameConfigService.insert(config);
-			}
-			
-			int mapperCategoryCount = Integer.parseInt(param.get("mapperCategoryCount"));
-			for (int i = 0; i < mapperCategoryCount; i++) {
-				MapperCategoryConfig config = new MapperCategoryConfig();
-				config.setName(param.get("mapperCategory["+ i +"][name]"));
-				config.setImgPath(param.get("mapperCategoryImgPath["+ i +"][name]"));
-				config.setMapper(mapper);
-				mapperCategoryConfigService.insert(config);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-			return false;
-		}
-		return true;
-	}
-	
-	@GetMapping(value = "/app/mapper/edit")
-	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code) throws Exception {
-		Long memberCode = (Long)session.getAttribute("code");
-		Mapper mapper 	= mapperService.view(code, memberCode);
-		
-		if(mapper.getCode() == null) {
+		if(mapper == null) {
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			
-			out.println("<script>alert('로그인 후 이용할 수 있습니다.'); location.href='/app/login/index';</script>");
+			out.println("<script>alert('잘못된 접근입니다.'); location.href='/app/login/index';</script>");
 			out.flush();
 			
 			return "app/login/index";
 		}else {
-			List<MapperNameConfig> nameConfigList = mapperNameConfigService.getNameConfigList(code);
-			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(code);
+			List<MapperNameConfig> nameConfigList = mapperNameConfigService.getNameConfigList(mapper.getCode());
+			List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(mapper.getCode());
 			
+			model.addAttribute("memberCode", memberCode);
 			model.addAttribute("mapper", mapper);
 			model.addAttribute("nameConfigList", nameConfigList);
 			model.addAttribute("categoryConfigList", categoryConfigList);
@@ -279,14 +185,14 @@ public class MapperController {
 			editAuth.put(3, "나만 가능");
 			model.addAttribute("editAuth", editAuth);
 			
-			return "app/mapper/edit";
+			return "admin/mapper/edit";
 		}
 	}
 	
-	@PostMapping(value = "/app/mapper/edit")
+	@PostMapping(value = "/admin/mapper/edit")
 	@ResponseBody
-	public boolean edit(Mapper mapper, HttpSession session, @RequestBody Map<String, String> param) throws Exception {
-		Long memberCode    		      = (Long)session.getAttribute("code");
+	public boolean edit(Mapper mapper, @RequestBody Map<String, String> param) throws Exception {
+		Long memberCode		   		  = Long.parseLong(param.get("memberCode"));
 		Long code		   			  = Long.parseLong(param.get("code"));
 		int categoryCode   			  = Integer.parseInt(param.get("categoryCode"));
 		int editAuth 	   			  = Integer.parseInt(param.get("editAuth"));
@@ -344,11 +250,10 @@ public class MapperController {
 		}
 	}
 	
-	@GetMapping(value = "/app/mapper/delete")
+	@GetMapping(value = "/admin/mapper/delete")
 	@Transactional
-	public void delete(HttpServletResponse response, HttpSession session, @RequestParam Long code) throws IOException {
-		Long memberCode = (Long)session.getAttribute("code");
-		Mapper mapper 	= mapperService.view(code, memberCode);
+	public void delete(HttpServletResponse response, @RequestParam Long mapperCode, @RequestParam Long memberCode) throws IOException {
+		Mapper mapper 	= mapperService.view(mapperCode, memberCode);
 		
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -387,7 +292,7 @@ public class MapperController {
 			mapperRecommendService.deleteByMember(mapper.getCode());
 			mapperService.delete(mapper.getCode());
 			
-			out.println("<script>location.href='/app/mapper/index?page=1';</script>");
+			out.println("<script>location.href='/admin/mapper/detailIndex?memberCode="+ memberCode +"';</script>");
 			out.flush();
 		}
 	}
@@ -419,4 +324,5 @@ public class MapperController {
 			return false;
 		}
 	}
+	
 }

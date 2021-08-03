@@ -1,4 +1,4 @@
-package com.kdg.community.app.Controller;
+package com.kdg.community.admin.Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,30 +23,31 @@ import com.kdg.community.app.Service.MapperService;
 import com.kdg.community.app.Service.MappingService;
 
 @Controller
-public class MapperCategoryConfigController {
+public class AdminMapperCategoryConfigController {
 
 	private final MapperService mapperService;
 	private final MappingService mappingService;
 	private final MapperCategoryConfigService mapperCategoryConfigService;
-
-	public MapperCategoryConfigController(MapperService mapperService, MappingService mappingService,
+	
+	public AdminMapperCategoryConfigController(MapperService mapperService, MappingService mappingService,
 			MapperCategoryConfigService mapperCategoryConfigService) {
 		this.mapperService = mapperService;
 		this.mappingService = mappingService;
 		this.mapperCategoryConfigService = mapperCategoryConfigService;
 	}
-
-	@GetMapping(value = "/app/mapperCategoryConfig/edit")
-	public String edit(HttpSession session, Model model, @RequestParam Long code) {
+	
+	@GetMapping(value = "/admin/mapperCategoryConfig/edit")
+	public String edit(Model model, @RequestParam Long code, @RequestParam Long memberCode) {
 		
 		MapperCategoryConfig config = mapperCategoryConfigService.getView(code);
 		
+		model.addAttribute("memberCode", memberCode);
 		model.addAttribute("config", config);
 		
-		return "app/mapperCategoryConfig/edit";
+		return "admin/mapperCategoryConfig/edit";
 	}
 	
-	@PostMapping(value = "/app/mapperCategoryConfig/edit")
+	@PostMapping(value = "/admin/mapperCategoryConfig/edit")
 	@ResponseBody
 	public Boolean edit(MapperCategoryConfig mapperCategoryConfig) {
 		
@@ -54,11 +55,10 @@ public class MapperCategoryConfigController {
 		return true;
 	}
 	
-	@GetMapping(value = "/app/mapperCategoryConfig/delete")
+	@GetMapping(value = "/admin/mapperCategoryConfig/delete")
 	@Transactional
-	public void delete(HttpServletResponse response, HttpSession session, @RequestParam Long code, @RequestParam Long mapperCode) throws IOException {
-		Long memberCode = (Long)session.getAttribute("code");
-		Mapper mapper 	= mapperService.view(mapperCode, memberCode);
+	public void delete(HttpServletResponse response, HttpSession session, @RequestParam Long code, @RequestParam Long mapperCode, @RequestParam Long memberCode) throws IOException {
+		Mapper mapper 	= mapperService.issetMapper(mapperCode);
 		
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -73,6 +73,7 @@ public class MapperCategoryConfigController {
 			
 			for(Mapping item : mappingList) {
 				Mapping mapping = new Mapping();
+				
 				mapping.setCode(item.getCode());
 				mapping.setMapper(item.getMapper());
 				mapping.setMapperCategoryConfig(null);
@@ -82,9 +83,9 @@ public class MapperCategoryConfigController {
 			}
 			mapperCategoryConfigService.delete(code);
 			
-			out.println("<script>location.href='/app/mapper/edit?code="+ mapper.getCode() +"';</script>");
+			out.println("<script>location.href='/admin/mapper/edit?mapperCode="+ mapper.getCode() +"&memberCode="+ memberCode +"';</script>");
 			out.flush();
-			
 		}
 	}
+	
 }

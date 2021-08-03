@@ -11,6 +11,7 @@
  <!-- Custom -->
  <script src="../../resources/assets/js/custom.js"></script>
  
+  <!-- category selectbox -->
  <script src="../../resources/common/app/plugun/categorySelect/categorySelectbox.js"></script>
  
  <script src="/resources/common/app/plugun/dropzone-5.7.0/dist/dropzone.js"></script>

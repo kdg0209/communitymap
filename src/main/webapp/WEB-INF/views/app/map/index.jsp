@@ -68,8 +68,8 @@ h2 a{color:#fff; font-weight:bold;}
                                <i class="fas fa-tags"></i>
                                <span>
                                	 <c:if test = "${fn:contains(categoryList, mapper.categoryCode)}">
-						         ${categoryList[mapper.categoryCode]}
-						      </c:if>
+							         ${categoryList[mapper.categoryCode]}
+							     </c:if>
                                </span>
                              </div>
                            </div>

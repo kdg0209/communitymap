@@ -22,6 +22,10 @@ public class MemberService {
 	public Page<Member> memberList(Pageable pageable){
 		return memberRepository.memberList(pageable);
 	}
+
+	public Page<Object[]> mapperCountOfmemberList(Pageable pageable){
+		return memberRepository.mapperCountOfmemberList(pageable);
+	}
 	
 	public Member findByCode (Long code) {
 		return memberRepository.findByCode(code);

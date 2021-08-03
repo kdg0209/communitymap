@@ -12,9 +12,16 @@
         </li>
         <li class="menu-header">회원</li>
         <li class="nav-item dropdown">
-          <a href="javascript:;" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>회원</span></a>
+          <a href="javascript:;" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-users"></i> <span>회원</span></a>
           <ul class="dropdown-menu">
             <li><a href="/admin/member/index" class="nav-link">회원 목록</a></li>
+          </ul>
+        </li>
+        <li class="menu-header">지도 생성자</li>
+        <li class="nav-item dropdown">
+          <a href="javascript:;" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-map-marked-alt"></i> <span>지도 생성자</span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/admin/mapper/index" class="nav-link">지도 생성자 목록</a></li>
           </ul>
         </li>
       </ul>

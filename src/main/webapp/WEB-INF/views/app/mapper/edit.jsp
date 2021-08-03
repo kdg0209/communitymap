@@ -14,7 +14,7 @@
                 	<i class="fas fa-map-marked-alt fa-2x"></i>
                 </div>
                 <div class="service-heading col-10 col-lg-9 text-start float-end light-300">
-                    <h2 class="h3 pb-4 typo-space-line">Community Map2221</h2>
+                    <h2 class="h3 pb-4 typo-space-line">Community Map</h2>
                 </div>
             </div>
             <p class="service-footer col-10 offset-2 col-lg-9 offset-lg-3 text-start pb-3 text-muted px-2">
@@ -141,11 +141,11 @@
                     
                     <div id="mapperNameConfigDiv"></div>
                     
-                    <div class="dashed-line"></div>
-                    
                     <div class="col-12">
                     	<button type="button" class="btn btn-dark text-white light-300" onclick="mapperNameIncrease();" style="width:100%; margin-bottom: 5%;">추가</button>
                     </div>
+                    
+                    <div class="dashed-line"></div>
                     
                     <c:forEach var="item" items="${categoryConfigList}">
                     	<div class="col-1">

@@ -15,6 +15,11 @@ public interface MemberRepository extends CrudRepository<Member, Long>{
 	@Query(value = "SELECT m FROM Member m")
 	Page<Member> memberList(Pageable pageable);
 	
+	@Query(value = " SELECT *, " +
+				   " (SELECT COUNT(*) FROM mapper WHERE mapper.memberCode = member.code) AS mapperCount" + 
+				   " FROM member WHERE (SELECT COUNT(*) FROM mapper WHERE mapper.memberCode = member.code) > 0 ", nativeQuery = true)
+	Page<Object[]> mapperCountOfmemberList(Pageable pageable);
+	
 	Member findByCode(Long code);
 	
 	@Query(value = "SELECT * FROM member WHERE id= :id", nativeQuery = true)
