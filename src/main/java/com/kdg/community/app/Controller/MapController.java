@@ -66,7 +66,7 @@ public class MapController {
 	
 	@GetMapping(value = "/app/map/index")
 	@Transactional
-	public String index(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long mapperCode) throws Exception {
+	public String index(HttpServletResponse response, Model model, @RequestParam Long mapperCode) throws Exception {
 		Mapper mapper = mapperService.issetMapper(mapperCode);
 		
 		if(mapper == null) {

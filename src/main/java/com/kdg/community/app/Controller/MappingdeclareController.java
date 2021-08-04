@@ -78,8 +78,8 @@ public class MappingdeclareController {
 	}
 
 	@GetMapping(value = "/app/mappingDeclare/write")
-	public String write(HttpServletResponse response, Model model, @RequestParam Long mappingCode, @RequestParam Long mapperCode) throws Exception {
-		Mapping mapping = mappingService.view(mappingCode, mapperCode);
+	public String write(HttpServletResponse response, Model model, @RequestParam Long mappingCode) throws Exception {
+		Mapping mapping = mappingService.issetMapping(mappingCode);
 		
 		if(mapping == null) {
 			response.setContentType("text/html; charset=UTF-8");

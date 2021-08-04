@@ -14,7 +14,7 @@ import com.kdg.community.app.Domain.Mapping;
 
 public interface MappingRepository extends CrudRepository<Mapping, Long>{
 
-	@Query(value = "SELECT m FROM Mapping m INNER JOIN m.mapper WHERE m.mapper.code = :mapperCode")
+	@Query(value = "SELECT m FROM Mapping m INNER JOIN m.mapper INNER JOIN m.mapperCategoryConfig WHERE m.mapper.code = :mapperCode")
 	Page<Mapping> mappingListByMapper(@Param("mapperCode") Long mapperCode, Pageable pageable);
 	
 	@Query(value = "SELECT mapping.*, mappercategoryconfig.name AS categoryName, hasName.fieldValues AS fieldValues FROM mapping " +
@@ -28,6 +28,19 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 			" AND mapping.latitude <= :north_east_lat ", nativeQuery = true)
 	List<Object[]> mappingListByAllMap(@Param("mapperCode") Long mapperCode, 
 									   @Param("south_west_lng") Double south_west_lng, 
+									   @Param("north_east_lng") Double north_east_lng, 
+									   @Param("south_west_lat") Double south_west_lat, 
+									   @Param("north_east_lat") Double north_east_lat);
+	
+	@Query(value = "SELECT mapping.*, mappercategoryconfig.name AS categoryName, hasName.fieldValues AS fieldValues FROM mapping " +
+			" JOIN mappercategoryconfig ON mapping.categoryCode = mappercategoryconfig.code" +  
+			" JOIN mappinghasnames AS hasName ON hasName.code = " +   
+			" (SELECT mappinghasnames.code FROM mappinghasnames WHERE mapping.code = mappinghasnames.mappingCode LIMIT 1) " +   
+			" WHERE mapping.longitude >= :south_west_lng " +
+			" AND mapping.longitude <= :north_east_lng " +
+			" AND mapping.latitude >= :south_west_lat " +
+			" AND mapping.latitude <= :north_east_lat ", nativeQuery = true)
+	List<Object[]> allMap(@Param("south_west_lng") Double south_west_lng, 
 									   @Param("north_east_lng") Double north_east_lng, 
 									   @Param("south_west_lat") Double south_west_lat, 
 									   @Param("north_east_lat") Double north_east_lat);
@@ -60,6 +73,15 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 									   @Param("south_west_lat") Double south_west_lat, 
 									   @Param("north_east_lat") Double north_east_lat);
 	
+	@Query(value = "SELECT code, markerImg, latitude, longitude FROM mapping WHERE longitude >= :south_west_lng " +
+			" AND longitude <= :north_east_lng " +
+			" AND latitude >= :south_west_lat " +
+			" AND latitude <= :north_east_lat ", nativeQuery = true)
+	List<Object[]> allMapMarker(@Param("south_west_lng") Double south_west_lng, 
+									   @Param("north_east_lng") Double north_east_lng, 
+									   @Param("south_west_lat") Double south_west_lat, 
+									   @Param("north_east_lat") Double north_east_lat);
+	
 	@Query(value = "SELECT code, markerImg, latitude, longitude FROM mapping WHERE mapperCode = :mapperCode " +
 			" AND longitude >= :south_west_lng " +
 			" AND longitude <= :north_east_lng " +
@@ -80,9 +102,6 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 			" WHERE mapping.code = :code ", nativeQuery = true)
 	List<Object[]> mappingSelectOneMarker(@Param("code") Long code);
 	
-//	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.mapper.code = :mapperCode")
-//	List<Mapping> mappingList(@Param("mapperCode") Long mapperCode);
-	
 	@Query(value = "SELECT * FROM Mapping WHERE mapperCode = :mapperCode", nativeQuery = true)
 	List<Mapping> mappingList(@Param("mapperCode") Long mapperCode);
 	
@@ -92,6 +111,9 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 	@Query(value = "SELECT m FROM Mapping m JOIN FETCH m.mapper WHERE m.code = :code AND m.mapper.code = :mapperCode")
 	public Mapping view(@Param("code") Long code, @Param("mapperCode") Long mapperCode);
 
+	@Query(value = "SELECT m FROM Mapping m WHERE m.code = :code")
+	public Mapping issetMapping(@Param("code") Long code);
+	
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM Mapping WHERE code = :code")

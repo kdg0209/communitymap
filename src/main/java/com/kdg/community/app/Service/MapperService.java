@@ -61,7 +61,10 @@ public class MapperService {
 		updateMapper.setContents(mapper.getContents());
 		updateMapper.setCategoryCode(mapper.getCategoryCode());
 		updateMapper.setEditAuth(mapper.getEditAuth());
-		updateMapper.setEditPassword(mapper.getEditPassword());
+		
+		if(mapper.getEditPassword() != null) {
+			updateMapper.setEditPassword(mapper.getEditPassword());
+		}
 		if(mapper.getFileName() != null) {
 			updateMapper.setFileName(mapper.getFileName());
 		}

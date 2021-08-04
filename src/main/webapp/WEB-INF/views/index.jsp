@@ -81,6 +81,7 @@
 	                            </span>
 	                            <p class="card-text"><i class="fas fa-user"></i> by ${item.name}</p>
 	                            <p class="card-text" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
+	                            <p class="card-text" style="font-size: 14px;"><i class="far fa-thumbs-up"></i> ${item.mapperRecommendCount}개</p>
 	                            <p class="card-text">${fn:substring(item.contents, 0, 10) }</p>
 	                        </div>
 	                    </div>

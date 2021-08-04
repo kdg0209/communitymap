@@ -76,14 +76,17 @@ public class MappingController {
 	public String index(Model model, @RequestParam Long mapperCode, @RequestParam(defaultValue = "1") int page) {
 		page = page - 1;
 		
-		Pageable pageable = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "is_declare", "writeDate"));
+		Pageable pageable		  = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "is_declare", "writeDate"));
+		Mapper mapper 			  = mapperService.issetMapper(mapperCode);
 		Page<Mapping> mappingList = mappingService.mappingListByMapper(mapperCode, pageable);
+		List<MapperCategoryConfig> categoryConfigList = mapperCategoryConfigService.getCategoryConfigList(mapper.getCode());
 		
 		model.addAttribute("getTotalElements", mappingList.getTotalElements()); //전체 데이터 수
 		model.addAttribute("getTotalPages", mappingList.getTotalPages());       //전체 페이지 수
 		model.addAttribute("hasNext", mappingList.hasNext()); 					//이전 페이지 여부
 		model.addAttribute("hasPrevious", mappingList.hasPrevious());	        //다음 페이지 여부
 		
+		model.addAttribute("categoryConfigList", categoryConfigList);
 		model.addAttribute("mappingList", mappingList.getContent());
 		model.addAttribute("page", page + 1);
 		model.addAttribute("mapperCode", mapperCode);
@@ -92,6 +95,7 @@ public class MappingController {
 	}
 	
 	@GetMapping(value = "/app/mapping/write")
+	@Transactional
 	public String write(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long mapperCode, @RequestParam(defaultValue = "") String key) throws IOException {
 		Long memberCode = (Long)session.getAttribute("code");
 		Mapper mapper 	= mapperService.issetMapper(mapperCode);
@@ -136,6 +140,7 @@ public class MappingController {
 			List<MapperNameConfig> namesConfigList 		  = mapperNameConfigService.getNameConfigList(mapper.getCode());
 			
 			model.addAttribute("key", key);
+			model.addAttribute("isMe",isMe(mapper, memberCode));
 			model.addAttribute("timestamp", timestamp);
 			model.addAttribute("mapperCode", mapperCode);
 			model.addAttribute("editAuth", mapper.getEditAuth());
@@ -234,15 +239,14 @@ public class MappingController {
 	@GetMapping(value = "/app/mapping/edit")
 	@Transactional
 	public String edit(HttpServletResponse response, HttpSession session, Model model, @RequestParam Long code, @RequestParam Long mapperCode, @RequestParam(defaultValue = "") String key) throws IOException {
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = response.getWriter();
 		Long memberCode = (Long)session.getAttribute("code");
 		Mapper mapper 	= mapperService.issetMapper(mapperCode);
 		
 		List<String> userEditAuthorityList = (List)session.getAttribute("userEditAuthorityList");
 		
 		if(mapper == null) {
-			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			
 			out.println("<script>alert('접근 권한이 없습니다.'); location.href='/app/login/index';</script>");
 			out.flush();
 			
@@ -250,11 +254,10 @@ public class MappingController {
 		}else {
 			
 			if(mapper.getEditAuth() == 2) {
-				response.setContentType("text/html; charset=UTF-8");
-				PrintWriter out   = response.getWriter();
+				Mapper isMapper   = mapperService.view(mapper.getCode(), memberCode);
 				boolean isContain = userKeyCheck(userEditAuthorityList, key); 
 				
-				if(!isContain) {
+				if(isMapper == null && !isContain) {
 					out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
 					out.flush();
 					return "index";
@@ -264,9 +267,6 @@ public class MappingController {
 				Mapper isMapper = mapperService.view(mapper.getCode(), memberCode);
 				
 				if(isMapper == null) {
-					response.setContentType("text/html; charset=UTF-8");
-					PrintWriter out = response.getWriter();
-					
 					out.println("<script>alert('잘못된 접근입니다.'); location.href='/';</script>");
 					out.flush();
 					return "index";
@@ -279,6 +279,9 @@ public class MappingController {
 			List<MappingFiles>    mappingFilesList        = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
 			List<MappingHasNames> mappingHasNamesList     = mappingHasNamesService.getMappingHasNamesList(mapping.getCode());
 			
+			
+			
+			model.addAttribute("isMe",isMe(mapper, memberCode));
 			model.addAttribute("categoryConfigList",categoryConfigList);
 			model.addAttribute("namesConfigList",namesConfigList);
 			model.addAttribute("mapping",mapping);
@@ -463,8 +466,20 @@ public class MappingController {
 		} catch (Exception e) {
 			return false;
 		}
-		
 		return true;
 	}
 	
+	
+	private boolean isMe(Mapper mapper, Long memberCode) {
+		try {
+			if(mapper.getMember().getCode().equals(memberCode)) {
+				return true;
+			}else {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

@@ -32,7 +32,7 @@
 	                    <div class="card-body">
 	                        <h5 class="card-title light-300 text-dark"><c:out value="${item.name}"/></h5>
 	                        <p class="card-text" style="font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.countOfMapping}개의 저장소</p>
-	                   		<p class="card-text" style="font-size: 14px;"><i class="fas fa-exclamation-circle"></i>${item.declareCount}개의 신고접수가 있습니다.</p>
+	                   		<p class="card-text ${item.declareCount > 0 ? 'text-danger':''}" style="font-size: 14px;"><i class="fas fa-exclamation-circle"></i>${item.declareCount}개의 신고접수가 있습니다.</p>
 	                        <p class="card-text light-300 text-dark">
 	                      	  <c:out value="${fn:substring(item.contents, 0, 25) }"/>
 	                        </p>

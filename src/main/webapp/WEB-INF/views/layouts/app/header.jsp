@@ -52,7 +52,7 @@
                         <a class="nav-link btn-outline-primary rounded-pill px-3" href="/app/mapper/up">지도UP</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="about.html">랭킹</a>
+                        <a class="nav-link btn-outline-primary rounded-pill px-3" href="/app/allMap/index">한눈에 보기</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn-outline-primary rounded-pill px-3" href="work.html">알립니다</a>

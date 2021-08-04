@@ -30,6 +30,10 @@ public class MappingService {
 		return mappingRepository.mappingListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 	}
 	
+	public List<Object[]> allMap(Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
+		return mappingRepository.allMap(south_west_lng, north_east_lng, south_west_lat, north_east_lat);
+	}
+	
 	public List<Object[]> mappingCategoryListByAllMap(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat, List<Long> categoryCode){
 		return mappingRepository.mappingCategoryListByAllMap(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat, categoryCode);
 	}
@@ -37,6 +41,11 @@ public class MappingService {
 	public List<Object[]> mappingMarkerListData(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
 		return mappingRepository.mappingMarkerListData(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat);
 	}
+
+	public List<Object[]> allMapMarker(Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat){
+		return mappingRepository.allMapMarker(south_west_lng, north_east_lng, south_west_lat, north_east_lat);
+	}
+	
 	
 	public List<Object[]> mappingMarkerCategoryListData(Long mapperCode, Double south_west_lng, Double north_east_lng, Double south_west_lat, Double north_east_lat, List<Long> categoryCode){
 		return mappingRepository.mappingMarkerCategoryListData(mapperCode, south_west_lng, north_east_lng, south_west_lat, north_east_lat, categoryCode);
@@ -61,6 +70,11 @@ public class MappingService {
 	public Mapping view (Long code, Long mapperCode) {
 		return mappingRepository.view(code, mapperCode);
 	}
+	
+	public Mapping issetMapping (Long code) {
+		return mappingRepository.issetMapping(code);
+	}
+	
 	
 	public boolean update(Mapping mapping, Mapper mapper,MapperCategoryConfig mapperCategoryConfig) {
 		Mapping updateMapping = mappingRepository.view(mapping.getCode(), mapper.getCode());

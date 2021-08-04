@@ -84,41 +84,57 @@
                     <div class="dashed-line"></div>
                     
                     <div class="col-12">
-                        <label for="floatingname light-300">카테고리</label>
-                        <div class="form-floating mb-4">
-                            <c:forEach var="category" items="${categoryList}">
-                           		<span>
-                           			<input type="radio" name="categoryCode" value="${category.key}" ${category.key eq mapper.categoryCode ? "checked":""} />
-                           			${category.value}
-                           		</span>
-                            </c:forEach>
-                        </div>
+                    	<label class="floatingname light-300">카테고리</label>   
+	                    <div class="col-sm-10">
+	                    	<c:forEach var="category" items="${categoryList}">
+	                    		<label class="btn btn-white m-t-5">
+	   								<input type="radio" 
+	   									   class="categoryCode" 
+	   									   name="categoryCode" 
+	   									   value="${category.key}" ${category.key eq mapper.categoryCode ? "checked":""}> ${category.value}                            
+	   					   		</label>
+	                    	</c:forEach>
+	                    </div>
                     </div>
                     
                     <div class="dashed-line"></div>
                     
                     <div class="col-12">
                         <label for="floatingname light-300">접근 권한</label>
-                        <div class="form-floating mb-4">
+                        <div class="col-sm-10">
                             <c:forEach var="item" items="${editAuth}">
-                           		<span>
-                           			<input type="radio" name="editAuth" class="editAuth" value="${item.key}" ${item.key eq mapper.editAuth ? "checked":""} />
-                           			${item.value}
-                           		</span>
+                           		<label class="btn btn-white m-t-5">
+                           			<input type="radio" 
+                           				   name="editAuth" 
+                           				   class="editAuth" 
+                           				   value="${item.key}" ${item.key eq mapper.editAuth ? "checked":""} />${item.value}
+                           		</label>
                             </c:forEach>
                         </div>
                     </div>
                     
-                     <div class="col-12 editPassword_div" style="display: none;">
-                        <div class="form-floating mb-4">
-                            <input type="password" 
-                            		class="form-control form-control-lg light-300" 
-                            		id="editPassword" 
-                            		name="editPassword" 
-                            		placeholder="비밀번호">
-                            <label for="floatingname light-300">비밀번호</label>
-                            <div class="is_editPassword_val text-danger" style="display:none; font-size: 13px;">비밀번호를 입력해주세요.</div>
+                     <div class="row editPassword_div" style="display: ${mapper.editAuth == '2' ? '':'none;'}">
+                     	<div class="dashed-line"></div>
+                        <div class="col-sm-8">
+                        	<div class="form-floating mb-4">
+	                            <input type="password" 
+	                            		class="form-control form-control-lg light-300" 
+	                            		id="editPassword" 
+	                            		name="editPassword" 
+	                            		placeholder="비밀번호"
+	                            		disabled="disabled">
+	                            <label for="floatingname light-300">비밀번호</label>
+	                            <div class="is_editPassword_val text-danger" style="display:none; font-size: 13px;">비밀번호를 입력해주세요.</div>
+	                        </div>
                         </div>
+                        
+                        <div class="col-sm-4">
+                        	<label class="btn btn-white m-t-5" style="width: 100%; margin-top: 4%;">
+                        		<input type="checkbox" 
+	                        		   id="editAuthEditBtn" 
+	                        		   value="Y"/>변경
+                        	</label>
+	                    </div>
                     </div>
                     
                     <div class="dashed-line"></div>
@@ -208,6 +224,16 @@
 				$(".editPassword_div").hide();
 			}
 		});
+		
+		$("#editAuthEditBtn").change(function () {
+			if($(this).is(":checked")){
+				$('#editPassword').attr('disabled', false);
+			}else{
+				$('#editPassword').attr('disabled', true);
+			}
+		});
+		
+		
 		
 		$(document).on("change", ".uploadProfileInput", function () {
 		  var triggerInput = this;
@@ -308,7 +334,7 @@
 	              return false;
 	        }
 		      
-	        if($("input[name='editAuth']:checked").val() == '2'){
+	        if($("input[name='editAuth']:checked").val() == '2' && $("#editAuthEditBtn").is(":checked")){
 	    	      if ($("#editPassword").val().trim() == '') {
 	                 $("#editPassword").focus();
 	                 alert("비밀번호를 입력해주세요.");

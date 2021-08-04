@@ -19,6 +19,15 @@
 	        <c:forEach var="item" items="${mappingList}">
 		        <a href="javascript:;" class="col-sm-6 col-lg-4 text-decoration-none project marketing social business" style="margin-top: 50px;">
 	                <div class="service-work overflow-hidden card mb-5 mx-5 m-sm-0" style="positon :relative;">
+		                <div  style="position: absolute; margin-top: 3%; margin-left: 3%;">
+							<span class="btn btn-outline-light rounded-pill mb-lg-3 px-lg-4 light-300" style="color: black; border-color: black; font-size: 12px;">
+								 <c:forEach var="category" items="${categoryConfigList}">
+									 <c:if test = "${category.code == item.mapperCategoryConfig.code}">
+		                            	 ${category.name}
+								     </c:if>
+								 </c:forEach>
+	                           </span>
+						</div>
 		                <c:if test="${fn:contains(item.is_declare, 'Y')}">
 		                	<div class="btn btn-danger btn-icon-split f-s-10" style="margin-top: 3%; margin-left: 3%; font-size: 10px; color: white; position: absolute;">
 		                	   <i class="fas fa-exclamation-circle"></i>

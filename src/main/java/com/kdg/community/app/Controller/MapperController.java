@@ -299,7 +299,7 @@ public class MapperController {
 		Mapper isMapper = mapperService.view(code, memberCode);
 		
 		if(isMapper.getCode() != null) {
-			if(param.get("editPassword") != "") {
+			if(param.get("editPassword") != null) {
 				securePassword = encoder.encode(param.get("editPassword"));
 				mapper.setEditPassword(securePassword);
 			}

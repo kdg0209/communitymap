@@ -81,32 +81,37 @@
                     <div class="dashed-line"></div>
                     
                     <div class="col-12">
-                        <label for="floatingname light-300">카테고리</label>
-                        <div class="form-floating mb-4">
-                            <c:forEach var="category" items="${categoryList}">
-                           		<span>
-                           			<input type="radio" name="categoryCode" value="${category.key}" ${category.key eq 1 ? "checked":""} />
-                           			${category.value}
-                           		</span>
-                            </c:forEach>
-                        </div>
+                    	<label class="floatingname light-300">카테고리</label>   
+	                    <div class="col-sm-10">
+	                    	<c:forEach var="category" items="${categoryList}">
+	                    		<label class="btn btn-white m-t-5">
+	   								<input type="radio" 
+	   									   class="categoryCode" 
+	   									   name="categoryCode" 
+	   									   value="${category.key}" ${category.key}" ${category.key eq 1 ? "checked":""}> ${category.value}                            
+	   					   		</label>
+	                    	</c:forEach>
+	                    </div>
                     </div>
-                    
+           
                     <div class="dashed-line"></div>
                     
                     <div class="col-12">
                         <label for="floatingname light-300">접근 권한</label>
-                        <div class="form-floating mb-4">
+                        <div class="col-sm-10">
                             <c:forEach var="item" items="${editAuth}">
-                           		<span>
-                           			<input type="radio" name="editAuth" class="editAuth" value="${item.key}" ${item.key eq 1 ? "checked":""} />
-                           			${item.value}
-                           		</span>
+                           		<label class="btn btn-white m-t-5">
+                           			<input type="radio" 
+                           				   name="editAuth" 
+                           				   class="editAuth" 
+                           				   value="${item.key}" ${item.key eq 1 ? "checked":""} />${item.value}
+                           		</label>
                             </c:forEach>
                         </div>
                     </div>
                     
                      <div class="col-12 editPassword_div" style="display: none;">
+                     	<div class="dashed-line"></div>
                         <div class="form-floating mb-4">
                             <input type="password" 
                             		class="form-control form-control-lg light-300" 
@@ -318,7 +323,6 @@
 	        }
 	        
 	        for (qLoop = 0; qLoop < document.getElementsByClassName("mapperName").length; qLoop++) {
-	        	console.log(document.getElementsByClassName("mapperName")[qLoop].value);
                 if (!document.getElementsByClassName("mapperName")[qLoop].value) {
                 	document.getElementsByClassName("mapperName")[qLoop].focus();
                     alert('항목값을 입력해주세요.');
@@ -327,7 +331,6 @@
 			 }
 	        
 	        for (qLoop = 0; qLoop < document.getElementsByClassName("mapperCategory").length; qLoop++) {
-	        	console.log(document.getElementsByClassName("mapperCategory")[qLoop].value);
                 if (!document.getElementsByClassName("mapperCategory")[qLoop].value) {
                 	document.getElementsByClassName("mapperCategory")[qLoop].focus();
                     alert('카테고리값을 입력해주세요.');

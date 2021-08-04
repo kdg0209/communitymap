@@ -215,12 +215,12 @@
 						
 						<div class="dashed-line"></div>
 					 </c:forEach>
-                	
+                	        	
                		<div class="col-md-4 col-4 m-auto">
-               			<c:if test="${mapping.mapper.editAuth eq '2'}">
+               			<c:if test="${isMe == false}">
 	                 	   <a href="/app/map/index?mapperCode=${mapping.mapper.code}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
 	                    </c:if>
-	                    <c:if test="${mapping.mapper.editAuth eq '3'}">
+	                    <c:if test="${isMe == true}">
                				<a href="/app/mapping/index?mapperCode=${mapping.mapper.code}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
 	                    </c:if>
                     </div>
@@ -228,7 +228,7 @@
                         <button type="button" id="submit" class="btn btn-secondary rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">확인</button>
                     </div>
                     <div class="col-md-4 col-4 m-auto text-right">
-	                    <c:if test="${mapping.mapper.editAuth eq '3'}">
+	                    <c:if test="${isMe == true}">
 	                 	   <a href="/app/mapping/delete?code=${mapping.code}&mapperCode=${mapping.mapper.code}" class="btn btn-danger rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">삭제</a>
 	                    </c:if>
                     </div>
@@ -384,7 +384,7 @@
 
             request.done(function (data) {
             	 if (data == true) {
-            		 if(${mapping.mapper.editAuth} == 1 || ${mapping.mapper.editAuth} == 2){
+            		 if(${isMe == false}){
                  		window.location.href = "/app/map/index?mapperCode=" + ${mapping.mapper.code};
                  	}else{
                  		window.location.href = "/app/mapping/index?mapperCode=" + ${mapping.mapper.code};

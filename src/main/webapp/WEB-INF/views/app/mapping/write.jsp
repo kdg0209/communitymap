@@ -187,12 +187,12 @@
 						
 						<div class="dashed-line"></div>
 					 </c:forEach>
-               
+					 
                		<div class="col-md-4 col-4 m-auto">
-               			<c:if test="${editAuth eq '1' || editAuth eq '2'}">
+               			<c:if test="${isMe == false}">
                				<a href="/app/map/index?mapperCode=${mapperCode}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
                			</c:if>
-               			<c:if test="${editAuth eq '3'}">
+               			<c:if test="${isMe == true}">
                				<a href="/app/mapping/index?mapperCode=${mapperCode}" class="btn btn-dark rounded-pill px-md-5 px-4 py-2 radius-0 text-light light-300">목록</a>
                			</c:if>
                     </div>
@@ -352,7 +352,7 @@
             });
 	        
             request.done(function (data) {
-            	if(${editAuth} == 1 || ${editAuth} == 2){
+            	if(${isMe == false}){
             		window.location.href = "/app/map/index?mapperCode="+data;
             	}else{
             		window.location.href = "/app/mapping/index?mapperCode="+data;
