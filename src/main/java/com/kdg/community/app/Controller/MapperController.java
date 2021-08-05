@@ -298,48 +298,53 @@ public class MapperController {
 		
 		Mapper isMapper = mapperService.view(code, memberCode);
 		
-		if(isMapper.getCode() != null) {
-			if(param.get("editPassword") != null) {
-				securePassword = encoder.encode(param.get("editPassword"));
-				mapper.setEditPassword(securePassword);
-			}
-			
-			if(file != "") {
-				UUID uuid = UUID.randomUUID();
-				newFileName = uuid + "_" +filename;
+		try {
+			if(isMapper.getCode() != null) {
+				if(param.get("editPassword") != null) {
+					securePassword = encoder.encode(param.get("editPassword"));
+					mapper.setEditPassword(securePassword);
+				}
 				
-				mapper.setFileName(newFileName);
-				makeFileWithString(file, newFileName);
-				deleteFile(isMapper.getFileName(), MAPPER_UPLOAD_PATH);
-			}
-			
-			mapper.setCode(code);
-			mapper.setName(param.get("name"));
-			mapper.setContents(param.get("contents"));
-			mapper.setCategoryCode(categoryCode);
-			mapper.setEditAuth(editAuth);
+				if(file != "") {
+					UUID uuid = UUID.randomUUID();
+					newFileName = uuid + "_" +filename;
+					
+					mapper.setFileName(newFileName);
+					makeFileWithString(file, newFileName);
+					deleteFile(isMapper.getFileName(), MAPPER_UPLOAD_PATH);
+				}
+				
+				mapper.setCode(code);
+				mapper.setName(param.get("name"));
+				mapper.setContents(param.get("contents"));
+				mapper.setCategoryCode(categoryCode);
+				mapper.setEditAuth(editAuth);
 
-			mapperService.update(memberCode, mapper);
-			
-			int mapperNameCount = Integer.parseInt(param.get("mapperNameCount"));
-			for (int i = 0; i < mapperNameCount; i++) {
-				MapperNameConfig config = new MapperNameConfig();
-				config.setName(param.get("mapperName["+ i +"][name]"));
-				config.setMapper(mapper);
-				mapperNameConfigService.insert(config);
+				mapperService.update(memberCode, mapper);
+				
+				int mapperNameCount = Integer.parseInt(param.get("mapperNameCount"));
+				for (int i = 0; i < mapperNameCount; i++) {
+					MapperNameConfig config = new MapperNameConfig();
+					config.setName(param.get("mapperName["+ i +"][name]"));
+					config.setMapper(mapper);
+					mapperNameConfigService.insert(config);
+				}
+				
+				int mapperCategoryCount = Integer.parseInt(param.get("mapperCategoryCount"));
+				for (int i = 0; i < mapperCategoryCount; i++) {
+					MapperCategoryConfig config = new MapperCategoryConfig();
+					config.setName(param.get("mapperCategory["+ i +"][name]"));
+					config.setImgPath(param.get("mapperCategoryImgPath["+ i +"][name]"));
+					config.setMapper(mapper);
+					mapperCategoryConfigService.insert(config);
+				}
+				
+				return true;
+			}else {
+				return false;
 			}
-			
-			int mapperCategoryCount = Integer.parseInt(param.get("mapperCategoryCount"));
-			for (int i = 0; i < mapperCategoryCount; i++) {
-				MapperCategoryConfig config = new MapperCategoryConfig();
-				config.setName(param.get("mapperCategory["+ i +"][name]"));
-				config.setImgPath(param.get("mapperCategoryImgPath["+ i +"][name]"));
-				config.setMapper(mapper);
-				mapperCategoryConfigService.insert(config);
-			}
-			
-			return true;
-		}else {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -357,38 +362,47 @@ public class MapperController {
 			out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
 			out.flush();
 		}else {
-			List<Mapping> mappingList =  mappingService.mappingList(mapper.getCode());
-		
-			for(Mapping mapping : mappingList) {
-				List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
+			
+			try {
+				List<Mapping> mappingList =  mappingService.mappingList(mapper.getCode());
 				
-				for(MappingFiles item : mappingFileList) {
-					if(item.getFileName() != null) {
-						deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+				for(Mapping mapping : mappingList) {
+					List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
+					
+					for(MappingFiles item : mappingFileList) {
+						if(item.getFileName() != null) {
+							deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+						}
 					}
+					
+					if(mapping.getFileName() != null) {
+						deleteFile(mapping.getFileName(), MAPPING_UPLOAD_PATH);
+					}
+					
+					mappingFilesService.deleteByParent(mapping.getTimestamp());
+					mappingHasNamesService.deleteByParent(mapping.getCode());
+					mappingDeclareService.deleteByParent(mapping.getCode());
+					mappingService.delete(mapping.getCode());
 				}
 				
-				if(mapping.getFileName() != null) {
-					deleteFile(mapping.getFileName(), MAPPING_UPLOAD_PATH);
+				if(mapper.getFileName() != null) {
+					deleteFile(mapper.getFileName(), MAPPER_UPLOAD_PATH);
 				}
 				
-				mappingFilesService.deleteByParent(mapping.getTimestamp());
-				mappingHasNamesService.deleteByParent(mapping.getCode());
-				mappingDeclareService.deleteByParent(mapping.getCode());
-				mappingService.delete(mapping.getCode());
+				mapperCategoryConfigService.deleteByParent(mapper.getCode());
+				mapperNameConfigService.deleteByParent(mapper.getCode());
+				mapperRecommendService.deleteByMember(mapper.getCode());
+				int result = mapperService.delete(mapper.getCode());
+				
+				if(result > 0) {
+					out.println("<script>location.href='/app/mapper/index?page=1';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
+				out.flush();
 			}
-			
-			if(mapper.getFileName() != null) {
-				deleteFile(mapper.getFileName(), MAPPER_UPLOAD_PATH);
-			}
-			
-			mapperCategoryConfigService.deleteByParent(mapper.getCode());
-			mapperNameConfigService.deleteByParent(mapper.getCode());
-			mapperRecommendService.deleteByMember(mapper.getCode());
-			mapperService.delete(mapper.getCode());
-			
-			out.println("<script>location.href='/app/mapper/index?page=1';</script>");
-			out.flush();
 		}
 	}
 	

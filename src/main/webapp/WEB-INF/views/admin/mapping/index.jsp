@@ -19,7 +19,16 @@
 		             		</div>
 		             		<div class="row">
 			             		<c:forEach var="item" items="${mappingList}">
-			             			<div class="col-12 col-sm-6 col-md-6 col-lg-3">
+			             			<div class="col-12 col-sm-6 col-md-6 col-lg-3" style="positon :relative;">
+				             			<div class="badges" style="position: absolute; margin-top: 3%; margin-left: 3%; z-index: 2;">
+										   <span class="badge badge-dark" style="color: white; border-color: black; font-size: 12px;">
+											 <c:forEach var="category" items="${categoryConfigList}">
+												 <c:if test = "${category.code == item.mapperCategoryConfig.code}">
+					                            	 ${category.name}
+											     </c:if>
+											 </c:forEach>
+				                           </span>
+										</div>
 						                <article class="article article-style-b">
 						                  <div class="article-header">
 						                    <div class="article-image" style="background-image: url(/img/mappingCover/${item.fileName});"></div>
@@ -30,11 +39,11 @@
 						                    </div>
 						                    <div class="article-cta">
 							                     <c:if test="${fn:contains(item.is_declare, 'Y')}">
-							                     	  <a href="/admin/mapping/index?mapperCode=${item.code}">
+							                     	  <a href="/admin/mappingDeclare/index?mappingCode=${item.code}&mapperCode=${mapper.code}">
 							                     	  	 신고내역 조회 <i class="fas fa-angle-right"></i> 
 							                     	  </a>
 												 </c:if>
-							                      <a href="/admin/mapper/edit?mapperCode=${item.code}&memberCode=${member.code}">
+							                      <a href="/admin/mapping/edit?code=${item.code}&memberCode=${memberCode}">
 								                       수정 <i class="fas fa-edit"></i>
 							                      </a>
 						                    </div>

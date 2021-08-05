@@ -205,7 +205,7 @@ public class AdminMapperController {
 		Mapper isMapper = mapperService.view(code, memberCode);
 		
 		if(isMapper.getCode() != null) {
-			if(param.get("editPassword") != "") {
+			if(param.get("editPassword") != null) {
 				securePassword = encoder.encode(param.get("editPassword"));
 				mapper.setEditPassword(securePassword);
 			}
@@ -243,7 +243,6 @@ public class AdminMapperController {
 				config.setMapper(mapper);
 				mapperCategoryConfigService.insert(config);
 			}
-			
 			return true;
 		}else {
 			return false;
@@ -262,38 +261,47 @@ public class AdminMapperController {
 			out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
 			out.flush();
 		}else {
-			List<Mapping> mappingList =  mappingService.mappingList(mapper.getCode());
-		
-			for(Mapping mapping : mappingList) {
-				List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
+			
+			try {
+				List<Mapping> mappingList =  mappingService.mappingList(mapper.getCode());
 				
-				for(MappingFiles item : mappingFileList) {
-					if(item.getFileName() != null) {
-						deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+				for(Mapping mapping : mappingList) {
+					List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
+					
+					for(MappingFiles item : mappingFileList) {
+						if(item.getFileName() != null) {
+							deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+						}
 					}
+					
+					if(mapping.getFileName() != null) {
+						deleteFile(mapping.getFileName(), MAPPING_UPLOAD_PATH);
+					}
+					
+					mappingFilesService.deleteByParent(mapping.getTimestamp());
+					mappingHasNamesService.deleteByParent(mapping.getCode());
+					mappingDeclareService.deleteByParent(mapping.getCode());
+					mappingService.delete(mapping.getCode());
 				}
 				
-				if(mapping.getFileName() != null) {
-					deleteFile(mapping.getFileName(), MAPPING_UPLOAD_PATH);
+				if(mapper.getFileName() != null) {
+					deleteFile(mapper.getFileName(), MAPPER_UPLOAD_PATH);
 				}
 				
-				mappingFilesService.deleteByParent(mapping.getTimestamp());
-				mappingHasNamesService.deleteByParent(mapping.getCode());
-				mappingDeclareService.deleteByParent(mapping.getCode());
-				mappingService.delete(mapping.getCode());
+				mapperCategoryConfigService.deleteByParent(mapper.getCode());
+				mapperNameConfigService.deleteByParent(mapper.getCode());
+				mapperRecommendService.deleteByMember(mapper.getCode());
+				int result = mapperService.delete(mapper.getCode());
+				
+				if(result > 0) {
+					out.println("<script>location.href='/admin/mapper/detailIndex?memberCode="+ memberCode +"';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
+				out.flush();
 			}
-			
-			if(mapper.getFileName() != null) {
-				deleteFile(mapper.getFileName(), MAPPER_UPLOAD_PATH);
-			}
-			
-			mapperCategoryConfigService.deleteByParent(mapper.getCode());
-			mapperNameConfigService.deleteByParent(mapper.getCode());
-			mapperRecommendService.deleteByMember(mapper.getCode());
-			mapperService.delete(mapper.getCode());
-			
-			out.println("<script>location.href='/admin/mapper/detailIndex?memberCode="+ memberCode +"';</script>");
-			out.flush();
 		}
 	}
 	

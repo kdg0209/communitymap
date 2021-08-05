@@ -77,20 +77,25 @@ public class MappingService {
 	
 	
 	public boolean update(Mapping mapping, Mapper mapper,MapperCategoryConfig mapperCategoryConfig) {
-		Mapping updateMapping = mappingRepository.view(mapping.getCode(), mapper.getCode());
-		
-		updateMapping.setStatus(mapping.getStatus());
-		updateMapping.setIs_declare(mapping.getIs_declare());
-		updateMapping.setMapperCategoryConfig(mapperCategoryConfig);
-		updateMapping.setMarkerImg(mapping.getMarkerImg());
-		updateMapping.setAddress(mapping.getAddress());
-		updateMapping.setLatitude(mapping.getLatitude());
-		updateMapping.setLongitude(mapping.getLongitude());
+		try {
+			Mapping updateMapping = mappingRepository.view(mapping.getCode(), mapper.getCode());
+			
+			updateMapping.setStatus(mapping.getStatus());
+			updateMapping.setIs_declare(mapping.getIs_declare());
+			updateMapping.setMapperCategoryConfig(mapperCategoryConfig);
+			updateMapping.setMarkerImg(mapping.getMarkerImg());
+			updateMapping.setAddress(mapping.getAddress());
+			updateMapping.setLatitude(mapping.getLatitude());
+			updateMapping.setLongitude(mapping.getLongitude());
 
-		if(mapping.getFileName() != null) {
-			updateMapping.setFileName(mapping.getFileName());
+			if(mapping.getFileName() != null) {
+				updateMapping.setFileName(mapping.getFileName());
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
-		return true;
 	}
 	public boolean DeclareUpdate(Long mappingCode, Long mapperCode) {
 		Mapping updateMapping = mappingRepository.view(mappingCode, mapperCode);
@@ -109,7 +114,7 @@ public class MappingService {
 		return true;
 	}
 	
-	public void delete (Long code) {
-		mappingRepository.delete(code);
+	public int delete (Long code) {
+		return mappingRepository.delete(code);
 	}
 }

@@ -71,8 +71,8 @@ public class MapperService {
 		return true;
 	}
 	
-	public void delete(Long code) {
-		mapperRepository.delete(code);
+	public int delete(Long code) {
+		return mapperRepository.delete(code);
 	}
 
 }

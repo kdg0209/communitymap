@@ -54,11 +54,10 @@ public class MemberService {
 			e.printStackTrace();
 			return false;
 		}
-		
 		return true;
 	}
 	
-	public void delete (Long code) {
-		memberRepository.delete(code);
+	public int delete (Long code) {
+		return memberRepository.delete(code);
 	}
 }

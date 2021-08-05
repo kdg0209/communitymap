@@ -35,14 +35,18 @@ public class MapperCategoryConfigService {
 	public boolean update (MapperCategoryConfig mapperCategoryConfig) {
 		MapperCategoryConfig config = mapperCategoryConfigRepository.getView(mapperCategoryConfig.getCode());
 		
-		config.setName(mapperCategoryConfig.getName());
-		config.setImgPath(mapperCategoryConfig.getImgPath());
-		
+		try {
+			config.setName(mapperCategoryConfig.getName());
+			config.setImgPath(mapperCategoryConfig.getImgPath());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	
-	public void delete (Long code) {
-		mapperCategoryConfigRepository.delete(code);
+	public int delete (Long code) {
+		return mapperCategoryConfigRepository.delete(code);
 	}
 	
 	public void deleteByParent (Long mapperCode) {

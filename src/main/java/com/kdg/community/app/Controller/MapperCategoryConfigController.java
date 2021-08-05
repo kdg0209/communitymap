@@ -50,8 +50,13 @@ public class MapperCategoryConfigController {
 	@ResponseBody
 	public Boolean edit(MapperCategoryConfig mapperCategoryConfig) {
 		
-		mapperCategoryConfigService.update(mapperCategoryConfig);
-		return true;
+		boolean result = mapperCategoryConfigService.update(mapperCategoryConfig);
+		
+		if(result) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	@GetMapping(value = "/app/mapperCategoryConfig/delete")
@@ -67,24 +72,32 @@ public class MapperCategoryConfigController {
 			out.println("<script>alert('접근 권한이 업습니다.'); location.href='/app/login/index';</script>");
 			out.flush();
 		}else {
-			MapperCategoryConfig config = mapperCategoryConfigService.getView(code);
+			
+			try {
+				MapperCategoryConfig config = mapperCategoryConfigService.getView(code);
 
-			List<Mapping> mappingList = mappingService.findCategoryCodeList(config.getCode());
-			
-			for(Mapping item : mappingList) {
-				Mapping mapping = new Mapping();
-				mapping.setCode(item.getCode());
-				mapping.setMapper(item.getMapper());
-				mapping.setMapperCategoryConfig(null);
-				mapping.setMarkerImg(null);
+				List<Mapping> mappingList = mappingService.findCategoryCodeList(config.getCode());
 				
-				mappingService.updateByCategoryDelete(mapping);
+				for(Mapping item : mappingList) {
+					Mapping mapping = new Mapping();
+					mapping.setCode(item.getCode());
+					mapping.setMapper(item.getMapper());
+					mapping.setMapperCategoryConfig(null);
+					mapping.setMarkerImg(null);
+					
+					mappingService.updateByCategoryDelete(mapping);
+				}
+				int result = mapperCategoryConfigService.delete(code);
+				
+				if(result > 0) {
+					out.println("<script>location.href='/app/mapper/edit?code="+ mapper.getCode() +"';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
+				out.flush();
 			}
-			mapperCategoryConfigService.delete(code);
-			
-			out.println("<script>location.href='/app/mapper/edit?code="+ mapper.getCode() +"';</script>");
-			out.flush();
-			
 		}
 	}
 }

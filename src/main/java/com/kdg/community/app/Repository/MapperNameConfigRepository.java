@@ -21,7 +21,7 @@ public interface MapperNameConfigRepository extends CrudRepository<MapperNameCon
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM MapperNameConfig WHERE code = :code")
-	public void delete(@Param("code") Long code);
+	public int delete(@Param("code") Long code);
 	
 	@Modifying
 	@Transactional

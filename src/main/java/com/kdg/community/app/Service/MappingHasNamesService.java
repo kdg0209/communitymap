@@ -41,10 +41,9 @@ public class MappingHasNamesService {
 		return true;
 	}
 	
-	public void deleteByMapperNameConfig (Long mapperNameCode) {
-		mappingHasNamesRepository.deleteByMapperNameConfig(mapperNameCode);
+	public int deleteByMapperNameConfig (Long mapperNameCode) {
+		return mappingHasNamesRepository.deleteByMapperNameConfig(mapperNameCode);
 	}
-	
 	
 	public void deleteByParent (Long mappingCode) {
 		mappingHasNamesRepository.deleteByParent(mappingCode);

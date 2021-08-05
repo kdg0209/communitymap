@@ -134,7 +134,6 @@ public class MemberController {
 		PrintWriter out 		  = response.getWriter();
 		List<Mapper> mapperList   = mapperService.selectOneByMember(member.getCode());
 		List<Mapping> mappingList = null;
-		boolean result            = true;
 		
 		try {
 			for(Mapper mapper : mapperList) {
@@ -170,16 +169,14 @@ public class MemberController {
 			}
 			mapperRecommendService.deleteByMember(member.getCode());
 			
-			memberService.delete(member.getCode());
+			int result = memberService.delete(member.getCode());
+			
+			if(result > 0) {
+				out.println("<script>location.href='/admin/member/index';</script>");
+				out.flush();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = false;
-		}
-		
-		if(result) {
-			out.println("<script>location.href='/admin/member/index';</script>");
-			out.flush();
-		}else {
 			out.println("<script>alert('다시 삭제해주세요.'); location.href='/admin/member/edit?memberCode="+ member.getCode() +"';</script>");
 			out.flush();
 		}

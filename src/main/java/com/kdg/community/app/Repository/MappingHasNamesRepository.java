@@ -21,7 +21,7 @@ public interface MappingHasNamesRepository  extends CrudRepository<MappingHasNam
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM MappingHasNames WHERE mapperNameCode = :mapperNameCode", nativeQuery = true)
-	public void deleteByMapperNameConfig(@Param("mapperNameCode") Long mapperNameCode);
+	public int deleteByMapperNameConfig(@Param("mapperNameCode") Long mapperNameCode);
 	
 	@Modifying
 	@Transactional

@@ -13,16 +13,15 @@
       	<div class="main-content">
 	        <section class="section">
 	          <div class="section-header">
-	            <h1>회원 정보 수정</h1>
+	            <h1>지도 정보 수정</h1>
 	            <div class="section-header-breadcrumb">
-	              <div class="breadcrumb-item active">회원</div>
+	              <div class="breadcrumb-item active">지도</div>
 	              <div class="breadcrumb-item">정보 수정</div>
 	            </div>
 	          </div>
 	
 	          <div class="section-body">
 	            <h2 class="section-title">Editor</h2>
-	            <p class="section-lead">${mapper.code}님의 정보 수정</p>
 	
 	            <form id="submitForm">
 	            	<input type="hidden" name="code" value="${mapper.code}" />
@@ -115,15 +114,23 @@
 	                          </div>
 	                        </div>
 		                
-		                    <div class="form-group row mb-4 editPassword_div" style="display: none;">
-		                      <label class="col-form-label col-2">비밀번호</label>
-		                      <div class="col-sm-10">
-		                        <input type="password" 
-		                        	   id="editPassword"
-		                        	   name="editPassword"
-		                        	   value="${item.editPassword}"
-		                        	   class="form-control">
-		                      </div>
+		                    <div class="form-group row mb-4 editPassword_div" style="display: ${mapper.editAuth == '2' ? '':'none;'}">
+		                        <label class="col-form-label col-2">비밀번호</label>
+		                        <div class="col-sm-8">
+			                        <input type="password" 
+			                        	   id="editPassword"
+			                        	   name="editPassword"
+			                        	   value="${item.editPassword}"
+			                        	   class="form-control"
+			                        	   disabled="disabled">
+		                        </div>
+		                      	<div class="col-sm-2">
+		                        	<label class="btn btn-white m-t-5" style="width: 100%;">
+		                        		<input type="checkbox" 
+			                        		   id="editAuthEditBtn" 
+			                        		   value="Y"/>변경
+		                        	</label>
+			                    </div>
 		                    </div>
 		                    
 		                    <div class="dashed-line"></div>
@@ -224,6 +231,15 @@
 			}
 		});
  		
+ 		$("#editAuthEditBtn").change(function () {
+			if($(this).is(":checked")){
+				$('#editPassword').attr('disabled', false);
+			}else{
+				$('#editPassword').attr('disabled', true);
+			}
+		});
+		
+ 		
  		jQuery.fn.serializeObject = function() { 
 		    var obj = null; 
 		    try { 
@@ -323,7 +339,7 @@
 	              return false;
 	        }
 		      
-	        if($("input[name='editAuth']:checked").val() == '2'){
+	        if($("input[name='editAuth']:checked").val() == '2' && $("#editAuthEditBtn").is(":checked")){
 	    	      if ($("#editPassword").val().trim() == '') {
 	                 $("#editPassword").focus();
 	                 alert("비밀번호를 입력해주세요.");

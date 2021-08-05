@@ -117,7 +117,7 @@ public interface MappingRepository extends CrudRepository<Mapping, Long>{
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM Mapping WHERE code = :code")
-	public void delete(@Param("code") Long code);
+	public int delete(@Param("code") Long code);
 	
 	
 

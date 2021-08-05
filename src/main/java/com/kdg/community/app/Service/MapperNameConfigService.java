@@ -33,13 +33,17 @@ public class MapperNameConfigService {
 	public boolean update (MapperNameConfig mapperNameConfig) {
 		MapperNameConfig config = mapperNameConfigRepository.getView(mapperNameConfig.getCode());
 		
-		config.setName(mapperNameConfig.getName());
-		
+		try {
+			config.setName(mapperNameConfig.getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	
-	public void delete (Long code) {
-		mapperNameConfigRepository.delete(code);
+	public int delete (Long code) {
+		return mapperNameConfigRepository.delete(code);
 	}
 	
 	public void deleteByParent (Long mapperCode) {

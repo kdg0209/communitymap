@@ -19,10 +19,6 @@ if(window.Chart) {
   Chart.defaults.global.tooltips.mode = 'nearest';
 }
 
-// DropzoneJS
-if(window.Dropzone) {
-  Dropzone.autoDiscover = false;
-}
 
 // Basic confirm box
 $('[data-confirm]').each(function() {

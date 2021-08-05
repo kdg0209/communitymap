@@ -30,5 +30,5 @@ public interface MemberRepository extends CrudRepository<Member, Long>{
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM Member WHERE code = :code")
-	public void delete(@Param("code") Long code);
+	public int delete(@Param("code") Long code);
 }

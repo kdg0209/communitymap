@@ -7,7 +7,7 @@
     </div>
     <ul class="sidebar-menu">
         <li class="menu-header">Dashboard</li>
-        <li class="nav-item dropdown active">
+        <li class="nav-item dropdown">
           <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
         </li>
         <li class="menu-header">회원</li>

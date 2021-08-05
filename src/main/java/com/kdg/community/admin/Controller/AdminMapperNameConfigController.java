@@ -46,8 +46,13 @@ public class AdminMapperNameConfigController {
 	@PostMapping(value = "/admin/mapperNameConfig/edit")
 	@ResponseBody
 	public Boolean edit(MapperNameConfig mapperNameConfig) {
-		mapperNameConfigService.update(mapperNameConfig);
-		return true;
+		boolean result = mapperNameConfigService.update(mapperNameConfig);
+		
+		if(result) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	@GetMapping(value = "/admin/mapperNameConfig/delete")
@@ -62,13 +67,20 @@ public class AdminMapperNameConfigController {
 			out.println("<script>alert('접근 권한이 업습니다.'); location.href='/app/login/index';</script>");
 			out.flush();
 		}else {
-			MapperNameConfig config = mapperNameConfigService.getView(code);
-
-			mappingHasNamesService.deleteByMapperNameConfig(config.getCode());
-			mapperNameConfigService.delete(code);
-			
-			out.println("<script>location.href='/admin/mapper/edit?mapperCode="+ mapper.getCode() +"&memberCode="+ memberCode +"';</script>");
-			out.flush();
+			try {
+				MapperNameConfig config = mapperNameConfigService.getView(code);
+				mappingHasNamesService.deleteByMapperNameConfig(config.getCode());
+				int result = mapperNameConfigService.delete(code);
+				
+				if(result > 0) {
+					out.println("<script>location.href='/admin/mapper/edit?mapperCode="+ mapper.getCode() +"&memberCode="+ memberCode +"';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
+				out.flush();
+			}
 		}
 	}
 	

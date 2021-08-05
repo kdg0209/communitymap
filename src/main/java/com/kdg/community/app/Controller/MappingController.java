@@ -185,7 +185,6 @@ public class MappingController {
 		MapperCategoryConfig categoryConfig = mapperCategoryConfigService.getView(categoryCode);
 		Mapper mapper 	  = mapperService.issetMapper(mapperCode);
 		
-		
 		if(file != "") {
 			UUID uuid = UUID.randomUUID();
 			
@@ -279,8 +278,6 @@ public class MappingController {
 			List<MappingFiles>    mappingFilesList        = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
 			List<MappingHasNames> mappingHasNamesList     = mappingHasNamesService.getMappingHasNamesList(mapping.getCode());
 			
-			
-			
 			model.addAttribute("isMe",isMe(mapper, memberCode));
 			model.addAttribute("categoryConfigList",categoryConfigList);
 			model.addAttribute("namesConfigList",namesConfigList);
@@ -351,7 +348,11 @@ public class MappingController {
 			mapping.setLatitude(latitude);
 			mapping.setLongitude(longitude);
 			
-			mappingService.update(mapping, mapper, categoryConfig);
+			boolean result =  mappingService.update(mapping, mapper, categoryConfig);
+			
+			if(!result) {
+				throw new Exception();
+			}
 			
 			String replaceCode;
 			String replaceConfigCode;
@@ -407,24 +408,33 @@ public class MappingController {
 			out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
 			out.flush();
 		}else {
-			if(mapping.getFileName() != null) {
-				deleteFile(mapping.getFileName(), UPLOAD_PATH);
-			}
 			
-			List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
-
-			for(MappingFiles item : mappingFileList) {
-				if(item.getFileName() != null) {
-					deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+			try {
+				if(mapping.getFileName() != null) {
+					deleteFile(mapping.getFileName(), UPLOAD_PATH);
 				}
+				
+				List<MappingFiles> mappingFileList = mappingFilesService.getMappingFilesList(mapping.getTimestamp());
+
+				for(MappingFiles item : mappingFileList) {
+					if(item.getFileName() != null) {
+						deleteFile(item.getFileName(), MAPPING_FILE_PATH);
+					}
+				}
+				
+				mappingFilesService.deleteByParent(mapping.getTimestamp());
+				mappingHasNamesService.deleteByParent(mapping.getCode());
+				int result = mappingService.delete(mapping.getCode());
+				
+				if(result > 0) {
+					out.println("<script>location.href='/app/mapping/index?mapperCode="+ mapper.getCode() +"';</script>");
+					out.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.println("<script>alert('잘못된 접근입니다..'); location.href='/';</script>");
+				out.flush();
 			}
-			
-			mappingFilesService.deleteByParent(mapping.getTimestamp());
-			mappingHasNamesService.deleteByParent(mapping.getCode());
-			mappingService.delete(mapping.getCode());
-			
-			out.println("<script>location.href='/app/mapping/index?mapperCode="+ mapper.getCode() +"';</script>");
-			out.flush();
 		}
 	}
 	

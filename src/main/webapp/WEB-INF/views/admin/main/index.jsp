@@ -220,18 +220,6 @@
           </div>
         </section>
       </div>
-      <footer class="main-footer">
-        <div class="footer-left col-md-6">
-          Copyright &copy; 2018 <div class="bullet"></div> Design By <a href="https://nauval.in/">Muhamad Nauval Azhar</a>
-        </div>
-        <div class="footer-right col-md-3">
-          2.3.0
-        </div>
-
-        <div class="col-md-12">
-          Distributed by <a href="https://themewagon.com/">Themewagon</a>
-        </div>
-      </footer>
     </div>
   </div>
  <%@include file="../../layouts/admin/script.jsp"%>
